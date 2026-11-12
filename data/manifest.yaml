@@ -1,0 +1,87 @@
+# Corpus manifest. PDFs live in data/raw/ (gitignored). sha256 is computed at ingest time.
+# status_berlaku: NOT verified yet -- check each regulation on JDIH before relying on it.
+documents:
+  - id: D1
+    title: Peraturan Menteri Ketenagakerjaan No. 12 Tahun 2015 tentang Keselamatan dan Kesehatan Kerja Listrik di Tempat Kerja
+    short_title: Permenaker 12/2015
+    publisher: Kementerian Ketenagakerjaan
+    source_url: https://peraturan.bpk.go.id/Details/145984/permenaker-no-12-tahun-2015
+    downloaded_at: "2026-11-12"
+    status_berlaku: belum diverifikasi di JDIH
+    license: Dokumen peraturan publik
+    lang: id
+    file: D1_permenaker_12_2015.pdf
+    parser: legal_id
+    extract: words_by_line   # BPK file has a noisy OCR text layer (one word per block)
+    index: true
+    api_allowed: true
+    note: Teks OCR berderau (mis. "Pasa12"); semua chunk ditandai ocr_noisy.
+  - id: D2
+    title: Peraturan Menteri ESDM No. 10 Tahun 2021 tentang Keselamatan Ketenagalistrikan
+    short_title: Permen ESDM 10/2021
+    publisher: Kementerian Energi dan Sumber Daya Mineral
+    source_url: https://peraturan.bpk.go.id/Details/175259/permen-esdm-no-10-tahun-2021
+    downloaded_at: "2026-11-12"
+    status_berlaku: belum diverifikasi di JDIH
+    license: Dokumen peraturan publik
+    lang: id
+    file: D2_permen_esdm_10_2021.pdf
+    parser: legal_id
+    extract: lines
+    index: true
+    api_allowed: true
+  - id: D3
+    title: Pedoman Pelaporan Sistem Manajemen Keselamatan Ketenagalistrikan (SMK2)
+    short_title: Pedoman SMK2
+    publisher: Direktorat Jenderal Ketenagalistrikan, Kementerian ESDM
+    source_url: https://gatrik.esdm.go.id/simatrik/media/books/pedoman-smk2.pdf
+    downloaded_at: "2026-11-12"
+    status_berlaku: belum diverifikasi
+    license: Dokumen publik pemerintah
+    lang: id
+    file: D3_pedoman_smk2.pdf
+    parser: sections_smk2
+    extract: lines
+    index: true
+    api_allowed: true
+  - id: D4
+    title: FAQ Permen ESDM No. 10 Tahun 2021
+    short_title: FAQ Permen 10/2021
+    publisher: Direktorat Jenderal Ketenagalistrikan, Kementerian ESDM
+    source_url: https://gatrik.esdm.go.id/simatrik/media/books/FAQ_Permen_10_Tahun_2021.pdf
+    downloaded_at: "2026-11-12"
+    status_berlaku: belum diverifikasi
+    license: Dokumen publik pemerintah
+    lang: id
+    file: D4_faq_permen_10_2021.pdf
+    parser: sections_smk2
+    extract: lines
+    index: false          # bahan menyusun set uji; tidak diindeks agar tidak bocor
+    api_allowed: true
+    note: 57 dari 111 halaman tidak punya teks (kemungkinan gambar).
+  - id: D5
+    title: DOE-HDBK-1092-2013 Electrical Safety
+    short_title: DOE-HDBK-1092
+    publisher: US Department of Energy
+    source_url: https://www.standards.doe.gov/standards-documents/1000/1092-BHdbk-2013
+    status_berlaku: belum diverifikasi
+    license: US government work (public)
+    lang: en
+    file: null
+    parser: sections_en
+    index: true
+    api_allowed: true
+    note: pending_download -- unduh manual ke data/raw/ lalu isi field file.
+  - id: D6
+    title: OSHA 29 CFR 1910.269 and Subpart S
+    short_title: OSHA 1910.269
+    publisher: US OSHA
+    source_url: https://www.osha.gov/laws-regs/regulations/standardnumber/1910/1910.269
+    status_berlaku: belum diverifikasi
+    license: US government work (public)
+    lang: en
+    file: null
+    parser: sections_en
+    index: true
+    api_allowed: true
+    note: pending_download -- osha.gov memblokir unduhan otomatis; unduh manual.

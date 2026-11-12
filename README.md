@@ -11,7 +11,7 @@ Proyek akhir mata kuliah Kecerdasan Artifisial, Magister Teknik Elektro. Selain 
 | Fase | Isi | Status |
 |---|---|---|
 | 0 | Fondasi: repo, DB, API health, agen minimal, frontend kosong | selesai |
-| 1 | Ingesti PDF, parser pasal, dataset card | belum |
+| 1 | Ingesti PDF, parser pasal, dataset card | selesai (D1–D3; D5/D6 menunggu PDF) |
 | 2 | Retrieval (BM25, dense, hybrid RRF) + metrik + baseline | belum |
 | 3 | Agen Pydantic AI, sitasi, mode agentik, API `/api/ask` | belum |
 | 4 | Antarmuka web, viewer PDF, halaman review dan admin | belum |
@@ -51,6 +51,7 @@ make setup
 make db-up migrate              # PostgreSQL + pgvector di 127.0.0.1:5434
 make list-models                # pilih LLM_MODEL dan JUDGE_MODEL (harus berbeda), isi di .env
 make check-llm
+make ingest                     # PDF di data/raw -> chunk (data/processed/chunks.jsonl, docs/ingest_report.md)
 make dev                        # API http://127.0.0.1:8010, web http://localhost:3000
 make gen-api                    # tipe TypeScript dari OpenAPI (API harus berjalan)
 ```
