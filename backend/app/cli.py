@@ -28,12 +28,12 @@ def check_llm() -> None:
     settings = get_settings()
     agent = build_ping_agent(settings)
     result = asyncio.run(agent.run("Sapa saya dan sebutkan bahasa yang kamu pakai."))
-    usage = result.usage()
+    usage = result.usage
     typer.echo(f"model:  {settings.llm_model}")
     typer.echo(f"output: {result.output}")
     typer.echo(f"tokens: in={usage.input_tokens} out={usage.output_tokens}")
     try:
-        typer.echo(f"cost:   {result.response.cost()}")
+        typer.echo(f"cost:   ${result.response.cost().total_price} USD")
     except Exception:  # price data may be unavailable for some models
         typer.echo("cost:   n/a (see OpenRouter dashboard)")
 
