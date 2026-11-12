@@ -92,6 +92,18 @@ wheels = [
 ]
 
 [[package]]
+name = "bm25s"
+version = "0.3.16"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "numpy" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/95/de/f888ccc0787164b4cf60b318b2225dbc21519beaf099cf2cf7424ca6f616/bm25s-0.3.16.tar.gz", hash = "sha256:96301f99558c2318a889abfe1bc27cf53dc225f3860cdf03b0aaa5e72f8f4a2e", size = 81944, upload-time = "2026-10-28T18:49:06.05Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/dc/5f/73f19cc86ecfd4533f0a82e55e689d5cbc4b5f845526a191316c17d38ee6/bm25s-0.3.16-py3-none-any.whl", hash = "sha256:65d973bd496de883ae525955379e3e7cf90a12c3d54ed175036315ae677512c9", size = 76043, upload-time = "2026-10-28T18:49:04.47Z" },
+]
+
+[[package]]
 name = "certifi"
 version = "2026.10.23"
 source = { registry = "https://pypi.org/simple" }
@@ -384,8 +396,10 @@ version = "0.1.0"
 source = { editable = "." }
 dependencies = [
     { name = "alembic" },
+    { name = "bm25s" },
     { name = "fastapi" },
     { name = "httpx" },
+    { name = "numpy" },
     { name = "opentelemetry-exporter-otlp-proto-http" },
     { name = "opentelemetry-sdk" },
     { name = "pgvector" },
@@ -396,6 +410,7 @@ dependencies = [
     { name = "pydantic-settings" },
     { name = "pymupdf" },
     { name = "pyyaml" },
+    { name = "sastrawi" },
     { name = "sqlalchemy", extra = ["asyncio"] },
     { name = "typer" },
     { name = "uvicorn", extra = ["standard"] },
@@ -413,8 +428,10 @@ dev = [
 [package.metadata]
 requires-dist = [
     { name = "alembic", specifier = ">=1.13" },
+    { name = "bm25s", specifier = ">=0.3.16" },
     { name = "fastapi", specifier = ">=0.115" },
     { name = "httpx", specifier = ">=0.27" },
+    { name = "numpy", specifier = ">=2.5.4" },
     { name = "opentelemetry-exporter-otlp-proto-http" },
     { name = "opentelemetry-sdk" },
     { name = "pgvector", specifier = ">=0.3" },
@@ -425,6 +442,7 @@ requires-dist = [
     { name = "pydantic-settings", specifier = ">=2.4" },
     { name = "pymupdf", specifier = ">=2.1" },
     { name = "pyyaml", specifier = ">=6" },
+    { name = "sastrawi", specifier = ">=1.0.1" },
     { name = "sqlalchemy", extras = ["asyncio"], specifier = ">=2.0" },
     { name = "typer", specifier = ">=0.12" },
     { name = "uvicorn", extras = ["standard"], specifier = ">=0.30" },
@@ -1139,6 +1157,15 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/b9/ab/d8e407669ffe5014429baf780c2df47e001968a6e4c17f615e2e7b13a9ba/ruff-0.17.4-py3-none-win32.whl", hash = "sha256:3971a78cba76298b284c8321e6d40d93045ed348bec5c369d85099efc97fb7cf", size = 9931993, upload-time = "2026-11-05T18:52:11.169Z" },
     { url = "https://files.pythonhosted.org/packages/bd/15/42af8a72d8946e3c9efd2bbf6641e462b6832783b0d043d63ef5b280ba7f/ruff-0.17.4-py3-none-win_amd64.whl", hash = "sha256:67c5a894fc054cf41f75f7afa24815de5a74329d97634126c2a1015740ff4e8c", size = 10292922, upload-time = "2026-11-05T18:52:13.436Z" },
     { url = "https://files.pythonhosted.org/packages/68/9e/f1dbffcfb8ff25dadbc21f87a8b73c3848abe4abada9d4b08ccef8bec40c/ruff-0.17.4-py3-none-win_arm64.whl", hash = "sha256:181ae38a9a8fb94925bf7d0794327b48d7fd7f4b50cfd84c0e999cc09ef8d131", size = 9889396, upload-time = "2026-11-05T18:52:15.549Z" },
+]
+
+[[package]]
+name = "sastrawi"
+version = "1.0.1"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/64/e8/abff41a085ec33b1a55f2065e0ebe1d6c9b6635559a94b3774c8c81e88aa/Sastrawi-1.0.1.zip", hash = "sha256:62badb523e6e273f92eb6d53f5f3d4c0aa9ffcf1ceba69ab3dba5b7a0da02c56", size = 211653, upload-time = "2016-01-18T12:13:07.026Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/6f/4b/bab676953da3103003730b8fcdfadbdd20f333d4add10af949dd5c51e6ed/Sastrawi-1.0.1-py2.py3-none-any.whl", hash = "sha256:ac3d1f442ae8f33fd0f59387eb33a1a5121241f028c318c60820f26bd032d93b", size = 209671, upload-time = "2016-01-18T12:12:43.267Z" },
 ]
 
 [[package]]

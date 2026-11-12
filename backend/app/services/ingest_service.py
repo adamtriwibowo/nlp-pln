@@ -3,11 +3,11 @@
 from datetime import UTC, datetime
 from pathlib import Path
 
-from sqlalchemy import delete
+from sqlalchemy import delete, select
 from sqlalchemy.dialects.postgresql import insert
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.db.models import Chunk, Document
+from app.db.models import Chunk, Document, Embedding
 from app.ingest.models import ChunkRecord, ManifestEntry
 from app.ingest.pipeline import (
     DocReport,
@@ -88,9 +88,15 @@ async def persist(
         )
         await session.execute(stmt)
 
-    await session.execute(delete(Chunk))  # embeddings are rebuilt by `k2 index` (phase 2)
+    # Upsert chunks. Chunks that no longer exist are removed together with their embeddings;
+    # embeddings of changed chunks are detected by text_sha in `k2 index`.
+    existing = set((await session.execute(select(Chunk.chunk_id))).scalars().all())
+    removed = existing - {c.chunk_id for c in chunks}
+    if removed:
+        await session.execute(delete(Embedding).where(Embedding.chunk_id.in_(removed)))
+        await session.execute(delete(Chunk).where(Chunk.chunk_id.in_(removed)))
     for c in chunks:
-        session.add(
+        await session.merge(
             Chunk(
                 chunk_id=c.chunk_id,
                 doc_id=c.doc_id,

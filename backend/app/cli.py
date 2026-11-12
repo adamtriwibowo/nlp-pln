@@ -97,5 +97,102 @@ def qa_validate(path: str = "../data/eval/qa.jsonl") -> None:
         raise typer.Exit(1)
 
 
+@app.command("index")
+def index_cmd() -> None:
+    """Build/refresh dense embeddings in pgvector (idempotent; only changed chunks are embedded)."""
+    from app.db.session import SessionLocal, engine
+    from app.retrieval.embeddings import build_provider
+    from app.services.index_service import build_index
+
+    settings = get_settings()
+    provider = build_provider(settings)
+
+    async def _run() -> None:
+        async with SessionLocal() as session:
+            st = await build_index(
+                session, provider, external_api=settings.embedding_provider != "local"
+            )
+        await engine.dispose()
+        typer.echo(
+            f"model={st.model} total={st.total} embedded={st.embedded} unchanged={st.unchanged} "
+            f"removed={st.removed} skipped_not_api_allowed={st.skipped_not_api_allowed}"
+        )
+
+    asyncio.run(_run())
+
+
+@app.command("search")
+def search_cmd(
+    query: str, config: str = typer.Option("M1", help="B1, B2, M1, M2"), k: int = 5
+) -> None:
+    """Run one query through a retrieval config and print the top chunks."""
+    from app.db.models import Chunk
+    from app.db.session import SessionLocal, engine
+    from app.retrieval.base import load_config
+    from app.retrieval.factory import build_retriever
+
+    settings = get_settings()
+    cfg = load_config(config)
+
+    async def _run() -> None:
+        async with SessionLocal() as session:
+            retriever = await build_retriever(cfg, session, settings)
+            hits = await retriever.retrieve(query, k)
+            for h in hits:
+                ch = await session.get(Chunk, h.chunk_id)
+                label = ch.hierarchy.get("label", "") if ch else ""
+                snippet = (ch.text if ch else "").replace(chr(10), " ")[:140]
+                typer.echo(f"{h.rank}. {h.score:8.4f}  {h.chunk_id:20} {label}")
+                typer.echo(f"     {snippet}")
+        await engine.dispose()
+
+    asyncio.run(_run())
+
+
+@app.command("eval")
+def eval_cmd(
+    config: str = typer.Option(..., help="B0, B1, B2, M1, M2, M3"),
+    split: str = typer.Option("dev", help="dev or test"),
+    final: bool = typer.Option(False, help="Required for the frozen test split"),
+    qa: str = "../data/eval/qa.jsonl",
+) -> None:
+    """Evaluate retrieval (phase 2). Generation metrics arrive in phase 3."""
+    from pathlib import Path
+
+    from app.db.session import SessionLocal, engine
+    from app.eval.qa_schema import check_gold_exist, load_qa
+    from app.eval.retrieval_runner import run_retrieval_eval
+    from app.retrieval.base import load_config
+    from app.retrieval.factory import build_retriever
+    from app.services.ingest_service import read_jsonl
+
+    if split == "test" and not final:
+        typer.echo("The test split is frozen. Use --final only for the final evaluation.")
+        raise typer.Exit(1)
+    cfg = load_config(config)
+    if cfg.retriever in ("none", "agentic"):
+        typer.echo(f"{config} has no standalone retrieval; it is evaluated in phase 3.")
+        raise typer.Exit(0)
+    items = [i for i in load_qa(Path(qa)) if i.split == split]
+    if not items:
+        typer.echo(f"No questions for split '{split}' in {qa}. Add some (see skill add-qa).")
+        raise typer.Exit(1)
+    problems = check_gold_exist(items, {c.chunk_id for c in read_jsonl()})
+    if problems:
+        typer.echo(chr(10).join(problems))
+        raise typer.Exit(1)
+    settings = get_settings()
+
+    async def _run() -> None:
+        async with SessionLocal() as session:
+            retriever = await build_retriever(cfg, session, settings)
+            run = await run_retrieval_eval(cfg, retriever, items, session, settings, split)
+        await engine.dispose()
+        typer.echo((run.directory / "summary.md").read_text(encoding="utf-8"))
+        typer.echo(f"saved: {run.directory}")
+
+    asyncio.run(_run())
+
+
 if __name__ == "__main__":
     app()

@@ -58,6 +58,7 @@ class Embedding(Base):
     chunk_id: Mapped[str] = mapped_column(ForeignKey("chunks.chunk_id"), primary_key=True)
     model: Mapped[str] = mapped_column(String(128), primary_key=True)
     dim: Mapped[int] = mapped_column(Integer)
+    text_sha: Mapped[str | None] = mapped_column(String(16))
     # Dimension is model dependent; the HNSW index needs a fixed dim and is added in phase 2.
     vector: Mapped[Any] = mapped_column(Vector())
 
