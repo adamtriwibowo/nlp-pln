@@ -1,0 +1,5 @@
+id: M3
+retriever: agentic
+top_k: 5
+mode: agentic
+seed: 42

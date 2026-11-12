@@ -1,0 +1,17 @@
+services:
+  db:
+    image: pgvector/pgvector:pg17
+    environment:
+      POSTGRES_USER: k2
+      POSTGRES_PASSWORD: k2
+      POSTGRES_DB: k2rag
+    ports:
+      - "127.0.0.1:5434:5432"
+    volumes:
+      - k2_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U k2 -d k2rag"]
+      interval: 5s
+      retries: 10
+volumes:
+  k2_pgdata:

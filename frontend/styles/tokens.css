@@ -1,0 +1,32 @@
+/* Design tokens from docs/design (ink/muted/border/ground, yellow accent, blue citation). */
+:root {
+  --ink: #1c2430;
+  --muted: #4a5668;
+  --border: #d5dae1;
+  --ground: #f7f8fa;
+  --surface: #ffffff;
+  --accent: #f2b705;
+  --cite: #1f5f8b;
+  --cite-tint: #e7f1fb;
+  --ok: #1e6b3a;
+  --ok-tint: #e3f4e8;
+  --warn: #5c4600;
+  --warn-tint: #fff6d6;
+  --error: #9b1c1c;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --ink: #e8ecf1;
+    --muted: #a8b3c2;
+    --border: #2f3a4a;
+    --ground: #12171e;
+    --surface: #1a212b;
+    --cite: #7fb8e6;
+    --cite-tint: #1b2c3d;
+    --ok: #7bd598;
+    --ok-tint: #17301f;
+    --warn: #f2d36b;
+    --warn-tint: #3a3112;
+    --error: #ff8a8a;
+  }
+}

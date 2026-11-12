@@ -1,0 +1,5 @@
+id: B1
+retriever: bm25
+top_k: 5
+mode: standard
+seed: 42

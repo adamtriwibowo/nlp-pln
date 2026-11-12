@@ -1,0 +1,15 @@
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "f=$(node -e \"let s='';process.stdin.on('data',d=>s+=d).on('end',()=>console.log(JSON.parse(s).tool_input.file_path||''))\"); case \"$f\" in *.py) (cd backend && uv run ruff format \"$f\" && uv run ruff check --fix \"$f\") 2>/dev/null || true;; *.ts|*.tsx) (cd frontend && npx --no-install prettier --write \"$f\") 2>/dev/null || true;; esac; exit 0"
+          }
+        ]
+      }
+    ]
+  }
+}

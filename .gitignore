@@ -1,0 +1,17 @@
+.env
+.env.*
+!.env.example
+data/raw/*
+!data/raw/.gitkeep
+runs/*
+!runs/.gitkeep
+__pycache__/
+*.pyc
+.venv/
+.mypy_cache/
+.ruff_cache/
+.pytest_cache/
+node_modules/
+.next/
+frontend/lib/api-types.ts
+*.log

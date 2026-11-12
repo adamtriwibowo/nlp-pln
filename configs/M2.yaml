@@ -1,0 +1,5 @@
+id: M2
+retriever: hybrid_rerank
+top_k: 5
+mode: standard
+seed: 42
