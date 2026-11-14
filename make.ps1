@@ -3,7 +3,8 @@
 param(
   [Parameter(Position = 0)][string]$Target = "help",
   [string]$Config = "",
-  [string]$Split = "dev"
+  [string]$Split = "dev",
+  [string]$Question = ""
 )
 $ErrorActionPreference = "Stop"
 $root = $PSScriptRoot
@@ -23,11 +24,13 @@ switch ($Target) {
   "ingest"      { Run "backend" { uv run k2 ingest } }
   "index"       { Run "backend" { uv run k2 index } }
   "eval"        { Run "backend" { uv run k2 eval --config $Config --split $Split } }
+  "ask"         { Run "backend" { uv run k2 ask $Question --config $(if ($Config) { $Config } else { "M1" }) } }
+  "eval-gen"    { Run "backend" { uv run k2 eval-gen --config $Config --split $Split } }
   "dev"         { Start-Process -FilePath "uv" -ArgumentList "run uvicorn app.api.main:app --reload --port 8010 --loop none" -WorkingDirectory (Join-Path $root "backend")
                   Run "frontend" { Pnpm @("dev") } }
   "up"          { docker compose -f (Join-Path $root "infra/docker-compose.yml") up -d --build }
   "gen-api"     { Run "frontend" { Pnpm @("gen-api") } }
   "check-llm"   { Run "backend" { uv run k2 check-llm } }
   "list-models" { Run "backend" { uv run k2 list-models } }
-  default       { "Targets: setup db-up db-down migrate lint test ingest index eval dev up gen-api check-llm list-models" }
+  default       { "Targets: ask eval-gen setup db-up db-down migrate lint test ingest index eval dev up gen-api check-llm list-models" }
 }

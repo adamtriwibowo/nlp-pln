@@ -23,6 +23,7 @@ dependencies = [
   "bm25s>=0.3.16",
   "sastrawi>=1.0.1",
   "numpy>=2.5.4",
+  "pyjwt>=2.15.1",
 ]
 
 [dependency-groups]

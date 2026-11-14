@@ -77,15 +77,45 @@ async def embedding_dim(session: AsyncSession, model: str) -> int:
     return int(dim)
 
 
+class CorpusCache:
+    """Process-wide cache of corpus docs and BM25 indexes (rebuilt only on invalidate())."""
+
+    def __init__(self) -> None:
+        self._docs: dict[tuple[str, ...], list[ChunkDoc]] = {}
+        self._bm25: dict[tuple[bool, tuple[str, ...]], BM25Retriever] = {}
+
+    def invalidate(self) -> None:
+        self._docs.clear()
+        self._bm25.clear()
+
+    async def docs(self, session: AsyncSession, exclude_kinds: list[str]) -> list[ChunkDoc]:
+        key = tuple(sorted(exclude_kinds))
+        if key not in self._docs:
+            self._docs[key] = await load_corpus(session, exclude_kinds)
+        return self._docs[key]
+
+    async def bm25(
+        self, session: AsyncSession, exclude_kinds: list[str], stem: bool
+    ) -> BM25Retriever:
+        key = (stem, tuple(sorted(exclude_kinds)))
+        if key not in self._bm25:
+            self._bm25[key] = BM25Retriever(await self.docs(session, exclude_kinds), stem=stem)
+        return self._bm25[key]
+
+
 async def build_retriever(
-    cfg: ExperimentConfig, session: AsyncSession, settings: Settings
+    cfg: ExperimentConfig,
+    session: AsyncSession,
+    settings: Settings,
+    cache: CorpusCache | None = None,
 ) -> Retriever:
     if cfg.retriever in ("none", "agentic"):
         raise ValueError(f"config {cfg.id} has no standalone retriever ({cfg.retriever})")
-    docs = await load_corpus(session, cfg.exclude_kinds)
+    cache = cache or CorpusCache()
+    docs = await cache.docs(session, cfg.exclude_kinds)
     parts: list[Retriever] = []
     if cfg.retriever in ("bm25", "hybrid", "hybrid_rerank"):
-        parts.append(BM25Retriever(docs, stem=cfg.stem))
+        parts.append(await cache.bm25(session, cfg.exclude_kinds, cfg.stem))
     if cfg.retriever in ("dense", "hybrid", "hybrid_rerank"):
         model = cfg.embedding_model or settings.embedding_model
         embedder = CachedQueryEmbedder(build_provider(settings, model))

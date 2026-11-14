@@ -1,4 +1,4 @@
-.PHONY: setup db-up db-down migrate lint test ingest index eval dev up gen-api check-llm list-models
+.PHONY: ask eval-gen setup db-up db-down migrate lint test ingest index eval dev up gen-api check-llm list-models
 
 PNPM ?= pnpm
 COMPOSE_DEV = docker compose -f infra/docker-compose.dev.yml
@@ -31,6 +31,12 @@ index:
 
 eval:
 	cd backend && uv run k2 eval --config $(CONFIG) --split $(or $(SPLIT),dev)
+
+ask:
+	cd backend && uv run k2 ask "$(Q)" --config $(or $(CONFIG),M1)
+
+eval-gen:
+	cd backend && uv run k2 eval-gen --config $(CONFIG) --split $(or $(SPLIT),dev)
 
 dev:
 	cd backend && uv run uvicorn app.api.main:app --reload --port 8010 --loop none &

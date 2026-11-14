@@ -8,7 +8,7 @@ Asisten tanya jawab RAG untuk regulasi dan SOP keselamatan ketenagalistrikan (In
 - Desain UI: [docs/design/](docs/design/)
 
 ## Perintah (Windows tanpa make: `.\make.ps1 <target>`)
-`make setup | db-up | migrate | lint | test | ingest | index | eval CONFIG=M1 SPLIT=dev | dev | up | gen-api | check-llm | list-models`
+`make ask Q="..." CONFIG=M1 | eval-gen CONFIG=M1 SPLIT=dev | setup | db-up | migrate | lint | test | ingest | index | eval CONFIG=M1 SPLIT=dev | dev | up | gen-api | check-llm | list-models`
 
 ## Struktur
 - `backend/app/{api,core,db,ingest,retrieval,agents,services,eval}`, `cli.py` (Typer: `k2 ...`), `migrations/` (Alembic)

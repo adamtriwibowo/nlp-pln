@@ -194,5 +194,141 @@ def eval_cmd(
     asyncio.run(_run())
 
 
+@app.command("ask")
+def ask_cmd(
+    question: str,
+    config: str = typer.Option("M1", help="B0, B1, B2, M1, M2 or M3"),
+    audit: bool = typer.Option(False, help="Run the citation auditor (JUDGE_MODEL)"),
+) -> None:
+    """Ask one question end-to-end (retrieve, generate, validate) and print the cited answer."""
+    from app.db.session import SessionLocal, engine
+    from app.retrieval.base import load_config
+    from app.retrieval.factory import build_retriever
+    from app.services.ask_service import answer_question
+
+    settings = get_settings()
+    cfg = load_config(config)
+
+    async def _run() -> None:
+        async with SessionLocal() as session:
+            base = load_config("M1") if cfg.mode == "agentic" else cfg
+            retriever = (
+                None if base.retriever == "none" else await build_retriever(base, session, settings)
+            )
+            res = await answer_question(
+                question,
+                cfg,
+                session=session,
+                settings=settings,
+                retriever=retriever,
+                audit=audit,
+                auditor_model=(build_model(settings, settings.judge_model) if audit else None),
+            )
+        await engine.dispose()
+        for st in res.steps:
+            typer.echo(f"  [langkah] {st.tool} {st.args} -> {st.summary}")
+        typer.echo(res.answer.answer)
+        for c in res.answer.citations:
+            chunk = next((x for x in res.context if x.chunk_id == c.chunk_id), None)
+            where = f"{chunk.ref}, hal. {chunk.page_start}" if chunk else "?"
+            typer.echo(f'  [{c.label}] {c.chunk_id} ({where}): "{c.quote}"')
+        typer.echo(
+            f"abstained={res.answer.abstained} reason={res.abstain_reason or '-'} "
+            f"confidence={res.answer.confidence:.2f} latency={res.latency_ms}ms "
+            f"tokens={res.input_tokens + res.output_tokens} cost=${res.cost_usd:.5f} model={res.model}"
+        )
+
+    from app.agents.llm import build_model
+
+    asyncio.run(_run())
+
+
+@app.command("eval-gen")
+def eval_gen_cmd(
+    config: str = typer.Option(..., help="B0, B1, B2, M1, M3"),
+    split: str = typer.Option("dev"),
+    final: bool = typer.Option(False, help="Required for the frozen test split"),
+    audit: bool = typer.Option(False),
+    qa: str = "../data/eval/qa.jsonl",
+) -> None:
+    """Evaluate generation (faithfulness, citation correctness, answer correctness, abstain)."""
+    from pathlib import Path
+
+    from app.db.session import SessionLocal, engine
+    from app.eval.generation import JudgeConfigError, assert_judge_differs, run_generation_eval
+    from app.eval.qa_schema import check_gold_exist, load_qa
+    from app.retrieval.base import load_config
+    from app.retrieval.factory import build_retriever
+    from app.services.ingest_service import read_jsonl
+
+    if split == "test" and not final:
+        typer.echo("The test split is frozen. Use --final only for the final evaluation.")
+        raise typer.Exit(1)
+    settings = get_settings()
+    try:
+        assert_judge_differs(settings)
+    except JudgeConfigError as exc:
+        typer.echo(f"Judge config error: {exc}")
+        raise typer.Exit(1) from exc
+    cfg = load_config(config)
+    items = [i for i in load_qa(Path(qa)) if i.split == split]
+    if not items:
+        typer.echo(f"No questions for split '{split}' in {qa}. Add some (see skill add-qa).")
+        raise typer.Exit(1)
+    problems = check_gold_exist(items, {c.chunk_id for c in read_jsonl()})
+    if problems:
+        typer.echo(chr(10).join(problems))
+        raise typer.Exit(1)
+
+    async def _run() -> None:
+        async with SessionLocal() as session:
+            base = load_config("M1") if cfg.mode == "agentic" else cfg
+            retriever = (
+                None if base.retriever == "none" else await build_retriever(base, session, settings)
+            )
+            directory, _ = await run_generation_eval(
+                cfg,
+                items,
+                session=session,
+                settings=settings,
+                split=split,
+                retriever=retriever,
+                audit=audit,
+            )
+        await engine.dispose()
+        typer.echo((directory / "summary.md").read_text(encoding="utf-8"))
+        typer.echo(f"saved: {directory}")
+
+    asyncio.run(_run())
+
+
+@app.command("judge-sample")
+def judge_sample_cmd(run_dir: str, n: int = 20, out: str = "../runs/judge_sample.csv") -> None:
+    """Export >= 20 answers from a generation run for manual labelling (judge validation)."""
+    from pathlib import Path
+
+    from app.eval.judge_validation import export_sample
+
+    count = export_sample(Path(run_dir), Path(out), n)
+    typer.echo(f"wrote {count} rows to {out}. Fill human_* columns with 1 (pass) or 0 (fail).")
+
+
+@app.command("judge-agreement")
+def judge_agreement_cmd(csv_path: str = "../runs/judge_sample.csv") -> None:
+    """Judge vs human agreement (percent and Cohen's kappa) from the labelled CSV."""
+    from pathlib import Path
+
+    from app.eval.judge_validation import compute_agreement
+
+    result = compute_agreement(Path(csv_path))
+    if not result:
+        typer.echo("No labelled rows yet.")
+        raise typer.Exit(1)
+    for metric, m in result.items():
+        typer.echo(
+            f"{metric:22} n={int(m['n'])} agreement={m['agreement']:.2f} kappa={m['kappa']:.2f}"
+        )
+
+
 if __name__ == "__main__":
     app()

@@ -24,6 +24,10 @@ class Settings(BaseSettings):
     logfire_token: str = ""
     otel_exporter_otlp_endpoint: str = ""
     cors_origins: str = "http://localhost:3000"
+    cookie_secure: bool = False  # set true behind HTTPS (production)
+    trust_proxy: bool = False  # honour X-Forwarded-For (only behind Caddy)
+    ask_rate_per_min: int = 20
+    login_rate_per_min: int = 5
 
 
 @lru_cache

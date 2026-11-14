@@ -1,0 +1,1 @@
+Jawab pertanyaan tentang keselamatan ketenagalistrikan di Indonesia dari pengetahuanmu sendiri, tanpa dokumen sumber. Jawab singkat dalam bahasa yang sama dengan pertanyaan. Set `citations` kosong. Jika kamu tidak tahu, set `abstained` = true. Isi `confidence` 0 sampai 1.
