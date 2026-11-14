@@ -1,0 +1,5 @@
+public/pdfjs
+.next
+node_modules
+lib/api-types.ts
+test-results

@@ -330,5 +330,40 @@ def judge_agreement_cmd(csv_path: str = "../runs/judge_sample.csv") -> None:
         )
 
 
+@app.command("review-seed")
+def review_seed_cmd(
+    runs: list[str] = typer.Option(..., "--runs", help="Generation run directories"),
+    n: int = typer.Option(20, help="Number of review items to create"),
+) -> None:
+    """Create blinded review items for /review from one or more generation runs."""
+    from pathlib import Path
+
+    from app.db.session import SessionLocal, engine
+    from app.services.review_service import seed_from_runs
+
+    async def _run() -> None:
+        async with SessionLocal() as session:
+            created, skipped = await seed_from_runs(session, [Path(r) for r in runs], n)
+        await engine.dispose()
+        typer.echo(f"created={created} skipped_existing={skipped}")
+
+    asyncio.run(_run())
+
+
+@app.command("export-openapi")
+def export_openapi_cmd(out: str = "../docs/openapi.json") -> None:
+    """Write the API schema (the frontend generates its types from this file)."""
+    import json
+    from pathlib import Path
+
+    from app.api.main import app as fastapi_app
+
+    Path(out).write_text(
+        json.dumps(fastapi_app.openapi(), indent=2, ensure_ascii=False) + chr(10),
+        encoding="utf-8",
+    )
+    typer.echo(f"wrote {out}")
+
+
 if __name__ == "__main__":
     app()

@@ -14,7 +14,7 @@ Proyek akhir mata kuliah Kecerdasan Artifisial, Magister Teknik Elektro. Selain 
 | 1 | Ingesti PDF, parser pasal, dataset card | selesai (D1–D3; D5/D6 menunggu PDF) |
 | 2 | Retrieval (BM25, dense, hybrid RRF) + metrik + baseline | kode selesai; run baseline menunggu `qa.jsonl` (dev) dari kelompok |
 | 3 | Agen Pydantic AI, sitasi, mode agentik, API `/api/ask` | kode selesai dan diuji live; evaluasi generasi menunggu `qa.jsonl` |
-| 4 | Antarmuka web, viewer PDF, halaman review dan admin | belum |
+| 4 | Antarmuka web, viewer PDF, halaman review dan admin | selesai (e2e lulus; halaman review menunggu item dari evaluasi) |
 | 5 | Evaluasi final dan review ahli | belum |
 | 6 | Deploy VPS | belum |
 
@@ -56,7 +56,8 @@ make index                      # embedding bge-m3 -> pgvector (idempoten)
 make ask Q="Apa itu SLO?"        # jawaban bersitasi dari terminal (CONFIG=M1|M3|B0...)
 make eval CONFIG=M1 SPLIT=dev   # butuh data/eval/qa.jsonl; lihat docs/eval_protocol.md
 make dev                        # API http://127.0.0.1:8010, web http://localhost:3000
-make gen-api                    # tipe TypeScript dari OpenAPI (API harus berjalan)
+make gen-api                    # tipe TypeScript dari docs/openapi.json (k2 export-openapi)
+make e2e                        # kontras token + Playwright (butuh DB; LLM di-mock)
 ```
 
 Windows tanpa `make`: pakai `.\make.ps1 <target>` (target yang sama). `make lint` dan `make test` menjalankan ruff, mypy, pytest, eslint, dan tsc.

@@ -24,6 +24,7 @@ switch ($Target) {
   "ingest"      { Run "backend" { uv run k2 ingest } }
   "index"       { Run "backend" { uv run k2 index } }
   "eval"        { Run "backend" { uv run k2 eval --config $Config --split $Split } }
+  "e2e"         { Run "frontend" { Pnpm @("test:contrast"); Pnpm @("test:e2e") } }
   "ask"         { Run "backend" { uv run k2 ask $Question --config $(if ($Config) { $Config } else { "M1" }) } }
   "eval-gen"    { Run "backend" { uv run k2 eval-gen --config $Config --split $Split } }
   "dev"         { Start-Process -FilePath "uv" -ArgumentList "run uvicorn app.api.main:app --reload --port 8010 --loop none" -WorkingDirectory (Join-Path $root "backend")
@@ -32,5 +33,5 @@ switch ($Target) {
   "gen-api"     { Run "frontend" { Pnpm @("gen-api") } }
   "check-llm"   { Run "backend" { uv run k2 check-llm } }
   "list-models" { Run "backend" { uv run k2 list-models } }
-  default       { "Targets: ask eval-gen setup db-up db-down migrate lint test ingest index eval dev up gen-api check-llm list-models" }
+  default       { "Targets: e2e ask eval-gen setup db-up db-down migrate lint test ingest index eval dev up gen-api check-llm list-models" }
 }

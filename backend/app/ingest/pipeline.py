@@ -36,9 +36,22 @@ class DocReport(BaseModel):
     note: str | None = None
 
 
+def uploads_path(manifest: Path) -> Path:
+    """Machine-managed manifest of admin uploads, kept beside the hand-written one."""
+    return manifest.with_name("manifest.uploads.yaml")
+
+
 def load_manifest(path: Path) -> list[ManifestEntry]:
     data: dict[str, Any] = yaml.safe_load(path.read_text(encoding="utf-8"))
-    return [ManifestEntry.model_validate(d) for d in data["documents"]]
+    entries = [ManifestEntry.model_validate(d) for d in data["documents"]]
+    extra = uploads_path(path)
+    if extra.exists():
+        more: dict[str, Any] = yaml.safe_load(extra.read_text(encoding="utf-8")) or {}
+        entries += [ManifestEntry.model_validate(d) for d in more.get("documents", [])]
+    ids = [e.id for e in entries]
+    if len(ids) != len(set(ids)):
+        raise ValueError("duplicate document ids across manifest files")
+    return entries
 
 
 def sha256_file(path: Path) -> str:

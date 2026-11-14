@@ -8,7 +8,7 @@ Asisten tanya jawab RAG untuk regulasi dan SOP keselamatan ketenagalistrikan (In
 - Desain UI: [docs/design/](docs/design/)
 
 ## Perintah (Windows tanpa make: `.\make.ps1 <target>`)
-`make ask Q="..." CONFIG=M1 | eval-gen CONFIG=M1 SPLIT=dev | setup | db-up | migrate | lint | test | ingest | index | eval CONFIG=M1 SPLIT=dev | dev | up | gen-api | check-llm | list-models`
+`make e2e | ask Q="..." CONFIG=M1 | eval-gen CONFIG=M1 SPLIT=dev | setup | db-up | migrate | lint | test | ingest | index | eval CONFIG=M1 SPLIT=dev | dev | up | gen-api | check-llm | list-models`
 
 ## Struktur
 - `backend/app/{api,core,db,ingest,retrieval,agents,services,eval}`, `cli.py` (Typer: `k2 ...`), `migrations/` (Alembic)
@@ -18,6 +18,7 @@ Asisten tanya jawab RAG untuk regulasi dan SOP keselamatan ketenagalistrikan (In
 ## Konvensi
 - Python 3.12, type hints, Pydantic, async. Kode dan komentar bahasa Inggris; teks UI bahasa Indonesia.
 - Cek dokumentasi versi terbaru sebelum memakai library (Pydantic AI, pgvector, Next.js 16, TanStack Query, react-pdf); jangan mengandalkan ingatan.
+- Frontend: Next 16 + `cacheComponents`; PDF viewer butuh aset pdf.js di `public/pdfjs` (disalin otomatis oleh `predev`/`prebuild`; PDF korpus adalah scan JBIG2). Tujuan rewrite `/api` (`API_ORIGIN`) dibaca saat **build**. Tipe API: `make`-nya `pnpm gen-api` dari `docs/openapi.json` (`k2 export-openapi`); ulangi setelah mengubah API.
 - DB lokal: host `127.0.0.1` port **5434** (5432/5433 dipakai proses lain di mesin ini). Pakai `127.0.0.1`, bukan `localhost` (IPv6 membuat koneksi menggantung).
 - Windows: psycopg async butuh SelectorEventLoop: policy diset di `app/__init__.py` dan uvicorn dijalankan dengan `--loop none`.
 

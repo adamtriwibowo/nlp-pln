@@ -1,32 +1,69 @@
-/* Design tokens from docs/design (ink/muted/border/ground, yellow accent, blue citation). */
+/* K2-RAG design tokens (docs/design): calm, firm, verifiable.
+   One yellow brand accent, blue for citations/links, green/amber/red for status.
+   Light is the default; dark follows the OS unless the user picks a theme (data-theme). */
 :root {
-  --ink: #1c2430;
-  --muted: #4a5668;
-  --border: #d5dae1;
-  --ground: #f7f8fa;
-  --surface: #ffffff;
-  --accent: #f2b705;
-  --cite: #1f5f8b;
-  --cite-tint: #e7f1fb;
-  --ok: #1e6b3a;
-  --ok-tint: #e3f4e8;
-  --warn: #5c4600;
-  --warn-tint: #fff6d6;
-  --error: #9b1c1c;
+  --k2-ink: #1c2430;
+  --k2-muted: #4a5668;
+  --k2-line: #d5dae1;
+  --k2-field: #6b7686; /* form-control borders: >= 3:1 (WCAG 1.4.11) */
+  --k2-ground: #f7f8fa;
+  --k2-surface: #ffffff;
+  --k2-surface-2: #e9ecf1;
+  --k2-brand: #f2b705;
+  --k2-brand-ink: #1c2430;
+  --k2-cite: #1f5f8b;
+  --k2-cite-tint: #e7f1fb;
+  --k2-on-cite: #ffffff;
+  --k2-ok: #1e6b3a;
+  --k2-ok-tint: #e3f4e8;
+  --k2-warn: #5c4600;
+  --k2-warn-tint: #fff6d6;
+  --k2-danger: #9b1c1c;
+  --k2-danger-tint: #fdecec;
+  --k2-highlight: rgba(242, 183, 5, 0.3);
+  color-scheme: light;
 }
+
 @media (prefers-color-scheme: dark) {
-  :root {
-    --ink: #e8ecf1;
-    --muted: #a8b3c2;
-    --border: #2f3a4a;
-    --ground: #12171e;
-    --surface: #1a212b;
-    --cite: #7fb8e6;
-    --cite-tint: #1b2c3d;
-    --ok: #7bd598;
-    --ok-tint: #17301f;
-    --warn: #f2d36b;
-    --warn-tint: #3a3112;
-    --error: #ff8a8a;
+  :root:not([data-theme="light"]) {
+    --k2-ink: #e8ecf1;
+    --k2-muted: #a8b3c2;
+    --k2-line: #34404f;
+    --k2-field: #8493a8;
+    --k2-ground: #12171e;
+    --k2-surface: #1a212b;
+    --k2-surface-2: #232c38;
+    --k2-cite: #7fb8e6;
+    --k2-cite-tint: #1b2c3d;
+    --k2-on-cite: #0f1a24;
+    --k2-ok: #7bd598;
+    --k2-ok-tint: #17301f;
+    --k2-warn: #f2d36b;
+    --k2-warn-tint: #3a3112;
+    --k2-danger: #ff9a9a;
+    --k2-danger-tint: #3a1b1b;
+    --k2-highlight: rgba(242, 183, 5, 0.38);
+    color-scheme: dark;
   }
+}
+
+:root[data-theme="dark"] {
+  --k2-ink: #e8ecf1;
+  --k2-muted: #a8b3c2;
+  --k2-line: #34404f;
+  --k2-field: #8493a8;
+  --k2-ground: #12171e;
+  --k2-surface: #1a212b;
+  --k2-surface-2: #232c38;
+  --k2-cite: #7fb8e6;
+  --k2-cite-tint: #1b2c3d;
+  --k2-on-cite: #0f1a24;
+  --k2-ok: #7bd598;
+  --k2-ok-tint: #17301f;
+  --k2-warn: #f2d36b;
+  --k2-warn-tint: #3a3112;
+  --k2-danger: #ff9a9a;
+  --k2-danger-tint: #3a1b1b;
+  --k2-highlight: rgba(242, 183, 5, 0.38);
+  color-scheme: dark;
 }

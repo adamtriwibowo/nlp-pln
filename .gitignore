@@ -13,5 +13,8 @@ __pycache__/
 .pytest_cache/
 node_modules/
 .next/
-frontend/lib/api-types.ts
 *.log
+data/manifest.uploads.yaml
+frontend/public/pdfjs/
+frontend/test-results/
+frontend/playwright-report/

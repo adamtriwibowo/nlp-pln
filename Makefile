@@ -1,4 +1,4 @@
-.PHONY: ask eval-gen setup db-up db-down migrate lint test ingest index eval dev up gen-api check-llm list-models
+.PHONY: e2e ask eval-gen setup db-up db-down migrate lint test ingest index eval dev up gen-api check-llm list-models
 
 PNPM ?= pnpm
 COMPOSE_DEV = docker compose -f infra/docker-compose.dev.yml
@@ -31,6 +31,9 @@ index:
 
 eval:
 	cd backend && uv run k2 eval --config $(CONFIG) --split $(or $(SPLIT),dev)
+
+e2e:
+	cd frontend && $(PNPM) test:contrast && $(PNPM) test:e2e
 
 ask:
 	cd backend && uv run k2 ask "$(Q)" --config $(or $(CONFIG),M1)

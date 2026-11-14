@@ -1,11 +1,12 @@
 """Role tokens -> JWT session cookie (httpOnly), role dependencies and a sliding-window rate limiter."""
 
 import hmac
+import re
 import time
 from collections import defaultdict, deque
 from collections.abc import Callable
 from datetime import UTC, datetime, timedelta
-from typing import Literal
+from typing import Literal, NamedTuple
 
 import jwt
 from fastapi import Depends, HTTPException, Request, status
@@ -26,15 +27,33 @@ def resolve_role(token: str, settings: Settings) -> Role | None:
     return None
 
 
-def create_session_jwt(role: Role, settings: Settings) -> str:
+class Session(NamedTuple):
+    role: Role
+    name: str | None
+
+
+NAME_RE = re.compile(r"^[A-Za-zÀ-ÿ][A-Za-zÀ-ÿ .'\-]{1,63}$")
+
+
+def valid_name(name: str | None) -> bool:
+    return bool(name and NAME_RE.match(name.strip()))
+
+
+def create_session_jwt(role: Role, settings: Settings, name: str | None = None) -> str:
     if not settings.jwt_secret:
         raise RuntimeError("JWT_SECRET is not configured")
     now = datetime.now(UTC)
-    payload = {"role": role, "iat": now, "exp": now + timedelta(hours=SESSION_HOURS)}
+    payload: dict[str, object] = {
+        "role": role,
+        "iat": now,
+        "exp": now + timedelta(hours=SESSION_HOURS),
+    }
+    if name:
+        payload["name"] = name
     return jwt.encode(payload, settings.jwt_secret, algorithm=ALGORITHM)
 
 
-def decode_session_jwt(token: str, settings: Settings) -> Role | None:
+def decode_session(token: str, settings: Settings) -> Session | None:
     if not settings.jwt_secret:
         return None
     try:
@@ -42,21 +61,33 @@ def decode_session_jwt(token: str, settings: Settings) -> Role | None:
     except jwt.PyJWTError:
         return None
     role = data.get("role")
-    return role if role in ("admin", "reviewer") else None
+    if role not in ("admin", "reviewer"):
+        return None
+    name = data.get("name")
+    return Session(role, name if isinstance(name, str) else None)
 
 
-def current_role(request: Request, settings: Settings = Depends(get_settings)) -> Role | None:
+def decode_session_jwt(token: str, settings: Settings) -> Role | None:
+    sess = decode_session(token, settings)
+    return sess.role if sess else None
+
+
+def current_session(request: Request, settings: Settings = Depends(get_settings)) -> Session | None:
     token = request.cookies.get(COOKIE_NAME)
-    return decode_session_jwt(token, settings) if token else None
+    return decode_session(token, settings) if token else None
 
 
-def require_role(*allowed: Role) -> Callable[..., Role]:
-    def dep(role: Role | None = Depends(current_role)) -> Role:
-        if role is None:
+def current_role(sess: Session | None = Depends(current_session)) -> Role | None:
+    return sess.role if sess else None
+
+
+def require_role(*allowed: Role) -> Callable[..., Session]:
+    def dep(sess: Session | None = Depends(current_session)) -> Session:
+        if sess is None:
             raise HTTPException(status.HTTP_401_UNAUTHORIZED, "Silakan masuk terlebih dahulu.")
-        if role not in allowed and role != "admin":  # admin may do everything
+        if sess.role not in allowed and sess.role != "admin":  # admin may do everything
             raise HTTPException(status.HTTP_403_FORBIDDEN, "Peran Anda tidak diizinkan.")
-        return role
+        return sess
 
     return dep
 

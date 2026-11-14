@@ -8,12 +8,20 @@ from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.api import routes_ask, routes_auth, routes_content, routes_feedback
+from app.api import (
+    routes_admin,
+    routes_ask,
+    routes_auth,
+    routes_content,
+    routes_feedback,
+    routes_review,
+)
 from app.api.security import SlidingWindowLimiter
 from app.core.config import Settings, get_settings
 from app.core.telemetry import setup_telemetry
 from app.db.session import get_session
 from app.retrieval.factory import CorpusCache
+from app.services.admin_service import JobManager
 
 LLM_CHECK_TTL_S = 60.0
 _llm_check: tuple[float, str] = (0.0, "unconfigured")
@@ -24,12 +32,13 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
     settings = get_settings()
     setup_telemetry(settings)
     app.state.corpus_cache = CorpusCache()
+    app.state.jobs = JobManager()
     app.state.ask_limiter = SlidingWindowLimiter(settings.ask_rate_per_min)
     app.state.login_limiter = SlidingWindowLimiter(settings.login_rate_per_min)
     yield
 
 
-app = FastAPI(title="K2-RAG API", version="0.3.0", lifespan=lifespan)
+app = FastAPI(title="K2-RAG API", version="0.4.0", lifespan=lifespan)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[o.strip() for o in get_settings().cors_origins.split(",") if o.strip()],
@@ -37,7 +46,14 @@ app.add_middleware(
     allow_methods=["GET", "POST"],
     allow_headers=["Content-Type"],
 )
-for r in (routes_ask.router, routes_auth.router, routes_content.router, routes_feedback.router):
+for r in (
+    routes_ask.router,
+    routes_auth.router,
+    routes_content.router,
+    routes_feedback.router,
+    routes_review.router,
+    routes_admin.router,
+):
     app.include_router(r)
 
 

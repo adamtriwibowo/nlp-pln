@@ -13,6 +13,7 @@ from sqlalchemy import (
     Integer,
     String,
     Text,
+    UniqueConstraint,
     func,
 )
 from sqlalchemy.dialects.postgresql import JSONB
@@ -89,14 +90,18 @@ class Feedback(Base):
 
 class ReviewItem(Base):
     __tablename__ = "review_items"
+    __table_args__ = (UniqueConstraint("run_id", "question_id", name="uq_review_item_source"),)
     item_id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     question: Mapped[str] = mapped_column(Text)
     answer: Mapped[dict[str, Any]] = mapped_column(JsonB)  # blinded: no config name shown
     config_id: Mapped[str] = mapped_column(String(16))
+    run_id: Mapped[str | None] = mapped_column(String(64))
+    question_id: Mapped[str | None] = mapped_column(String(64))
 
 
 class ReviewScore(Base):
     __tablename__ = "review_scores"
+    __table_args__ = (UniqueConstraint("item_id", "reviewer", name="uq_review_score_per_reviewer"),)
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     item_id: Mapped[int] = mapped_column(ForeignKey("review_items.item_id"), index=True)
     reviewer: Mapped[str] = mapped_column(String(64))

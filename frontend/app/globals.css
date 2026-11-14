@@ -1,26 +1,97 @@
 @import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+/* Design tokens live in styles/tokens.css (--k2-*). Everything below maps them to Tailwind. */
+@theme inline {
+  --font-sans: var(--font-inter), system-ui, sans-serif;
+  --font-heading: var(--font-grotesk), var(--font-inter), system-ui, sans-serif;
+
+  --color-ink: var(--k2-ink);
+  --color-ink-muted: var(--k2-muted);
+  --color-line: var(--k2-line);
+  --color-field: var(--k2-field);
+  --color-ground: var(--k2-ground);
+  --color-surface: var(--k2-surface);
+  --color-surface-2: var(--k2-surface-2);
+  --color-brand: var(--k2-brand);
+  --color-brand-ink: var(--k2-brand-ink);
+  --color-cite: var(--k2-cite);
+  --color-cite-tint: var(--k2-cite-tint);
+  --color-on-cite: var(--k2-on-cite);
+  --color-ok: var(--k2-ok);
+  --color-ok-tint: var(--k2-ok-tint);
+  --color-warn: var(--k2-warn);
+  --color-warn-tint: var(--k2-warn-tint);
+  --color-danger: var(--k2-danger);
+  --color-danger-tint: var(--k2-danger-tint);
+  --color-highlight: var(--k2-highlight);
+
+  /* shadcn semantic colours -> our tokens (so shadcn parts follow the design, not the defaults) */
+  --color-background: var(--k2-ground);
+  --color-foreground: var(--k2-ink);
+  --color-card: var(--k2-surface);
+  --color-card-foreground: var(--k2-ink);
+  --color-popover: var(--k2-surface);
+  --color-popover-foreground: var(--k2-ink);
+  --color-primary: var(--k2-brand);
+  --color-primary-foreground: var(--k2-brand-ink);
+  --color-secondary: var(--k2-surface-2);
+  --color-secondary-foreground: var(--k2-ink);
+  --color-muted: var(--k2-surface-2);
+  --color-muted-foreground: var(--k2-muted);
+  --color-accent: var(--k2-surface-2);
+  --color-accent-foreground: var(--k2-ink);
+  --color-destructive: var(--k2-danger);
+  --color-border: var(--k2-line);
+  --color-input: var(--k2-field);
+  --color-ring: var(--k2-cite);
+
+  --radius-sm: 0.5rem;
+  --radius-md: 0.625rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
+}
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --radius: 0.75rem;
 }
 
-@theme inline {
-  --color-background: var(--ground);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  -webkit-text-size-adjust: 100%;
 }
 
 body {
-  background: var(--ground);
-  color: var(--ink);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--k2-ground);
+  color: var(--k2-ink);
+  font-family: var(--font-sans);
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+:focus-visible {
+  outline: 3px solid var(--k2-cite);
+  outline-offset: 2px;
+}
+
+/* Subtle, functional motion only; respect the user's preference. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  ::before,
+  ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* react-pdf layers: keep the canvas sharp and hide the (invisible) text layer from layout. */
+.react-pdf__Page__textContent,
+.react-pdf__Page__annotations {
+  display: none;
+}
+
+dialog.sheet::backdrop {
+  background: rgba(10, 14, 20, 0.55);
 }

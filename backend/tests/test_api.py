@@ -76,13 +76,13 @@ def test_sliding_window_limiter() -> None:
 
 
 def test_login_sets_httponly_cookie_and_me_reads_it(client: TestClient) -> None:
-    r = client.post("/api/auth/login", json={"token": "review-secret"})
-    assert r.status_code == 200 and r.json() == {"role": "reviewer"}
+    r = client.post("/api/auth/login", json={"token": "review-secret", "name": "Dr. Budi"})
+    assert r.status_code == 200 and r.json() == {"role": "reviewer", "name": "Dr. Budi"}
     cookie = r.headers["set-cookie"].lower()
     assert "k2_session=" in cookie and "httponly" in cookie and "samesite=lax" in cookie
-    assert client.get("/api/auth/me").json() == {"role": "reviewer"}
+    assert client.get("/api/auth/me").json() == {"role": "reviewer", "name": "Dr. Budi"}
     client.post("/api/auth/logout")
-    assert client.get("/api/auth/me").json() == {"role": None}
+    assert client.get("/api/auth/me").json() == {"role": None, "name": None}
 
 
 def test_login_rejects_bad_token_and_unconfigured_secret(client: TestClient) -> None:
