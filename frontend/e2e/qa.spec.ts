@@ -54,7 +54,35 @@ test.describe("beranda", () => {
         name: "Siapa yang wajib memiliki sertifikat kompetensi?",
       })
       .click();
+    // the example only fills (and focuses) the box so it can be edited first
+    const box = page.getByLabel("Pertanyaan Anda");
+    await expect(box).toHaveValue(
+      "Siapa yang wajib memiliki sertifikat kompetensi?",
+    );
+    await expect(box).toBeFocused();
+    await expect(page).toHaveURL(/\/$/);
+    await box.press("Enter");
     await expect(page).toHaveURL(/\/tanya\?q=Siapa/);
+  });
+
+  test("Shift+Enter menambah baris, Enter mengirim, petunjuk muncul untuk teks pendek", async ({
+    page,
+  }) => {
+    await mockAsk(page);
+    await page.goto("/");
+    const box = page.getByLabel("Pertanyaan Anda");
+    await box.fill("ab");
+    await expect(
+      page.getByText("Tambahkan sedikit detail agar pasalnya tepat."),
+    ).toBeVisible();
+    await box.press("Enter"); // too short: nothing is sent
+    await expect(page).toHaveURL(/\/$/);
+    await box.fill("Apa kewajiban pemilik instalasi?");
+    await box.press("Shift+Enter");
+    await expect(box).toHaveValue("Apa kewajiban pemilik instalasi?\n");
+    await expect(page).toHaveURL(/\/$/);
+    await box.press("Enter");
+    await expect(page).toHaveURL(/\/tanya\?q=Apa/);
   });
 });
 

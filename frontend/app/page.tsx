@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useRef, useState } from "react";
 
 import { AnswerAnatomy } from "@/components/answer-anatomy";
 import { Disclaimer } from "@/components/disclaimer";
@@ -16,6 +16,7 @@ import type { AskBody } from "@/lib/sse";
 export default function Home() {
   const router = useRouter();
   const [question, setQuestion] = useState("");
+  const inputRef = useRef<HTMLTextAreaElement>(null);
   const [mode, setMode] = useState<AskBody["mode"]>("standard");
 
   const go = (q: string, m: AskBody["mode"] = mode) =>
@@ -38,6 +39,7 @@ export default function Home() {
             </p>
             <QuestionBox
               large
+              inputRef={inputRef}
               align="start"
               value={question}
               onChange={setQuestion}
@@ -45,7 +47,13 @@ export default function Home() {
               mode={mode}
               onModeChange={setMode}
             />
-            <ExampleQuestions onPick={(q) => go(q)} />
+            <ExampleQuestions
+              onPick={(q) => {
+                // fill and focus so the question can be edited before sending
+                setQuestion(q);
+                inputRef.current?.focus();
+              }}
+            />
           </div>
           <div className="hidden w-full lg:block">
             <AnswerAnatomy />
