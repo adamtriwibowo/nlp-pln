@@ -124,7 +124,7 @@ export function QuestionBox({
               submit();
             }
           }}
-          className={`field-sizing-content block max-h-44 w-full resize-none border-0 bg-transparent px-5 pb-1 pt-4 leading-relaxed text-ink outline-none placeholder:text-ink-muted ${
+          className={`field-sizing-content block max-h-44 w-full resize-none border-0 bg-transparent px-5 pb-1 pt-4 leading-relaxed text-ink outline-none! placeholder:text-ink-muted ${
             large ? "min-h-[72px] text-lg" : "min-h-[56px] text-base"
           }`}
         />
