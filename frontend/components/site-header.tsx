@@ -21,7 +21,8 @@ export function SiteHeader() {
   });
   const role = me.data?.role ?? null;
   const pathname = usePathname();
-  if (pathname.startsWith("/admin")) return null; // the admin area has its own shell
+  // the chat (/) and the admin area have their own shells
+  if (pathname === "/" || pathname.startsWith("/admin")) return null;
   return (
     <header className="sticky top-0 z-30 flex flex-wrap items-center justify-between gap-3 border-b border-line bg-surface/90 px-4 py-3 backdrop-blur supports-[backdrop-filter]:bg-surface/75 sm:px-8 lg:px-12">
       <Logo />
@@ -29,10 +30,10 @@ export function SiteHeader() {
         aria-label="Navigasi utama"
         className="flex flex-wrap items-center gap-x-3 gap-y-1"
       >
-        <Link href="/#cara-kerja" className={linkClass}>
+        <Link href="/tentang#cara-kerja" className={linkClass}>
           Cara kerja
         </Link>
-        <Link href="/#dokumen" className={linkClass}>
+        <Link href="/tentang#dokumen" className={linkClass}>
           Dokumen
         </Link>
         {role === "reviewer" || role === "admin" ? (

@@ -124,8 +124,8 @@ export function QuestionBox({
               submit();
             }
           }}
-          className={`field-sizing-content block max-h-44 min-h-[72px] w-full resize-none border-0 bg-transparent px-5 pb-1 pt-4 leading-relaxed text-ink outline-none placeholder:text-ink-muted ${
-            large ? "text-lg" : "text-base"
+          className={`field-sizing-content block max-h-44 w-full resize-none border-0 bg-transparent px-5 pb-1 pt-4 leading-relaxed text-ink outline-none placeholder:text-ink-muted ${
+            large ? "min-h-[72px] text-lg" : "min-h-[56px] text-base"
           }`}
         />
         <div className="flex items-center justify-between gap-3 px-3 pb-3 pl-4">
@@ -141,7 +141,7 @@ export function QuestionBox({
             ) : (
               <span
                 aria-hidden="true"
-                className="hidden text-[13px] text-ink-muted pointer-fine:inline"
+                className="hidden whitespace-nowrap text-[13px] text-ink-muted sm:pointer-fine:inline"
               >
                 Enter kirim · Shift+Enter baris baru
               </span>

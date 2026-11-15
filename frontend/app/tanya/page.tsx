@@ -1,22 +1,29 @@
+import { redirect } from "next/navigation";
 import { Suspense } from "react";
-
-import { Skeleton } from "@/components/ui/skeleton";
-
-import { TanyaClient } from "./tanya-client";
 
 export const metadata = { title: "Jawaban — K2-RAG" };
 
-export default function TanyaPage() {
+async function Forward({
+  searchParams,
+}: {
+  searchParams: Promise<{ q?: string; mode?: string }>;
+}) {
+  const { q, mode } = await searchParams;
+  const next = new URLSearchParams();
+  if (q) next.set("q", q);
+  if (mode === "agentic") next.set("mode", mode);
+  return redirect(next.size ? `/?${next.toString()}` : "/");
+}
+
+/** Old answer URLs (/tanya?q=...&mode=...) now open the chat, which starts that question. */
+export default function TanyaPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ q?: string; mode?: string }>;
+}) {
   return (
-    <Suspense
-      fallback={
-        <main className="flex flex-1 flex-col gap-4 p-8">
-          <Skeleton className="h-24 w-full max-w-3xl" />
-          <Skeleton className="h-64 w-full max-w-3xl" />
-        </main>
-      }
-    >
-      <TanyaClient />
+    <Suspense fallback={null}>
+      <Forward searchParams={searchParams} />
     </Suspense>
   );
 }

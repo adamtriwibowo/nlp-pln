@@ -17,7 +17,7 @@ test.describe("tangkapan layar", () => {
 
   test("beranda desktop", async ({ page }) => {
     await page.goto("/");
-    await page.getByText("Permen ESDM No. 10 Tahun 2021").waitFor();
+    await page.getByTestId("new-chat").waitFor();
     await page.screenshot({ path: out("01-beranda-desktop.png") });
   });
 

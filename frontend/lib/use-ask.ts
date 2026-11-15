@@ -113,11 +113,13 @@ export function useAsk(onFinished?: (a: FinishedAnswer) => void) {
     [onFinished],
   );
 
-  const restore = useCallback((f: FinishedAnswer) => {
+  /** Stop any running request and go back to idle (used when switching conversations). */
+  const cancel = useCallback(() => {
     abortRef.current?.abort();
-    setPartial(f.answer);
-    setState({ status: "done", ...f });
+    abortRef.current = null;
+    setPartial("");
+    setState({ status: "idle" });
   }, []);
 
-  return { state, partial, run, restore };
+  return { state, partial, run, cancel };
 }

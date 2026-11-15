@@ -25,9 +25,7 @@ for (const theme of ["light", "dark"] as const) {
 
     test("beranda", async ({ page }) => {
       await page.goto("/");
-      await expect(
-        page.getByText("Permen ESDM No. 10 Tahun 2021"),
-      ).toBeVisible();
+      await expect(page.getByTestId("new-chat")).toBeVisible();
       await expectNoViolations(page, `beranda ${theme}`);
     });
 
@@ -38,6 +36,12 @@ for (const theme of ["light", "dark"] as const) {
         page.getByTestId("source-panel").locator("canvas"),
       ).toBeVisible({ timeout: 30_000 });
       await expectNoViolations(page, `jawaban ${theme}`);
+    });
+
+    test("tentang", async ({ page }) => {
+      await page.goto("/tentang");
+      await page.getByText("Sumber resmi").first().waitFor();
+      await expectNoViolations(page, `tentang ${theme}`);
     });
 
     test("masuk", async ({ page }) => {

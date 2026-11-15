@@ -23,24 +23,18 @@ test.describe("beranda", () => {
         name: "Tanya aturan K3 listrik, lengkap dengan pasalnya",
       }),
     ).toBeVisible();
-    await expect(
-      page.getByRole("heading", { name: /dalam empat langkah/ }),
-    ).toBeVisible();
-    await expect(
-      page.getByRole("listitem").filter({ hasText: "Kutipan diperiksa" }),
-    ).toBeVisible();
+    await expect(page.getByTestId("chat-sidebar")).toBeVisible();
+    await expect(page.getByTestId("new-chat")).toBeVisible();
     await expect(
       page.getByText("Bukan pengganti petugas K3. Selalu cek pasal sumber."),
     ).toBeVisible();
-    // corpus chips come from the real /api/documents
-    await expect(page.getByText("Permen ESDM No. 10 Tahun 2021")).toBeVisible();
 
     await page
       .getByLabel("Pertanyaan Anda")
       .fill("Siapa yang wajib memiliki sertifikat?");
     await page.getByRole("button", { name: "Agentik" }).click();
     await page.getByRole("button", { name: /^Tanya/ }).click();
-    await expect(page).toHaveURL(/\/tanya\?q=.*&mode=agentic/);
+    await expect(page).toHaveURL(/\/\?c=/);
   });
 
   test("tombol Tanya nonaktif untuk pertanyaan terlalu pendek; contoh bisa diklik", async ({
@@ -62,7 +56,7 @@ test.describe("beranda", () => {
     await expect(box).toBeFocused();
     await expect(page).toHaveURL(/\/$/);
     await box.press("Enter");
-    await expect(page).toHaveURL(/\/tanya\?q=Siapa/);
+    await expect(page).toHaveURL(/\/\?c=/);
   });
 
   test("Shift+Enter menambah baris, Enter mengirim, petunjuk muncul untuk teks pendek", async ({
@@ -82,7 +76,7 @@ test.describe("beranda", () => {
     await expect(box).toHaveValue("Apa kewajiban pemilik instalasi?\n");
     await expect(page).toHaveURL(/\/$/);
     await box.press("Enter");
-    await expect(page).toHaveURL(/\/tanya\?q=Apa/);
+    await expect(page).toHaveURL(/\/\?c=/);
   });
 });
 
@@ -191,10 +185,13 @@ test.describe("jawaban dan sumber", () => {
       name: /Langkah pencarian \(2\)/,
     });
     await expect(trigger).toBeVisible();
+    // a finished answer keeps its steps collapsed; open them to see the search trail
+    await expect(page.getByTestId("agent-steps")).toBeHidden();
+    await trigger.click();
     await expect(page.getByTestId("agent-steps")).toContainText(
       "Mencari: “sertifikat laik operasi”",
     );
-    await trigger.click(); // collapse
+    await trigger.click();
     await expect(page.getByTestId("agent-steps")).toBeHidden();
   });
 
@@ -252,14 +249,67 @@ test.describe("jawaban dan sumber", () => {
       comment: "Sangat jelas",
     });
 
-    // second question -> history lists both
+    // second question stays in the same conversation (one sidebar entry, two exchanges)
     await page.getByLabel("Pertanyaan Anda").fill("Pertanyaan riwayat dua");
     await page.getByRole("button", { name: /^Tanya/ }).click();
-    await expect(page.getByTestId("confidence-badge")).toBeVisible();
-    await page.getByText(/Riwayat sesi \(2\)/).click();
+    await expect(page.getByTestId("user-message")).toHaveText([
+      "Pertanyaan riwayat satu",
+      "Pertanyaan riwayat dua",
+    ]);
+    await expect(page.getByTestId("confidence-badge")).toHaveCount(2);
+    await expect(page.getByTestId("chat-item")).toHaveCount(1);
+    await expect(page.getByTestId("chat-item")).toHaveText(
+      "Pertanyaan riwayat satu",
+    );
+  });
+
+  test("percakapan tersimpan di browser: dibuka lagi dari sidebar, percakapan baru, dan dihapus", async ({
+    page,
+  }) => {
+    await openAnswer(page, "Pertanyaan tersimpan A");
+    await page.getByTestId("new-chat").click();
     await expect(
-      page.getByRole("button", { name: "Pertanyaan riwayat satu" }),
+      page.getByRole("heading", { level: 1, name: /Tanya aturan K3 listrik/ }),
     ).toBeVisible();
+    await page.getByLabel("Pertanyaan Anda").fill("Pertanyaan tersimpan B");
+    await page.getByRole("button", { name: /^Tanya/ }).click();
+    await expect(page.getByTestId("user-message")).toHaveText([
+      "Pertanyaan tersimpan B",
+    ]);
+    await expect(page.getByTestId("chat-item")).toHaveCount(2);
+
+    // survives a reload (localStorage) and reopens the older conversation
+    await page.goto("/");
+    await expect(page.getByTestId("chat-item")).toHaveCount(2);
+    await page
+      .getByTestId("chat-item")
+      .filter({ hasText: "tersimpan A" })
+      .click();
+    await expect(page.getByTestId("user-message")).toHaveText([
+      "Pertanyaan tersimpan A",
+    ]);
+    await expect(page.getByTestId("confidence-badge")).toBeVisible();
+
+    // delete the open conversation: back to the empty chat
+    await page
+      .getByRole("button", { name: /Hapus percakapan: Pertanyaan tersimpan A/ })
+      .click();
+    await expect(page.getByTestId("chat-item")).toHaveCount(1);
+    await expect(
+      page.getByRole("heading", { level: 1, name: /Tanya aturan K3 listrik/ }),
+    ).toBeVisible();
+  });
+
+  test("halaman /tentang menampilkan cara kerja dan korpus nyata", async ({
+    page,
+  }) => {
+    await page.goto("/tentang");
+    await expect(
+      page.getByRole("heading", { name: /dalam empat langkah/ }),
+    ).toBeVisible();
+    await expect(page.getByText("Permen ESDM No. 10 Tahun 2021")).toBeVisible();
+    await page.getByRole("link", { name: /Mulai bertanya/ }).click();
+    await expect(page.getByTestId("new-chat")).toBeVisible();
   });
 
   test("sitasi tanpa sumber terkait tidak menjadi tombol", async ({ page }) => {
@@ -276,6 +326,21 @@ test.describe("jawaban dan sumber", () => {
 
 test.describe("ponsel", () => {
   test.use({ viewport: { width: 390, height: 844 } });
+
+  test("menu percakapan terbuka sebagai laci dan riwayat bisa dibuka", async ({
+    page,
+  }) => {
+    await openAnswer(page, "Pertanyaan laci ponsel");
+    await expect(page.getByTestId("chat-sidebar")).toBeHidden();
+    await page.getByTestId("open-chat-menu").click();
+    const drawer = page.getByTestId("chat-drawer");
+    await expect(drawer).toBeVisible();
+    await expect(drawer.getByTestId("chat-item")).toHaveText([
+      "Pertanyaan laci ponsel",
+    ]);
+    await page.keyboard.press("Escape");
+    await expect(drawer).toBeHidden();
+  });
 
   test("sumber terbuka sebagai bottom sheet dan bisa ditutup dengan Esc", async ({
     page,
