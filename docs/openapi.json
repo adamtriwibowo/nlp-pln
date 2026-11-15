@@ -443,6 +443,23 @@
         ],
         "summary": "Reindex",
         "operationId": "reindex_api_admin_reindex_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "anyOf": [
+                  {
+                    "$ref": "#/components/schemas/ReindexRequest"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Body"
+              }
+            }
+          }
+        },
         "responses": {
           "202": {
             "description": "Successful Response",
@@ -452,6 +469,71 @@
                   "additionalProperties": true,
                   "type": "object",
                   "title": "Response Reindex Api Admin Reindex Post"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/admin/documents/{doc_id}": {
+      "patch": {
+        "tags": [
+          "admin"
+        ],
+        "summary": "Update Document",
+        "description": "Change `index` / `api_allowed` of one document, then re-process it as a background job.",
+        "operationId": "update_document_api_admin_documents__doc_id__patch",
+        "parameters": [
+          {
+            "name": "doc_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Doc Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DocumentFlags"
+              }
+            }
+          }
+        },
+        "responses": {
+          "202": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": true,
+                  "title": "Response Update Document Api Admin Documents  Doc Id  Patch"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
                 }
               }
             }
@@ -1029,18 +1111,14 @@
           },
           "lang": {
             "type": "string",
-            "enum": [
-              "id",
-              "en"
-            ],
+            "const": "id",
             "title": "Lang"
           },
           "parser": {
             "type": "string",
             "enum": [
               "legal_id",
-              "sections_smk2",
-              "sections_en"
+              "sections_smk2"
             ],
             "title": "Parser"
           },
@@ -1076,6 +1154,34 @@
           "parser"
         ],
         "title": "Body_upload_document_api_admin_documents_post"
+      },
+      "DocumentFlags": {
+        "properties": {
+          "index": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Index"
+          },
+          "api_allowed": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Api Allowed"
+          }
+        },
+        "type": "object",
+        "title": "DocumentFlags"
       },
       "EvalRequest": {
         "properties": {
@@ -1275,6 +1381,23 @@
           "source_note"
         ],
         "title": "QAItem"
+      },
+      "ReindexRequest": {
+        "properties": {
+          "doc_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Doc Id"
+          }
+        },
+        "type": "object",
+        "title": "ReindexRequest"
       },
       "ScoreRequest": {
         "properties": {

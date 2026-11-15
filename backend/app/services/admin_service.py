@@ -17,7 +17,13 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.core.config import Settings
 from app.db.models import Chunk, Document, EvalRun
 from app.ingest.models import ManifestEntry
-from app.ingest.pipeline import load_manifest, sha256_file, uploads_path
+from app.ingest.pipeline import (
+    load_manifest,
+    load_overrides,
+    set_override,
+    sha256_file,
+    uploads_path,
+)
 
 MAX_UPLOAD_BYTES = 30 * 1024 * 1024
 PDF_MAGIC = b"%PDF-"
@@ -99,12 +105,17 @@ def register_upload(manifest: Path, raw_dir: Path, data: bytes, meta: UploadMeta
 
 
 async def documents_status(
-    session: AsyncSession, manifest: Path, raw_dir: Path
+    session: AsyncSession,
+    manifest: Path,
+    raw_dir: Path,
+    reports: dict[str, dict[str, Any]] | None = None,
 ) -> list[dict[str, Any]]:
     counts = dict(
         (await session.execute(select(Chunk.doc_id, func.count()).group_by(Chunk.doc_id))).all()
     )
     db_docs = {d.id: d for d in (await session.execute(select(Document))).scalars()}
+    reports = reports or {}
+    overrides = load_overrides(manifest)
     out = []
     for e in load_manifest(manifest):
         path = raw_dir / e.file if e.file else None
@@ -123,6 +134,8 @@ async def documents_status(
                 "chunks": int(counts.get(e.id, 0)),
                 "status_berlaku": e.status_berlaku,
                 "note": e.note,
+                "overridden": sorted(overrides.get(e.id, {})),
+                "report": reports.get(e.id),
             }
         )
     return out
@@ -143,6 +156,29 @@ async def eval_runs(session: AsyncSession, limit: int = 50) -> list[dict[str, An
         }
         for r in runs
     ]
+
+
+class DocumentNotFoundError(KeyError):
+    pass
+
+
+async def update_document_flags(
+    session: AsyncSession, manifest: Path, doc_id: str, changes: dict[str, bool]
+) -> None:
+    """Record flag changes in manifest.overrides.yaml and apply them to the DB row right away.
+
+    Disabling `api_allowed` therefore takes effect immediately (prompts check the document flag);
+    the follow-up single-document re-index refreshes chunk metadata and embeddings.
+    """
+    try:
+        set_override(manifest, doc_id, changes)
+    except KeyError as exc:
+        raise DocumentNotFoundError(doc_id) from exc
+    doc = await session.get(Document, doc_id)
+    if doc is not None:
+        for k, v in changes.items():
+            setattr(doc, k, v)
+        await session.commit()
 
 
 # ---- background reindex job ------------------------------------------------------------
@@ -199,20 +235,32 @@ class JobManager:
         return job
 
 
-async def reindex_work(job: Job, settings: Settings, on_done: Callable[[], None]) -> None:
-    """ingest -> persist -> embed. Imports are local to keep module import light."""
+async def reindex_work(
+    job: Job, settings: Settings, on_done: Callable[[], None], doc_id: str | None = None
+) -> None:
+    """ingest -> persist -> embed, for the whole corpus or a single document."""
     from app.db.session import SessionLocal
     from app.retrieval.embeddings import build_provider
     from app.services import ingest_service as ing
     from app.services.index_service import build_index
 
-    job.log.append("Ingesti PDF...")
-    entries, reports, chunks, version = await asyncio.to_thread(ing.run_pipeline)
-    await asyncio.to_thread(ing.write_jsonl, chunks)
-    await asyncio.to_thread(ing.write_report, entries, reports, chunks, version)
-    async with SessionLocal() as session:
-        await ing.persist(session, entries, reports, chunks, version)
-    job.log.append(f"Ingesti selesai: {len(chunks)} chunk, corpus_version {version}.")
+    if doc_id is None:
+        job.log.append("Ingesti semua PDF...")
+        entries, reports, chunks, version = await asyncio.to_thread(ing.run_pipeline)
+        await asyncio.to_thread(ing.write_outputs, entries, reports, chunks, version)
+        async with SessionLocal() as session:
+            await ing.persist(session, entries, reports, chunks, version)
+        job.log.append(f"Ingesti selesai: {len(chunks)} chunk, corpus_version {version}.")
+    else:
+        job.log.append(f"Memproses ulang {doc_id}...")
+        prepared = await asyncio.to_thread(ing.prepare_one, doc_id)
+        async with SessionLocal() as session:
+            await ing.persist_one(session, prepared)
+        r = prepared.report
+        job.log.append(
+            f"{doc_id}: {len(prepared.chunks)} chunk, {r.pasal_count} pasal, "
+            f"corpus_version {prepared.version}."
+        )
 
     job.log.append("Membangun embedding...")
     provider = build_provider(settings)
@@ -221,7 +269,7 @@ async def reindex_work(job: Job, settings: Settings, on_done: Callable[[], None]
             session, provider, external_api=settings.embedding_provider != "local"
         )
     job.log.append(
-        f"Embedding: {st.embedded} baru, {st.unchanged} tetap, "
+        f"Embedding: {st.embedded} baru, {st.unchanged} tetap, {st.removed} dihapus, "
         f"{st.skipped_not_api_allowed} dilewati (api_allowed=false)."
     )
     on_done()

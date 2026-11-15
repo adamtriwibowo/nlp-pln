@@ -20,6 +20,7 @@ Asisten tanya jawab RAG untuk regulasi dan SOP keselamatan ketenagalistrikan (In
 - Cek dokumentasi versi terbaru sebelum memakai library (Pydantic AI, pgvector, Next.js 16, TanStack Query, react-pdf); jangan mengandalkan ingatan.
 - Frontend: Next 16 + `cacheComponents`; PDF viewer butuh aset pdf.js di `public/pdfjs` (disalin otomatis oleh `predev`/`prebuild`; PDF korpus adalah scan JBIG2). Tujuan rewrite `/api` (`API_ORIGIN`) dibaca saat **build**. Tipe API: `make`-nya `pnpm gen-api` dari `docs/openapi.json` (`k2 export-openapi`); ulangi setelah mengubah API.
 - DB lokal: host `127.0.0.1` port **5434** (5432/5433 dipakai proses lain di mesin ini). Pakai `127.0.0.1`, bukan `localhost` (IPv6 membuat koneksi menggantung).
+- Korpus hanya berbahasa Indonesia (ADR 008). Perubahan `index`/`api_allowed` dari web disimpan di `data/manifest.overrides.yaml` (di-commit), bukan menulis ulang `data/manifest.yaml`.
 - Windows: psycopg async butuh SelectorEventLoop: policy diset di `app/__init__.py` dan uvicorn dijalankan dengan `--loop none`.
 
 ## Aturan keras

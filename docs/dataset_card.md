@@ -12,8 +12,6 @@ Korpus teks regulasi dan pedoman keselamatan ketenagalistrikan berbahasa Indones
 | D2 | Permen ESDM No. 10/2021 (Keselamatan Ketenagalistrikan) | Kementerian ESDM | ID | 2026-11-12 | ya | Berteks bersih; 52 pasal + 5 lampiran |
 | D3 | Pedoman SMK2 | Ditjen Gatrik ESDM | ID | 2026-11-12 | ya | Chunk per BAB/Elemen |
 | D4 | FAQ Permen ESDM 10/2021 | Ditjen Gatrik ESDM | ID | 2026-11-12 | **tidak** | Bahan menyusun set uji; 57 dari 111 halaman tanpa teks |
-| D5 | DOE-HDBK-1092-2013 | US DOE | EN | — | belum | PDF belum diunduh (manual) |
-| D6 | OSHA 29 CFR 1910.269 / Subpart S | US OSHA | EN | — | belum | PDF belum diunduh (osha.gov memblokir unduhan otomatis) |
 
 **Status berlaku** setiap regulasi **belum diverifikasi** di JDIH; harus dicek manual sebelum evaluasi final. Seluruh dokumen adalah dokumen publik pemerintah (`api_allowed: true` untuk D1–D3). Standar berbayar (PUIL/SNI 0225, IEC, NFPA 70E) tidak termasuk.
 
@@ -44,6 +42,6 @@ Jenis chunk: 70 pasal/ayat, 39 lampiran (D2, teks tabel mentah), 17 bagian pedom
 - **Kualitas D1:** lapisan teks OCR berderau (spasi hilang, mis. "K3yang"). Parser menoleransi derau pada judul pasal; tidak ada celah nomor pasal, tetapi pencocokan kata pada D1 kurang andal. Sebaiknya diganti dengan PDF berteks bersih (salinan di `SAMPLE SOP/` adalah scan tanpa teks).
 - **Tabel dan gambar** (terutama Lampiran D2 dan tabel D3) tidak dipahami; hanya teks mentah.
 - **Penjelasan pasal** didukung parser tetapi tidak ada di D1–D3.
-- Parser Inggris (D5/D6) baru berupa bagian bernomor yang diuji pada fixture; paragraf gaya OSHA `(a)(1)(i)` belum dipecah.
+- Korpus hanya berbahasa Indonesia (ADR 008); dokumen Inggris (DOE-HDBK-1092, OSHA 1910.269) dikeluarkan dari lingkup.
 - Jumlah token adalah perkiraan sederhana (kata + tanda baca), bukan token model.
 - Status berlaku dan versi terkini setiap regulasi belum diverifikasi.

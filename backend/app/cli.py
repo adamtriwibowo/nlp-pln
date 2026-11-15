@@ -47,8 +47,7 @@ def ingest(
     from app.services import ingest_service as svc
 
     entries, reports, chunks, version = svc.run_pipeline()
-    svc.write_jsonl(chunks)
-    svc.write_report(entries, reports, chunks, version)
+    svc.write_outputs(entries, reports, chunks, version)
     if not no_db:
 
         async def _persist() -> None:

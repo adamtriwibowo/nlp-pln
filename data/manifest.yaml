@@ -59,29 +59,3 @@ documents:
     index: false          # bahan menyusun set uji; tidak diindeks agar tidak bocor
     api_allowed: true
     note: 57 dari 111 halaman tidak punya teks (kemungkinan gambar).
-  - id: D5
-    title: DOE-HDBK-1092-2013 Electrical Safety
-    short_title: DOE-HDBK-1092
-    publisher: US Department of Energy
-    source_url: https://www.standards.doe.gov/standards-documents/1000/1092-BHdbk-2013
-    status_berlaku: belum diverifikasi
-    license: US government work (public)
-    lang: en
-    file: null
-    parser: sections_en
-    index: true
-    api_allowed: true
-    note: pending_download -- unduh manual ke data/raw/ lalu isi field file.
-  - id: D6
-    title: OSHA 29 CFR 1910.269 and Subpart S
-    short_title: OSHA 1910.269
-    publisher: US OSHA
-    source_url: https://www.osha.gov/laws-regs/regulations/standardnumber/1910/1910.269
-    status_berlaku: belum diverifikasi
-    license: US government work (public)
-    lang: en
-    file: null
-    parser: sections_en
-    index: true
-    api_allowed: true
-    note: pending_download -- osha.gov memblokir unduhan otomatis; unduh manual.

@@ -32,6 +32,8 @@ const DOC = (
   chunks,
   status_berlaku: "belum diverifikasi",
   note: null,
+  overridden: [],
+  report: null,
 });
 
 function qaView(total: number, dev: number, test: number, frozen = false) {
@@ -103,7 +105,7 @@ async function mockOverview(
         opts.docs ?? [
           DOC("D1", "id", true, 17),
           DOC("D2", "id", true, 92),
-          DOC("D5", "en", false, 0),
+          DOC("D3", "id", false, 0),
         ],
       ),
     ),
@@ -249,13 +251,7 @@ test.describe("ringkasan", () => {
       "data-state",
       "todo",
     );
-    await expect(page.getByTestId("step-english")).toHaveAttribute(
-      "data-state",
-      "optional",
-    );
-    await expect(page.getByTestId("step-english")).toContainText(
-      "D5 belum diunduh",
-    );
+    await expect(page.getByTestId("step-english")).toHaveCount(0); // corpus is Indonesian-only
     await expect(page.getByTestId("readiness-count")).toHaveText(
       "3 dari 7 langkah wajib selesai",
     );
@@ -303,16 +299,12 @@ test.describe("ringkasan", () => {
       docs: [
         DOC("D1", "id", true, 17),
         DOC("D2", "id", true, 92),
-        DOC("D5", "en", true, 40),
+        DOC("D3", "id", true, 40),
       ],
     });
     await loginUi(page, ADMIN_TOKEN);
     await expect(page.getByTestId("readiness-count")).toHaveText(
       "7 dari 7 langkah wajib selesai",
-    );
-    await expect(page.getByTestId("step-english")).toHaveAttribute(
-      "data-state",
-      "done",
     );
     await expect(page.getByRole("link", { name: /Berikutnya:/ })).toHaveCount(
       0,

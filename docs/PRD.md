@@ -38,7 +38,7 @@ Aplikasi ini juga **alat riset**: ia membandingkan beberapa konfigurasi retrieva
 
 ## 5. Ruang lingkup
 
-**Termasuk:** dokumen publik berbahasa Indonesia (+ dokumen Inggris pendukung), PDF berteks, pertanyaan faktual/prosedural/lintas pasal, antarmuka web, harness evaluasi, halaman penilaian ahli, deployment di satu VPS.
+**Termasuk:** dokumen publik berbahasa Indonesia (korpus hanya berbahasa Indonesia, lihat ADR 008), PDF berteks, pertanyaan faktual/prosedural/lintas pasal, antarmuka web, harness evaluasi, halaman penilaian ahli, deployment di satu VPS.
 
 **Tidak termasuk:** standar berhak cipta (PUIL/SNI 0225, IEC, NFPA 70E, SPLN berbayar), dokumen rahasia utilitas, fine-tuning LLM, pemahaman gambar/diagram/tabel kompleks, multi-tenant, aplikasi mobile native.
 
@@ -50,9 +50,7 @@ Aplikasi ini juga **alat riset**: ia membandingkan beberapa konfigurasi retrieva
 | D2 | Permen ESDM No. 10/2021 — Keselamatan Ketenagalistrikan | ID | BAB > Bagian > Pasal > Ayat (+ Lampiran) |
 | D3 | Pedoman SMK2 (Ditjen Gatrik ESDM) | ID | Bab/subbab bernomor |
 | D4 | FAQ Permen ESDM 10/2021 | ID | Pasangan tanya–jawab (bahan set uji, **tidak** diindeks agar tidak bocor) |
-| D5 | DOE-HDBK-1092-2013 Electrical Safety | EN | Section bernomor |
-| D6 | OSHA 29 CFR 1910.269 & Subpart S | EN | Paragraf (a)(1)(i) |
-| D7 | SOP lab (opsional, dengan izin tertulis) | ID | Bebas |
+| D5 | SOP lab (opsional, dengan izin tertulis) | ID | Bebas |
 
 PDF disimpan di volume `data/raw/` (tidak di-commit). Setiap dokumen punya entri di `data/manifest.yaml`: id, judul, penerbit, URL sumber, tanggal unduh, status berlaku, lisensi, bahasa, `index: true/false`, dan `api_allowed: true/false` (boleh dikirim ke API LLM eksternal).
 

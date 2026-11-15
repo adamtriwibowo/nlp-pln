@@ -41,7 +41,27 @@ def uploads_path(manifest: Path) -> Path:
     return manifest.with_name("manifest.uploads.yaml")
 
 
-def load_manifest(path: Path) -> list[ManifestEntry]:
+OVERRIDABLE = ("index", "api_allowed")
+
+
+def overrides_path(manifest: Path) -> Path:
+    """Admin changes to a document's flags; tracked in git (they change what the corpus means)."""
+    return manifest.with_name("manifest.overrides.yaml")
+
+
+def load_overrides(manifest: Path) -> dict[str, dict[str, bool]]:
+    path = overrides_path(manifest)
+    if not path.exists():
+        return {}
+    data: dict[str, Any] = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
+    raw: dict[str, dict[str, Any]] = data.get("overrides", {})
+    return {
+        doc_id: {k: bool(v) for k, v in fields.items() if k in OVERRIDABLE}
+        for doc_id, fields in raw.items()
+    }
+
+
+def load_manifest(path: Path, apply_overrides: bool = True) -> list[ManifestEntry]:
     data: dict[str, Any] = yaml.safe_load(path.read_text(encoding="utf-8"))
     entries = [ManifestEntry.model_validate(d) for d in data["documents"]]
     extra = uploads_path(path)
@@ -51,7 +71,37 @@ def load_manifest(path: Path) -> list[ManifestEntry]:
     ids = [e.id for e in entries]
     if len(ids) != len(set(ids)):
         raise ValueError("duplicate document ids across manifest files")
+    if apply_overrides:
+        ov = load_overrides(path)
+        entries = [e.model_copy(update=ov[e.id]) if e.id in ov else e for e in entries]
     return entries
+
+
+def set_override(manifest: Path, doc_id: str, changes: dict[str, bool]) -> dict[str, bool]:
+    """Record flag changes for one document. Values equal to the base manifest are dropped, so
+    the overrides file only lists real differences. Returns the document's remaining overrides."""
+    bad = set(changes) - set(OVERRIDABLE)
+    if bad:
+        raise ValueError(f"fields cannot be overridden: {sorted(bad)}")
+    base = {e.id: e for e in load_manifest(manifest, apply_overrides=False)}
+    if doc_id not in base:
+        raise KeyError(doc_id)
+    current = load_overrides(manifest)
+    mine = {**current.get(doc_id, {}), **changes}
+    mine = {k: v for k, v in mine.items() if getattr(base[doc_id], k) != v}
+    if mine:
+        current[doc_id] = mine
+    else:
+        current.pop(doc_id, None)
+    path = overrides_path(manifest)
+    if current:
+        path.write_text(
+            yaml.safe_dump({"overrides": dict(sorted(current.items()))}, sort_keys=True),
+            encoding="utf-8",
+        )
+    elif path.exists():
+        path.unlink()
+    return mine
 
 
 def sha256_file(path: Path) -> str:

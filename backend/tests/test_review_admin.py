@@ -293,20 +293,20 @@ async def test_upload_sanitizes_name_defaults_to_not_api_allowed(
     )
     assert r.status_code == 201, r.text
     body = r.json()
-    assert body["id"] == "D7" and body["api_allowed"] is False  # D1..D6 exist in the manifest
+    assert body["id"] == "D5" and body["api_allowed"] is False  # D1..D4 exist in the manifest
     saved = list(raw.iterdir())
-    assert [p.name for p in saved] == [body["file"]] and body["file"].startswith("D7_pedoman_uji")
+    assert [p.name for p in saved] == [body["file"]] and body["file"].startswith("D5_pedoman_uji")
     assert ".." not in body["file"] and "/" not in body["file"] and "evil" not in body["file"]
     from app.ingest.pipeline import load_manifest
 
-    entry = next(e for e in load_manifest(manifest) if e.id == "D7")
+    entry = next(e for e in load_manifest(manifest) if e.id == "D5")
     assert entry.api_allowed is False and entry.file == body["file"]
     listing = (await client.get("/api/admin/documents")).json()
-    d7 = next(d for d in listing if d["id"] == "D7")
-    assert d7["file_present"] and not d7["ingested"] and d7["chunks"] == 0
+    d5 = next(d for d in listing if d["id"] == "D5")
+    assert d5["file_present"] and not d5["ingested"] and d5["chunks"] == 0
     # a second upload gets the next id
     again = await client.post("/api/admin/documents", data=FORM, files=pdf_file())
-    assert again.json()["id"] == "D8"
+    assert again.json()["id"] == "D6"
 
 
 @pytest.mark.asyncio
@@ -315,7 +315,9 @@ async def test_reindex_allows_only_one_job_at_a_time(
 ) -> None:
     gate = asyncio.Event()
 
-    async def slow_work(job: admin_svc.Job, settings: Settings, on_done: Any) -> None:
+    async def slow_work(
+        job: admin_svc.Job, settings: Settings, on_done: Any, doc_id: str | None = None
+    ) -> None:
         job.log.append("mulai")
         await gate.wait()
         job.log.append("selesai")
@@ -344,7 +346,9 @@ async def test_reindex_allows_only_one_job_at_a_time(
 async def test_failed_job_reports_error_without_crashing(
     client: AsyncClient, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    async def boom(job: admin_svc.Job, settings: Settings, on_done: Any) -> None:
+    async def boom(
+        job: admin_svc.Job, settings: Settings, on_done: Any, doc_id: str | None = None
+    ) -> None:
         raise RuntimeError("kunci API tidak ada")
 
     monkeypatch.setattr(admin_svc, "reindex_work", boom)
@@ -387,3 +391,110 @@ def test_slugify_and_next_id_helpers() -> None:
     with pytest.raises(admin_svc.UploadError):
         admin_svc.validate_pdf_header(b"<html>")
     assert httpx.__version__  # keep httpx import used for transport typing
+
+
+@pytest.mark.asyncio
+async def test_upload_rejects_english_documents(
+    client: AsyncClient, admin_paths: tuple[Path, Path]
+) -> None:
+    await login(client, "admin-secret")
+    r = await client.post("/api/admin/documents", data={**FORM, "lang": "en"}, files=pdf_file())
+    assert r.status_code == 422  # the corpus is Indonesian-only (ADR 008)
+    r = await client.post(
+        "/api/admin/documents", data={**FORM, "parser": "sections_en"}, files=pdf_file()
+    )
+    assert r.status_code == 422
+
+
+@pytest.mark.asyncio
+async def test_patch_flags_writes_override_and_starts_single_doc_job(
+    client: AsyncClient, admin_paths: tuple[Path, Path], monkeypatch: pytest.MonkeyPatch
+) -> None:
+    from app.ingest.pipeline import load_manifest, overrides_path
+
+    manifest, _ = admin_paths
+    seen: list[str | None] = []
+
+    async def fake_work(
+        job: admin_svc.Job, settings: Settings, on_done: Any, doc_id: str | None = None
+    ) -> None:
+        seen.append(doc_id)
+
+    async def fake_update(*args: Any, **kwargs: Any) -> None:
+        return None
+
+    monkeypatch.setattr(admin_svc, "reindex_work", fake_work)
+    monkeypatch.setattr(admin_svc, "update_document_flags", fake_update)
+    await login(client, "admin-secret")
+
+    assert (await client.patch("/api/admin/documents/D1", json={})).status_code == 422
+    r = await client.patch("/api/admin/documents/D1", json={"api_allowed": False})
+    assert r.status_code == 202 and r.json()["changes"] == {"api_allowed": False}
+    for _ in range(50):
+        if seen:
+            break
+        await asyncio.sleep(0.02)
+    assert seen == ["D1"]
+
+    # unknown documents are rejected before any job is created
+    async def missing(*args: Any, **kwargs: Any) -> None:
+        raise admin_svc.DocumentNotFoundError("D99")
+
+    monkeypatch.setattr(admin_svc, "update_document_flags", missing)
+    assert (
+        await client.patch("/api/admin/documents/D99", json={"index": False})
+    ).status_code == 404
+    assert (await client.post("/api/admin/reindex", json={"doc_id": "D99"})).status_code == 404
+    assert load_manifest(manifest)  # manifest still parses
+    assert not overrides_path(manifest).exists()  # faked service wrote nothing
+
+
+def test_set_override_records_only_real_differences(tmp_path: Path) -> None:
+    from app.ingest.pipeline import load_manifest, overrides_path, set_override
+
+    manifest = tmp_path / "manifest.yaml"
+    shutil.copy(ROOT / "data" / "manifest.yaml", manifest)
+    base = {e.id: e for e in load_manifest(manifest)}
+    assert base["D1"].api_allowed is True
+
+    assert set_override(manifest, "D1", {"api_allowed": False}) == {"api_allowed": False}
+    assert {e.id: e for e in load_manifest(manifest)}["D1"].api_allowed is False
+    assert overrides_path(manifest).exists()
+    # changing back to the manifest value removes the override (and the empty file)
+    assert set_override(manifest, "D1", {"api_allowed": True}) == {}
+    assert not overrides_path(manifest).exists()
+    with pytest.raises(KeyError):
+        set_override(manifest, "D99", {"index": False})
+    with pytest.raises(ValueError):
+        set_override(manifest, "D1", {"title": True})
+
+
+@pytest.mark.asyncio
+async def test_update_flags_hits_db_and_single_doc_merge_keeps_other_docs(
+    db: AsyncSession, tmp_path: Path
+) -> None:
+    from app.db.models import Document
+    from app.ingest.pipeline import overrides_path
+    from app.services import ingest_service as ing
+
+    manifest = tmp_path / "manifest.yaml"
+    shutil.copy(ROOT / "data" / "manifest.yaml", manifest)
+    raw = ROOT / "data" / "raw"
+    if not (raw / "D1_permenaker_12_2015.pdf").exists() and not any(raw.glob("D1*.pdf")):
+        pytest.skip("corpus PDFs are not available")
+    out = ing.Outputs(tmp_path / "c.jsonl", tmp_path / "r.json", tmp_path / "r.md")
+    entries, reports, chunks, version = ing.run_pipeline(manifest, raw)
+    ing.write_outputs(entries, reports, chunks, version, out)
+    await ing.persist(db, entries, reports, chunks, version)
+
+    await admin_svc.update_document_flags(db, manifest, "D1", {"api_allowed": False})
+    assert (await db.get(Document, "D1")).api_allowed is False  # type: ignore[union-attr]
+    assert overrides_path(manifest).exists()
+
+    prepared = ing.prepare_one("D1", manifest, raw, out)
+    await ing.persist_one(db, prepared)
+    merged = ing.read_jsonl(out.jsonl)
+    assert {c.doc_id for c in merged} == {c.doc_id for c in chunks}  # other docs untouched
+    assert all(not c.api_allowed for c in merged if c.doc_id == "D1")
+    assert all(c.api_allowed for c in merged if c.doc_id == "D2")
+    assert set(ing.read_reports_json(out.reports_json)) == {e.id for e in entries}

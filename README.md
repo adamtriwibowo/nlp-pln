@@ -11,7 +11,7 @@ Proyek akhir mata kuliah Kecerdasan Artifisial, Magister Teknik Elektro. Selain 
 | Fase | Isi | Status |
 |---|---|---|
 | 0 | Fondasi: repo, DB, API health, agen minimal, frontend kosong | selesai |
-| 1 | Ingesti PDF, parser pasal, dataset card | selesai (D1–D3; D5/D6 menunggu PDF) |
+| 1 | Ingesti PDF, parser pasal, dataset card | selesai (D1–D3 diindeks, D4 bahan set uji) |
 | 2 | Retrieval (BM25, dense, hybrid RRF) + metrik + baseline | kode selesai; run baseline menunggu `qa.jsonl` (dev) dari kelompok |
 | 3 | Agen Pydantic AI, sitasi, mode agentik, API `/api/ask` | kode selesai dan diuji live; evaluasi generasi menunggu `qa.jsonl` |
 | 4 | Antarmuka web, viewer PDF, halaman review dan admin | selesai (e2e lulus). Admin dengan sidebar kiri: Ringkasan, Dokumen, Dataset, Uji pertanyaan, Evaluasi, Konfigurasi; halaman review menunggu item dari evaluasi |

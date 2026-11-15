@@ -120,6 +120,23 @@ export const ReviewResponseSchema = z.object({
 });
 export type ReviewResponse = z.infer<typeof ReviewResponseSchema>;
 
+export const DocReportSchema = z.object({
+  status: z.string(),
+  pages: z.number(),
+  empty_pages: z.number(),
+  strategy: z.string(),
+  units: z.number(),
+  pasal_count: z.number(),
+  pasal_gaps: z.array(z.number()),
+  skipped_pasal_like: z.array(z.string()),
+  chunks: z.number(),
+  tokens_min: z.number(),
+  tokens_median: z.number(),
+  tokens_max: z.number(),
+  over_budget: z.number(),
+});
+export type DocReport = z.infer<typeof DocReportSchema>;
+
 export const AdminDocSchema = z.object({
   id: z.string(),
   title: z.string(),
@@ -133,6 +150,8 @@ export const AdminDocSchema = z.object({
   chunks: z.number(),
   status_berlaku: z.string(),
   note: z.string().nullable(),
+  overridden: z.array(z.string()),
+  report: DocReportSchema.nullable(),
 });
 export type AdminDoc = z.infer<typeof AdminDocSchema>;
 
@@ -222,8 +241,31 @@ export async function fetchAdminDocs(): Promise<AdminDoc[]> {
     .parse(unwrap(await client.GET("/api/admin/documents")));
 }
 
-export async function startReindex(): Promise<Job> {
-  return JobSchema.parse(unwrap(await client.POST("/api/admin/reindex")));
+/** Re-index the whole corpus, or only `docId`. */
+export async function startReindex(docId?: string): Promise<Job> {
+  return JobSchema.parse(
+    unwrap(
+      await client.POST("/api/admin/reindex", {
+        body: docId ? { doc_id: docId } : undefined,
+      }),
+    ),
+  );
+}
+
+export type DocFlags = { index?: boolean; api_allowed?: boolean };
+
+/** Change a document's flags; the server re-processes that document as a job. */
+export async function updateDocFlags(
+  docId: string,
+  flags: DocFlags,
+): Promise<Job> {
+  const res = unwrap(
+    await client.PATCH("/api/admin/documents/{doc_id}", {
+      params: { path: { doc_id: docId } },
+      body: flags,
+    }),
+  );
+  return JobSchema.parse((res as { job: unknown }).job);
 }
 
 export async function fetchJob(id: string): Promise<Job> {

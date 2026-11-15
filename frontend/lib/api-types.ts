@@ -232,6 +232,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/admin/documents/{doc_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /**
+         * Update Document
+         * @description Change `index` / `api_allowed` of one document, then re-process it as a background job.
+         */
+        patch: operations["update_document_api_admin_documents__doc_id__patch"];
+        trace?: never;
+    };
     "/api/admin/jobs/{job_id}": {
         parameters: {
             query?: never;
@@ -477,14 +497,14 @@ export interface components {
             publisher: string;
             /**
              * Lang
-             * @enum {string}
+             * @constant
              */
-            lang: "id" | "en";
+            lang: "id";
             /**
              * Parser
              * @enum {string}
              */
-            parser: "legal_id" | "sections_smk2" | "sections_en";
+            parser: "legal_id" | "sections_smk2";
             /**
              * Source Url
              * @default
@@ -505,6 +525,13 @@ export interface components {
              * @default true
              */
             index: boolean;
+        };
+        /** DocumentFlags */
+        DocumentFlags: {
+            /** Index */
+            index?: boolean | null;
+            /** Api Allowed */
+            api_allowed?: boolean | null;
         };
         /** EvalRequest */
         EvalRequest: {
@@ -586,6 +613,11 @@ export interface components {
             split: "dev" | "test";
             /** Source Note */
             source_note: string;
+        };
+        /** ReindexRequest */
+        ReindexRequest: {
+            /** Doc Id */
+            doc_id?: string | null;
         };
         /** ScoreRequest */
         ScoreRequest: {
@@ -999,7 +1031,11 @@ export interface operations {
             path?: never;
             cookie?: never;
         };
-        requestBody?: never;
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["ReindexRequest"] | null;
+            };
+        };
         responses: {
             /** @description Successful Response */
             202: {
@@ -1010,6 +1046,52 @@ export interface operations {
                     "application/json": {
                         [key: string]: unknown;
                     };
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    update_document_api_admin_documents__doc_id__patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                doc_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["DocumentFlags"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            202: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
                 };
             };
         };

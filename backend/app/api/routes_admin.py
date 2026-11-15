@@ -1,13 +1,15 @@
 from typing import Annotated, Any, Literal
 
 from fastapi import APIRouter, Depends, File, Form, HTTPException, Request, UploadFile, status
+from pydantic import BaseModel
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.api.security import Session, require_role
 from app.core.config import Settings, get_settings
 from app.db.session import get_session
+from app.ingest.pipeline import load_manifest
 from app.services import admin_service as svc
-from app.services.ingest_service import MANIFEST, RAW_DIR
+from app.services.ingest_service import MANIFEST, RAW_DIR, read_reports_json
 
 router = APIRouter(prefix="/api/admin", tags=["admin"])
 
@@ -18,7 +20,7 @@ READ_CHUNK = 1024 * 1024
 async def list_documents(
     _: Session = Depends(require_role("admin")), db: AsyncSession = Depends(get_session)
 ) -> list[dict[str, Any]]:
-    return await svc.documents_status(db, MANIFEST, RAW_DIR)
+    return await svc.documents_status(db, MANIFEST, RAW_DIR, read_reports_json())
 
 
 @router.post("/documents", status_code=status.HTTP_201_CREATED)
@@ -26,8 +28,8 @@ async def upload_document(
     file: Annotated[UploadFile, File()],
     title: Annotated[str, Form(min_length=3, max_length=300)],
     publisher: Annotated[str, Form(min_length=2, max_length=200)],
-    lang: Annotated[Literal["id", "en"], Form()],
-    parser: Annotated[Literal["legal_id", "sections_smk2", "sections_en"], Form()],
+    lang: Annotated[Literal["id"], Form()],  # the corpus is Indonesian-only (ADR 008)
+    parser: Annotated[Literal["legal_id", "sections_smk2"], Form()],
     source_url: Annotated[str, Form(max_length=500)] = "",
     short_title: Annotated[str, Form(max_length=60)] = "",
     api_allowed: Annotated[bool, Form()] = False,
@@ -61,22 +63,64 @@ async def upload_document(
     return {"id": entry.id, "file": entry.file, "api_allowed": entry.api_allowed}
 
 
-@router.post("/reindex", status_code=status.HTTP_202_ACCEPTED)
-async def reindex(
-    request: Request,
-    _: Session = Depends(require_role("admin")),
-    settings: Settings = Depends(get_settings),
-) -> dict[str, Any]:
+class ReindexRequest(BaseModel):
+    doc_id: str | None = None  # None = every document
+
+
+def _start_reindex(request: Request, settings: Settings, doc_id: str | None) -> svc.Job:
     jobs: svc.JobManager = request.app.state.jobs
 
     async def work(job: svc.Job) -> None:
-        await svc.reindex_work(job, settings, request.app.state.corpus_cache.invalidate)
+        await svc.reindex_work(
+            job, settings, request.app.state.corpus_cache.invalidate, doc_id=doc_id
+        )
 
     try:
-        job = jobs.start(work)
+        return jobs.start(work)
     except RuntimeError as exc:
         raise HTTPException(status.HTTP_409_CONFLICT, str(exc)) from exc
-    return job.to_dict()
+
+
+@router.post("/reindex", status_code=status.HTTP_202_ACCEPTED)
+async def reindex(
+    request: Request,
+    body: ReindexRequest | None = None,
+    _: Session = Depends(require_role("admin")),
+    settings: Settings = Depends(get_settings),
+) -> dict[str, Any]:
+    doc_id = body.doc_id if body else None
+    if doc_id is not None and doc_id not in {e.id for e in load_manifest(MANIFEST)}:
+        raise HTTPException(status.HTTP_404_NOT_FOUND, "Dokumen tidak ada di manifest.")
+    return _start_reindex(request, settings, doc_id).to_dict()
+
+
+class DocumentFlags(BaseModel):
+    index: bool | None = None
+    api_allowed: bool | None = None
+
+
+@router.patch("/documents/{doc_id}", status_code=status.HTTP_202_ACCEPTED)
+async def update_document(
+    doc_id: str,
+    body: DocumentFlags,
+    request: Request,
+    _: Session = Depends(require_role("admin")),
+    db: AsyncSession = Depends(get_session),
+    settings: Settings = Depends(get_settings),
+) -> dict[str, Any]:
+    """Change `index` / `api_allowed` of one document, then re-process it as a background job."""
+    changes = {k: v for k, v in body.model_dump().items() if v is not None}
+    if not changes:
+        raise HTTPException(422, "Tidak ada perubahan: isi index dan/atau api_allowed.")
+    jobs: svc.JobManager = request.app.state.jobs
+    if jobs.running() is not None:  # checked first so a refused request changes nothing
+        raise HTTPException(status.HTTP_409_CONFLICT, "Ada job lain yang sedang berjalan.")
+    try:
+        await svc.update_document_flags(db, MANIFEST, doc_id, changes)
+    except svc.DocumentNotFoundError as exc:
+        raise HTTPException(status.HTTP_404_NOT_FOUND, "Dokumen tidak ada di manifest.") from exc
+    job = _start_reindex(request, settings, doc_id)
+    return {"doc_id": doc_id, "changes": changes, "job": job.to_dict()}
 
 
 @router.get("/jobs/{job_id}")

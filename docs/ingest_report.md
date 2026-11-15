@@ -10,8 +10,6 @@ Jumlah token adalah perkiraan (kata + tanda baca), bukan token model.
 | D2 Permen ESDM 10/2021 | ingested | 96 | 0 | 52 | 92 | 25/158/487 | 0 |
 | D3 Pedoman SMK2 | ingested | 30 | 0 | 0 | 17 | 149/404/427 | 0 |
 | D4 FAQ Permen 10/2021 | skipped_not_indexed | 111 | 57 | 0 | 0 | 0/0/0 | 0 |
-| D5 DOE-HDBK-1092 | missing_file | 0 | 0 | 0 | 0 | 0/0/0 | 0 |
-| D6 OSHA 1910.269 | missing_file | 0 | 0 | 0 | 0 | 0/0/0 | 0 |
 
 ## Catatan per dokumen
 
@@ -38,11 +36,3 @@ Jumlah token adalah perkiraan (kata + tanda baca), bukan token model.
 - Status: skipped_not_indexed; strategi ekstraksi: lines
 - SHA-256 PDF: `2ac28f5d6071041dd76f9af19e73ce305025b86acdaa3534ecf97a33c81e421a`
 - Catatan: 57 dari 111 halaman tidak punya teks (kemungkinan gambar).
-
-### D5 — DOE-HDBK-1092
-- Status: missing_file; strategi ekstraksi: -
-- Catatan: pending_download -- unduh manual ke data/raw/ lalu isi field file.
-
-### D6 — OSHA 1910.269
-- Status: missing_file; strategi ekstraksi: -
-- Catatan: pending_download -- osha.gov memblokir unduhan otomatis; unduh manual.

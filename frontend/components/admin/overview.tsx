@@ -52,9 +52,6 @@ export function buildSteps(
   const { total, target_min, by_split } = qa.stats;
   const retrievalRuns = runs.filter((r) => !r.run_id.endsWith("_gen"));
   const genRuns = runs.filter((r) => r.run_id.endsWith("_gen"));
-  const missingEn = docs
-    .filter((d) => d.lang === "en" && !d.file_present)
-    .map((d) => d.id);
   const frozenOk = qa.frozen !== null && qa.integrity === "ok";
 
   return [
@@ -126,17 +123,6 @@ export function buildSteps(
       state: genRuns.length ? "done" : "todo",
       href: "/admin/konfigurasi",
       cta: "Jalankan evaluasi",
-    },
-    {
-      id: "english",
-      title: "Dokumen bahasa Inggris (opsional)",
-      detail: missingEn.length
-        ? `${missingEn.join(", ")} belum diunduh. Unduh manual lalu taruh di data/raw/.`
-        : "Dokumen bahasa Inggris tersedia.",
-      state: missingEn.length ? "optional" : "done",
-      optional: true,
-      href: "/admin/dokumen",
-      cta: "Buka dokumen",
     },
   ];
 }

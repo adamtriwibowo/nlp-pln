@@ -175,7 +175,7 @@ test.describe("admin", () => {
     const d2 = page.getByTestId("doc-D2");
     await expect(d2).toContainText("Peraturan Menteri ESDM");
     await expect(d2).toContainText("ada (");
-    await expect(page.getByTestId("doc-D5")).toContainText("belum diunduh");
+    await expect(page.getByTestId("doc-D3")).toContainText("ada (");
     await expect(page.getByTestId("doc-D4")).toContainText("tidak"); // not indexed
   });
 
@@ -224,17 +224,91 @@ test.describe("admin", () => {
     await expect(page.getByText("Embedding: 0 baru, 126 tetap")).toBeVisible();
   });
 
+  test("detail ingesti per dokumen tampil dari laporan nyata", async ({
+    page,
+  }) => {
+    await loginUi(page, ADMIN_TOKEN);
+    await gotoSection(page, "Dokumen");
+    const d2 = page.getByTestId("ingest-D2");
+    await expect(d2).toContainText("chunk");
+    await d2.getByText("Detail ingesti").click();
+    await expect(d2).toContainText("Pasal terdeteksi");
+    await expect(d2).toContainText("Celah nomor pasal");
+    await expect(page.getByTestId("doc-D5")).toHaveCount(0); // Indonesian-only corpus
+  });
+
+  test("ubah api_allowed butuh konfirmasi dan memulai job satu dokumen", async ({
+    page,
+  }) => {
+    let patched: unknown = null;
+    let reindexed: unknown = null;
+    const job = {
+      id: "job2",
+      status: "done",
+      log: ["Ingesti D2"],
+      error: null,
+      started_at: "t",
+      finished_at: "t2",
+    };
+    await page.route("**/api/admin/documents/D2", (route) => {
+      patched = route.request().postDataJSON();
+      return route.fulfill({
+        status: 202,
+        contentType: "application/json",
+        body: JSON.stringify({ doc_id: "D2", changes: patched, job }),
+      });
+    });
+    await page.route("**/api/admin/reindex", (route) => {
+      reindexed = route.request().postDataJSON();
+      return route.fulfill({
+        status: 202,
+        contentType: "application/json",
+        body: JSON.stringify(job),
+      });
+    });
+    await page.route("**/api/admin/jobs/job2", (route) =>
+      route.fulfill({
+        contentType: "application/json",
+        body: JSON.stringify(job),
+      }),
+    );
+    await loginUi(page, ADMIN_TOKEN);
+    await gotoSection(page, "Dokumen");
+
+    // nothing is sent until the admin confirms
+    await page.getByTestId("toggle-D2-api_allowed").click();
+    const group = page.getByRole("group", {
+      name: "Konfirmasi Boleh ke API D2",
+    });
+    await expect(group).toContainText("tidak akan dikirim ke LLM eksternal");
+    expect(patched).toBeNull();
+    await group.getByRole("button", { name: "Batal" }).click();
+    await expect(group).toHaveCount(0);
+    expect(patched).toBeNull();
+
+    await page.getByTestId("toggle-D2-api_allowed").click();
+    await page.getByTestId("confirm-D2-api_allowed").click();
+    await expect(page.getByTestId("job-status")).toHaveText("Selesai");
+    expect(patched).toEqual({ api_allowed: false });
+
+    await page.getByTestId("reindex-D2").click();
+    await expect(page.getByTestId("job-status")).toHaveText("Selesai");
+    expect(reindexed).toEqual({ doc_id: "D2" });
+  });
+
   test("unggahan bukan-PDF ditolak server dengan pesan jelas (backend nyata)", async ({
     page,
   }) => {
     await loginUi(page, ADMIN_TOKEN);
     await gotoSection(page, "Dokumen");
     await page.getByText("Unggah PDF baru").click();
-    await page.getByLabel("Berkas PDF (maks. 30 MB)").setInputFiles({
-      name: "palsu.pdf",
-      mimeType: "application/pdf",
-      buffer: Buffer.from("ini bukan pdf"),
-    });
+    await page
+      .getByLabel("Berkas PDF berbahasa Indonesia (maks. 30 MB)")
+      .setInputFiles({
+        name: "palsu.pdf",
+        mimeType: "application/pdf",
+        buffer: Buffer.from("ini bukan pdf"),
+      });
     await page.getByLabel("Judul dokumen").fill("Dokumen Uji Palsu");
     await page.getByLabel("Penerbit").fill("Uji");
     await page.getByRole("button", { name: "Unggah", exact: true }).click();

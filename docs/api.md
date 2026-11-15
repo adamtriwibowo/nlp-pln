@@ -12,8 +12,9 @@ Dokumentasi interaktif: `http://127.0.0.1:8010/docs` (OpenAPI). Ringkasan:
 | GET | `/api/review/items` | Item berikutnya yang belum dinilai penilai ini + progres. **Dibutakan**: tanpa `config_id`/nama model. Butuh peran reviewer (login dengan nama) |
 | POST | `/api/review/scores` | Kebenaran, kelengkapan, kegunaan (1-5), `citation_ok`, komentar. Idempoten per (item, penilai) |
 | GET | `/api/review/export.csv` | Penilai: baris miliknya tanpa config; admin: semua + `config_id` |
-| GET/POST | `/api/admin/documents` | Status ingesti per dokumen; unggah PDF (maks 30 MB, cek magic bytes, nama file dari judul, `api_allowed` default false) |
-| POST | `/api/admin/reindex`, GET `/api/admin/jobs/{id}` | Job latar ingest -> persist -> embed; satu job pada satu waktu (409) |
+| GET/POST | `/api/admin/documents` | Status ingesti per dokumen (termasuk laporan: halaman tanpa teks, pasal terdeteksi, celah nomor, token); unggah PDF berbahasa Indonesia (maks 30 MB, cek magic bytes, nama file dari judul, `api_allowed` default false) |
+| PATCH | `/api/admin/documents/{id}` | Ubah `index` dan/atau `api_allowed` (disimpan di `data/manifest.overrides.yaml`), lalu memproses ulang dokumen itu sebagai job. 409 bila ada job lain. Mematikan `api_allowed` berlaku segera |
+| POST | `/api/admin/reindex`, GET `/api/admin/jobs/{id}` | Job latar ingest -> persist -> embed; body opsional `{doc_id}` hanya memproses satu dokumen; satu job pada satu waktu (409) |
 | GET | `/api/admin/eval-runs` | Daftar run evaluasi + metrik untuk perbandingan |
 | GET/POST/PUT/DELETE | `/api/admin/qa`, `/api/admin/qa/{id}` | Dataset `qa.jsonl`: daftar + statistik, tambah/ubah/hapus dengan validasi skema dan keberadaan `gold_chunk_ids` di korpus. Penyimpanan atomik |
 | POST | `/api/admin/qa/freeze` | Membekukan split test (`test.lock.json` berisi hash). Setelah itu item test tidak bisa ditambah, diubah, dipindah, atau dihapus (409); perubahan berkas di luar API terdeteksi (`integrity: modified`). Tidak ada cara membatalkan lewat web |
@@ -40,8 +41,8 @@ Kerangka dengan sidebar kiri (bisa diciutkan menjadi rel ikon; di ponsel menjadi
 
 | Menu | URL | Isi |
 |---|---|---|
-| Ringkasan | `/admin` | Angka utama dan **daftar kesiapan evaluasi final** (7 langkah wajib + 1 opsional, tiap langkah menautkan ke halaman terkait), run terbaru |
-| Dokumen | `/admin/dokumen` | Status ingesti, unggah PDF, re-index |
+| Ringkasan | `/admin` | Angka utama dan **daftar kesiapan evaluasi final** (7 langkah wajib, tiap langkah menautkan ke halaman terkait), run terbaru |
+| Dokumen | `/admin/dokumen` | Status dan detail ingesti per dokumen, ubah diindeks/boleh ke API (dengan konfirmasi), re-index semua atau satu dokumen, unggah PDF |
 | Dataset | `/admin/dataset` | Kelola `qa.jsonl`, cari kandidat gold, bekukan split test |
 | Uji pertanyaan | `/admin/uji` | Peringkat retrieval, posisi gold, jawaban + cek sitasi |
 | Evaluasi | `/admin/evaluasi` | Daftar dan perbandingan run |
