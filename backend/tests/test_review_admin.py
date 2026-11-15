@@ -40,7 +40,11 @@ MINIMAL_PDF = b"%PDF-1.4\n1 0 obj<<>>endobj\ntrailer<<>>\n%%EOF\n"
 
 @pytest_asyncio.fixture
 async def db() -> AsyncIterator[AsyncSession]:
-    engine = create_async_engine(get_settings().database_url, poolclass=NullPool)
+    engine = create_async_engine(
+        get_settings().database_url,
+        poolclass=NullPool,
+        connect_args={"connect_timeout": 3},  # fail fast (skip) when the DB is down
+    )
     try:
         conn = await engine.connect()
         await conn.execute(text("SELECT 1"))

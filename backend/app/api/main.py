@@ -14,6 +14,7 @@ from app.api import (
     routes_auth,
     routes_content,
     routes_feedback,
+    routes_lab,
     routes_review,
 )
 from app.api.security import SlidingWindowLimiter
@@ -38,7 +39,7 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
     yield
 
 
-app = FastAPI(title="K2-RAG API", version="0.4.0", lifespan=lifespan)
+app = FastAPI(title="K2-RAG API", version="0.5.0", lifespan=lifespan)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[o.strip() for o in get_settings().cors_origins.split(",") if o.strip()],
@@ -53,6 +54,7 @@ for r in (
     routes_feedback.router,
     routes_review.router,
     routes_admin.router,
+    routes_lab.router,
 ):
     app.include_router(r)
 

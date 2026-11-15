@@ -15,6 +15,12 @@ Dokumentasi interaktif: `http://127.0.0.1:8010/docs` (OpenAPI). Ringkasan:
 | GET/POST | `/api/admin/documents` | Status ingesti per dokumen; unggah PDF (maks 30 MB, cek magic bytes, nama file dari judul, `api_allowed` default false) |
 | POST | `/api/admin/reindex`, GET `/api/admin/jobs/{id}` | Job latar ingest -> persist -> embed; satu job pada satu waktu (409) |
 | GET | `/api/admin/eval-runs` | Daftar run evaluasi + metrik untuk perbandingan |
+| GET/POST/PUT/DELETE | `/api/admin/qa`, `/api/admin/qa/{id}` | Dataset `qa.jsonl`: daftar + statistik, tambah/ubah/hapus dengan validasi skema dan keberadaan `gold_chunk_ids` di korpus. Penyimpanan atomik |
+| POST | `/api/admin/qa/freeze` | Membekukan split test (`test.lock.json` berisi hash). Setelah itu item test tidak bisa ditambah, diubah, dipindah, atau dihapus (409); perubahan berkas di luar API terdeteksi (`integrity: modified`). Tidak ada cara membatalkan lewat web |
+| GET | `/api/admin/qa/candidates?q=` | Kandidat chunk (hybrid M1) untuk membantu memilih gold; bukan penilaian relevansi |
+| POST | `/api/admin/playground` | Uji satu pertanyaan pada konfigurasi pilihan: peringkat chunk, posisi gold, dan (opsional) jawaban + verifikasi sitasi. Tanpa LLM gratis; dengan LLM dicatat di `queries` (mode `playground`) |
+| GET | `/api/admin/config` | Tampilan **baca-saja**: konfigurasi eksperimen, model, korpus, batas biaya, versi prompt; rahasia hanya sebagai boolean |
+| POST | `/api/admin/evals/estimate`, `/api/admin/evals` | Perkiraan biaya lalu jalankan evaluasi **split dev** sebagai job latar (berbagi satu slot dengan reindex). Split test ditolak (422): hanya lewat CLI `--final` |
 | GET | `/api/health` | `db` wajib ok; `llm` ok/error/unconfigured (cache 60 dtk) |
 
 Catatan desain:
@@ -28,3 +34,6 @@ Catatan desain:
 - Tipe klien dibuat dari `docs/openapi.json` (`k2 export-openapi` lalu `pnpm gen-api`); respons yang kritis divalidasi Zod saat runtime.
 - Viewer PDF: korpus berupa PDF scan (JBIG2) dengan lapisan teks OCR; bbox sorotan berasal dari lapisan OCR itu. pdf.js memerlukan aset WASM yang disalin ke `frontend/public/pdfjs` (otomatis).
 - Uji: `make e2e` (kontras token AA + Playwright + axe pada tema terang/gelap). `pnpm live-check` menjalankan satu alur penuh dengan LLM asli terhadap stack yang sedang berjalan.
+
+## Halaman admin (5 tab)
+Dokumen (status ingesti, unggah, re-index), **Dataset** (kelola `qa.jsonl`, cari kandidat gold, bekukan split test), **Uji pertanyaan** (peringkat retrieval, gold, jawaban + cek sitasi), **Konfigurasi** (baca-saja + jalankan evaluasi dev dengan konfirmasi biaya), Evaluasi (daftar dan perbandingan run). Lokasi dataset dapat dialihkan dengan `EVAL_DIR` (dipakai tes e2e agar `data/eval/qa.jsonl` tidak tersentuh).

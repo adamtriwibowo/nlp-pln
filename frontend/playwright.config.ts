@@ -1,5 +1,7 @@
 import { defineConfig, devices } from "@playwright/test";
 
+import { E2E_EVAL_DIR } from "./e2e/global-setup";
+
 // E2E uses its own ports and role tokens (independent of the developer's .env). The ask endpoint is
 // mocked per test (no LLM cost); documents, chunks and PDFs come from the real backend + database,
 // so the PDF viewer and highlight are exercised for real. Requires the dev database (make db-up).
@@ -8,6 +10,7 @@ const WEB_PORT = 3100;
 
 export default defineConfig({
   testDir: "./e2e",
+  globalSetup: "./e2e/global-setup.ts",
   fullyParallel: false,
   workers: 1,
   timeout: 60_000,
@@ -29,6 +32,7 @@ export default defineConfig({
       env: {
         ADMIN_TOKEN: "e2e-admin-token",
         REVIEW_TOKEN: "e2e-review-token",
+        EVAL_DIR: E2E_EVAL_DIR,
         JWT_SECRET: "e2e-jwt-secret-e2e-jwt-secret-0123456789",
         ASK_RATE_PER_MIN: "1000",
         LOGIN_RATE_PER_MIN: "1000",
