@@ -12,9 +12,12 @@ import { fetchChunk, type Citation } from "@/lib/api";
 export function SourcePanel({
   citation,
   onClose,
+  fill = false,
 }: {
   citation: Citation | null;
   onClose?: () => void;
+  /** Stretch to the height of the parent so the PDF uses all the space (desktop panel). */
+  fill?: boolean;
 }) {
   const chunk = useQuery({
     queryKey: ["chunk", citation?.chunk_id],
@@ -36,10 +39,13 @@ export function SourcePanel({
   }
 
   return (
-    <div data-testid="source-panel" className="flex flex-col">
-      <div className="flex items-start justify-between gap-3 border-b border-line px-5 py-4">
+    <div
+      data-testid="source-panel"
+      className={`flex flex-col ${fill ? "h-full min-h-0" : ""}`}
+    >
+      <div className="flex shrink-0 items-start justify-between gap-3 border-b border-line px-5 py-4">
         <div className="flex min-w-0 flex-col gap-0.5">
-          <span className="text-xs font-semibold uppercase tracking-[0.06em] text-cite">
+          <span className="text-sm font-semibold text-cite">
             Sumber {citation.label}
           </span>
           <h2 className="m-0 text-base font-semibold">
@@ -63,7 +69,9 @@ export function SourcePanel({
         ) : null}
       </div>
 
-      <div className="flex flex-col gap-4 p-5">
+      <div
+        className={`flex flex-col gap-4 p-5 ${fill ? "min-h-0 flex-1" : ""}`}
+      >
         {chunk.isPending ? (
           <div aria-busy="true" className="flex flex-col gap-3">
             <Skeleton className="h-[420px] w-full" />
@@ -83,27 +91,33 @@ export function SourcePanel({
               startPage={chunk.data.page_start}
               boxes={chunk.data.bbox ?? []}
               sourceLabel={chunk.data.label}
+              sourceNumber={citation.label}
+              fill={fill}
             />
-            <section
-              aria-labelledby="teks-pasal"
-              className="flex flex-col gap-2"
+            <details
+              open
+              className="shrink-0 rounded-xl border border-line bg-surface"
             >
-              <h3
-                id="teks-pasal"
-                className="m-0 text-xs font-semibold uppercase tracking-[0.06em] text-ink-muted"
-              >
+              <summary className="min-h-11 cursor-pointer px-4 py-2.5 text-sm font-semibold">
                 Teks pasal
-              </h3>
-              <p className="m-0 whitespace-pre-line text-sm leading-[1.7]">
-                {chunk.data.text}
-              </p>
-              {chunk.data.ocr_noisy ? (
-                <p className="m-0 rounded-lg bg-warn-tint px-3 py-2 text-[13px] text-warn">
-                  Teks dokumen ini hasil OCR dan dapat memuat salah baca.
-                  Periksa langsung pada PDF.
+              </summary>
+              <div
+                tabIndex={0}
+                role="region"
+                aria-label="Teks pasal (bisa digulir)"
+                className="flex max-h-56 flex-col gap-2 overflow-y-auto px-4 pb-4"
+              >
+                <p className="m-0 whitespace-pre-line text-[15px] leading-[1.7]">
+                  {chunk.data.text}
                 </p>
-              ) : null}
-            </section>
+                {chunk.data.ocr_noisy ? (
+                  <p className="m-0 rounded-lg bg-warn-tint px-3 py-2 text-[13px] text-warn">
+                    Teks dokumen ini hasil OCR dan dapat memuat salah baca.
+                    Periksa langsung pada PDF.
+                  </p>
+                ) : null}
+              </div>
+            </details>
           </>
         )}
       </div>

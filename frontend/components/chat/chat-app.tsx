@@ -17,6 +17,11 @@ import {
   LiveTurn,
   UserBubble,
 } from "@/components/chat/messages";
+import {
+  PanelSplitter,
+  panelMax,
+  usePanelWidth,
+} from "@/components/chat/resizable-panel";
 import { ExampleQuestions } from "@/components/home-sections";
 import { Logo } from "@/components/logo";
 import { QuestionBox } from "@/components/question-box";
@@ -24,7 +29,7 @@ import { SourcePanel } from "@/components/source-panel";
 import { newChatId, useChats } from "@/lib/chats";
 import type { AskBody } from "@/lib/sse";
 import { useAsk, type FinishedAnswer } from "@/lib/use-ask";
-import { useMediaQuery } from "@/lib/use-media-query";
+import { useMediaQuery, useViewportWidth } from "@/lib/use-media-query";
 
 type ActiveCite = { turn: number; label: number } | null;
 
@@ -57,6 +62,8 @@ export function ChatApp() {
   const [active, setActive] = useState<ActiveCite>(null);
   const [sheetOpen, setSheetOpen] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [panelWidth, setPanelWidth] = usePanelWidth();
+  const viewportWidth = useViewportWidth();
   const wide = useMediaQuery("(min-width: 1280px)");
   const sidebarVisible = useMediaQuery("(min-width: 1024px)");
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -299,15 +306,24 @@ export function ChatApp() {
       </main>
 
       {wide && activeCitation ? (
-        <aside
-          aria-label="Panel sumber"
-          className="hidden w-[440px] shrink-0 flex-col overflow-y-auto border-l border-line bg-surface xl:flex"
-        >
-          <SourcePanel
-            citation={activeCitation}
-            onClose={() => setActive(null)}
+        <>
+          <PanelSplitter
+            width={panelWidth}
+            max={panelMax(viewportWidth)}
+            onChange={setPanelWidth}
           />
-        </aside>
+          <aside
+            aria-label="Panel sumber"
+            style={{ width: Math.min(panelWidth, panelMax(viewportWidth)) }}
+            className="hidden h-dvh shrink-0 flex-col overflow-hidden bg-surface xl:flex"
+          >
+            <SourcePanel
+              fill
+              citation={activeCitation}
+              onClose={() => setActive(null)}
+            />
+          </aside>
+        </>
       ) : null}
       {!wide ? (
         <BottomSheet

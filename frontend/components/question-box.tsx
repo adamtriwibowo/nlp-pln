@@ -128,7 +128,7 @@ export function QuestionBox({
             large ? "min-h-[72px] text-lg" : "min-h-[56px] text-base"
           }`}
         />
-        <div className="flex items-center justify-between gap-3 px-3 pb-3 pl-4">
+        <div className="@container flex items-center justify-between gap-3 px-3 pb-3 pl-4">
           <ModeToggle mode={mode} onChange={onModeChange} />
           <div className="flex items-center gap-3">
             {value.length >= COUNTER_FROM ? (
@@ -141,7 +141,7 @@ export function QuestionBox({
             ) : (
               <span
                 aria-hidden="true"
-                className="hidden whitespace-nowrap text-[13px] text-ink-muted sm:pointer-fine:inline"
+                className="hidden whitespace-nowrap text-[13px] text-ink-muted @lg:pointer-fine:inline"
               >
                 Enter kirim · Shift+Enter baris baru
               </span>

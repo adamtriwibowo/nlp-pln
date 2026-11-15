@@ -124,6 +124,57 @@ test.describe("jawaban dan sumber", () => {
     await expect(page.getByTestId("source-panel")).toContainText("Pasal 18");
   });
 
+  test("panel sumber bisa diubah lebarnya (seret/keyboard) dan PDF bisa diperbesar", async ({
+    page,
+  }) => {
+    await openAnswer(page);
+    await page.getByTestId("cite-1").click();
+    const aside = page.getByRole("complementary", { name: "Panel sumber" });
+    const panel = page.getByTestId("source-panel");
+    await expect(panel.locator("canvas")).toBeVisible({ timeout: 30_000 });
+    const widthOf = async () => (await aside.boundingBox())!.width;
+    const before = await widthOf();
+
+    // keyboard: Left widens, Right narrows, Home goes to the minimum
+    const splitter = page.getByRole("separator", {
+      name: "Ubah lebar panel sumber",
+    });
+    await splitter.focus();
+    await splitter.press("ArrowLeft");
+    await splitter.press("ArrowLeft");
+    expect(await widthOf()).toBeGreaterThan(before);
+    await splitter.press("Home");
+    expect(await widthOf()).toBeLessThan(before);
+
+    // drag with the mouse
+    const box = (await splitter.boundingBox())!;
+    const narrow = await widthOf();
+    await page.mouse.move(box.x + box.width / 2, box.y + 200);
+    await page.mouse.down();
+    await page.mouse.move(box.x - 150, box.y + 200, { steps: 5 });
+    await page.mouse.up();
+    expect(await widthOf()).toBeGreaterThan(narrow + 100);
+
+    // the chosen width is remembered after a reload
+    const chosen = await widthOf();
+    await page.reload();
+    await page.getByTestId("chat-item").first().click();
+    await page.getByTestId("cite-1").click();
+    expect(Math.abs((await widthOf()) - chosen)).toBeLessThan(2);
+
+    // zoom: the page canvas grows and the frame scrolls instead of the panel
+    const canvas = page.getByTestId("source-panel").locator("canvas").first();
+    await expect(canvas).toBeVisible({ timeout: 30_000 });
+    const w1 = (await canvas.boundingBox())!.width;
+    await page.getByRole("button", { name: "Perbesar", exact: true }).click();
+    await expect(page.getByTestId("pdf-zoom")).toHaveText("125%");
+    await expect
+      .poll(async () => (await canvas.boundingBox())!.width)
+      .toBeGreaterThan(w1 * 1.1);
+    await page.getByTestId("pdf-zoom").click();
+    await expect(page.getByTestId("pdf-zoom")).toHaveText("100%");
+  });
+
   test("abstain tampil sebagai jawaban yang jelas, bukan galat", async ({
     page,
   }) => {

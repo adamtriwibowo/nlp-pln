@@ -14,3 +14,15 @@ export function useMediaQuery(query: string): boolean {
     () => false,
   );
 }
+
+/** Current window width in px (1280 during SSR/first render). */
+export function useViewportWidth(): number {
+  return useSyncExternalStore(
+    (cb) => {
+      window.addEventListener("resize", cb);
+      return () => window.removeEventListener("resize", cb);
+    },
+    () => window.innerWidth,
+    () => 1280,
+  );
+}

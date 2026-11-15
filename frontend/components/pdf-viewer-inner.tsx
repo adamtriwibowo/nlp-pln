@@ -1,6 +1,6 @@
 "use client";
 
-import { ChevronLeft, ChevronRight, Download } from "lucide-react";
+import { ChevronLeft, ChevronRight, Download, Minus, Plus } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { Document, Page, pdfjs } from "react-pdf";
 
@@ -28,7 +28,15 @@ interface Props {
   startPage: number;
   boxes: PageBox[];
   sourceLabel: string;
+  /** The citation number shown in the margin next to the highlight. */
+  sourceNumber: number;
+  /** Fill the height of the parent (desktop panel) instead of a fixed viewport share. */
+  fill?: boolean;
 }
+
+const ZOOM_MIN = 0.75;
+const ZOOM_MAX = 3;
+const ZOOM_STEP = 0.25;
 
 /** PDF page with the cited block highlighted. bbox is in PDF points (origin top-left). */
 export default function PdfViewerInner({
@@ -36,12 +44,15 @@ export default function PdfViewerInner({
   startPage,
   boxes,
   sourceLabel,
+  sourceNumber,
+  fill = false,
 }: Props) {
   const url = `/api/documents/${docId}/file`;
   const [page, setPage] = useState(startPage);
   const [numPages, setNumPages] = useState<number | null>(null);
   const [orig, setOrig] = useState<{ w: number; h: number } | null>(null);
   const [width, setWidth] = useState(0);
+  const [zoom, setZoom] = useState(1);
   const wrapRef = useRef<HTMLDivElement>(null);
   const hlRef = useRef<HTMLDivElement>(null);
 
@@ -56,23 +67,70 @@ export default function PdfViewerInner({
   }, []);
 
   const pageBoxes = boxes.filter((b) => b.page === page);
-  const scale = orig && width ? width / orig.w : 0;
+  // the page is drawn `zoom` times the panel width, and the reader scrolls inside the frame
+  const pageWidth = Math.max(width - 24 - 28, 200) * zoom;
+  const scale = orig && width ? pageWidth / orig.w : 0;
 
+  // Bring the highlight into view by scrolling the PDF frame only (never the surrounding panel).
   useEffect(() => {
-    if (scale > 0) hlRef.current?.scrollIntoView({ block: "center" });
+    const wrap = wrapRef.current;
+    const hl = hlRef.current;
+    if (scale <= 0 || !wrap || !hl) return;
+    const w = wrap.getBoundingClientRect();
+    const h = hl.getBoundingClientRect();
+    wrap.scrollTo({
+      top: Math.max(0, h.top - w.top + wrap.scrollTop - wrap.clientHeight / 3),
+      left: Math.max(0, h.left - w.left + wrap.scrollLeft - 48),
+    });
   }, [page, scale, startPage]);
 
   const go = (delta: number) =>
     setPage((p) => Math.min(Math.max(1, p + delta), numPages ?? p + delta));
 
   return (
-    <div className="flex flex-col gap-3">
-      <div className="flex items-center justify-between gap-2">
+    <div className={`flex flex-col gap-3 ${fill ? "min-h-0 flex-1" : ""}`}>
+      <div className="flex flex-wrap items-center justify-between gap-2">
         <span className="text-[13px] text-ink-muted" aria-live="polite">
           Halaman {page}
           {numPages ? ` dari ${numPages}` : ""}
         </span>
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
+          <div
+            role="group"
+            aria-label="Ukuran tampilan PDF"
+            className="flex items-center gap-1"
+          >
+            <Button
+              type="button"
+              variant="outline"
+              aria-label="Perkecil"
+              disabled={zoom <= ZOOM_MIN}
+              onClick={() => setZoom((z) => Math.max(ZOOM_MIN, z - ZOOM_STEP))}
+              className="size-11 min-h-11 rounded-[10px]"
+            >
+              <Minus aria-hidden="true" />
+            </Button>
+            <button
+              type="button"
+              aria-label={`${Math.round(zoom * 100)}%: sesuaikan ke lebar panel`}
+              title="Sesuaikan ke lebar panel"
+              onClick={() => setZoom(1)}
+              data-testid="pdf-zoom"
+              className="min-h-11 min-w-14 cursor-pointer rounded-[10px] px-2 text-sm font-semibold tabular-nums hover:bg-surface-2"
+            >
+              {Math.round(zoom * 100)}%
+            </button>
+            <Button
+              type="button"
+              variant="outline"
+              aria-label="Perbesar"
+              disabled={zoom >= ZOOM_MAX}
+              onClick={() => setZoom((z) => Math.min(ZOOM_MAX, z + ZOOM_STEP))}
+              className="size-11 min-h-11 rounded-[10px]"
+            >
+              <Plus aria-hidden="true" />
+            </Button>
+          </div>
           <Button
             type="button"
             variant="outline"
@@ -106,9 +164,14 @@ export default function PdfViewerInner({
 
       <div
         ref={wrapRef}
-        className="overflow-auto rounded-md bg-surface-2 p-3 sm:p-4"
+        tabIndex={0}
+        role="region"
+        aria-label="Halaman PDF (bisa digulir)"
+        className={`overflow-auto overscroll-contain rounded-md bg-surface-2 p-3 ${
+          fill ? "min-h-[320px] flex-1" : "h-[60dvh]"
+        }`}
       >
-        <div className="relative mx-auto w-fit" data-testid="pdf-page">
+        <div className="relative mx-auto w-fit pl-7" data-testid="pdf-page">
           <Document
             file={url}
             options={PDF_OPTIONS}
@@ -130,7 +193,7 @@ export default function PdfViewerInner({
           >
             <Page
               pageNumber={page}
-              width={Math.max(width - 24, 200)}
+              width={pageWidth}
               renderTextLayer={false}
               renderAnnotationLayer={false}
               onLoadSuccess={(p) =>
@@ -142,7 +205,7 @@ export default function PdfViewerInner({
           {orig && scale > 0
             ? pageBoxes.map((b, i) => {
                 const [x0, y0, x1, y1] = b.bbox;
-                const k = Math.max(width - 24, 200) / orig.w;
+                const k = pageWidth / orig.w;
                 return (
                   <div
                     key={i}
@@ -150,16 +213,20 @@ export default function PdfViewerInner({
                     data-testid="pdf-highlight"
                     role="img"
                     aria-label={`Blok teks sumber ${sourceLabel} yang disorot`}
-                    className="pointer-events-none absolute rounded-md border-2 border-brand bg-highlight"
+                    className="pointer-events-none absolute rounded-sm border border-brand bg-highlight mix-blend-multiply"
                     style={{
-                      left: x0 * k - 4,
-                      top: y0 * k - 4,
+                      left: x0 * k - 4 + 28,
+                      top: y0 * k - 3,
                       width: (x1 - x0) * k + 8,
-                      height: (y1 - y0) * k + 8,
+                      height: (y1 - y0) * k + 6,
                     }}
                   >
-                    <span className="absolute -top-3.5 right-2 rounded-md bg-cite px-2 py-0.5 text-[11px] font-semibold text-on-cite">
-                      {sourceLabel}
+                    {/* the marker sits in the page margin so it never covers the text */}
+                    <span
+                      aria-hidden="true"
+                      className="absolute -left-7 top-0 flex size-5 items-center justify-center rounded-full bg-ink text-[11px] font-semibold text-surface"
+                    >
+                      {sourceNumber}
                     </span>
                   </div>
                 );
