@@ -48,6 +48,7 @@ export function QuestionBox({
   onModeChange,
   busy = false,
   large = false,
+  align = "center",
 }: {
   value: string;
   onChange: (v: string) => void;
@@ -56,18 +57,19 @@ export function QuestionBox({
   onModeChange: (m: AskBody["mode"]) => void;
   busy?: boolean;
   large?: boolean;
+  align?: "center" | "start";
 }) {
   const id = useId();
   const tooShort = value.trim().length < 3;
   return (
     <form
-      className="flex w-full flex-col items-center gap-4"
+      className={`flex w-full flex-col gap-4 ${align === "start" ? "items-start" : "items-center"}`}
       onSubmit={(e) => {
         e.preventDefault();
         if (!tooShort && !busy) onSubmit();
       }}
     >
-      <div className="flex w-full flex-wrap items-center gap-2 rounded-2xl border border-line bg-surface p-2 shadow-[0_1px_2px_rgba(28,36,48,0.06),0_12px_32px_rgba(28,36,48,0.08)]">
+      <div className="flex w-full flex-wrap items-center gap-2 rounded-2xl border border-line bg-surface p-2 shadow-[0_1px_2px_rgba(28,36,48,0.06),0_12px_32px_rgba(28,36,48,0.08)] transition-shadow focus-within:border-cite focus-within:shadow-[0_0_0_3px_var(--k2-cite-tint),0_12px_32px_rgba(28,36,48,0.1)]">
         <label htmlFor={id} className="sr-only">
           Pertanyaan Anda
         </label>
@@ -92,7 +94,9 @@ export function QuestionBox({
           <ArrowRight aria-hidden="true" />
         </Button>
       </div>
-      <div className="flex flex-wrap items-center justify-center gap-3 text-sm text-ink-muted">
+      <div
+        className={`flex flex-wrap items-center gap-3 text-sm text-ink-muted ${align === "start" ? "justify-start" : "justify-center"}`}
+      >
         <span>Mode jawaban</span>
         <ModeToggle mode={mode} onChange={onModeChange} />
         <span className="text-[13px]">

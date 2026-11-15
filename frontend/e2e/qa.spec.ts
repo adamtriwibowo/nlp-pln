@@ -24,7 +24,10 @@ test.describe("beranda", () => {
       }),
     ).toBeVisible();
     await expect(
-      page.getByText("Dijawab hanya dari dokumen resmi"),
+      page.getByRole("heading", { name: /dalam empat langkah/ }),
+    ).toBeVisible();
+    await expect(
+      page.getByRole("listitem").filter({ hasText: "Kutipan diperiksa" }),
     ).toBeVisible();
     await expect(
       page.getByText("Bukan pengganti petugas K3. Selalu cek pasal sumber."),

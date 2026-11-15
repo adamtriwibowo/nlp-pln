@@ -23,7 +23,7 @@ export function SiteHeader() {
   const pathname = usePathname();
   if (pathname.startsWith("/admin")) return null; // the admin area has its own shell
   return (
-    <header className="flex flex-wrap items-center justify-between gap-3 border-b border-line bg-surface px-4 py-3 sm:px-8 lg:px-12">
+    <header className="sticky top-0 z-30 flex flex-wrap items-center justify-between gap-3 border-b border-line bg-surface/90 px-4 py-3 backdrop-blur supports-[backdrop-filter]:bg-surface/75 sm:px-8 lg:px-12">
       <Logo />
       <nav
         aria-label="Navigasi utama"

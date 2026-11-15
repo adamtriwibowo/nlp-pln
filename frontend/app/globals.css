@@ -100,3 +100,27 @@ body {
 dialog.sheet::backdrop {
   background: rgba(10, 14, 20, 0.55);
 }
+
+/* Home hero: a faint safety-yellow glow behind the illustration, and one load-time moment where
+   the highlight sweeps across the quoted passage (what the product does on every citation). */
+.hero-glow {
+  background-image: radial-gradient(
+    60% 80% at 85% 20%,
+    color-mix(in srgb, var(--k2-brand) 14%, transparent),
+    transparent 70%
+  );
+}
+
+@keyframes hero-sweep {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+.hero-highlight {
+  transform-origin: left center;
+  animation: hero-sweep 0.9s 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+}

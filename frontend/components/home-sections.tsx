@@ -1,7 +1,13 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import { FileCheck2, ListChecks, ShieldAlert } from "lucide-react";
+import {
+  ArrowUpRight,
+  FileCheck2,
+  FileSearch,
+  MessageCircleQuestion,
+  ShieldCheck,
+} from "lucide-react";
 
 import { Skeleton } from "@/components/ui/skeleton";
 import { fetchDocuments } from "@/lib/api";
@@ -14,24 +20,27 @@ export const EXAMPLES = [
   "Bagaimana ketentuan APD untuk pekerjaan listrik?",
 ];
 
+const H2 = "m-0 font-heading text-2xl font-bold tracking-tight sm:text-[28px]";
+
 export function ExampleQuestions({ onPick }: { onPick: (q: string) => void }) {
   return (
     <section aria-labelledby="contoh" className="flex w-full flex-col gap-3">
-      <h2
-        id="contoh"
-        className="text-[13px] font-semibold uppercase tracking-[0.06em] text-ink-muted"
-      >
-        Coba tanyakan
+      <h2 id="contoh" className="m-0 text-[15px] font-semibold text-ink-muted">
+        Belum tahu mulai dari mana? Coba salah satu:
       </h2>
-      <ul className="grid list-none grid-cols-[repeat(auto-fit,minmax(min(100%,300px),1fr))] gap-3 p-0">
+      <ul className="m-0 grid list-none grid-cols-1 gap-2.5 p-0 sm:grid-cols-2">
         {EXAMPLES.map((q) => (
           <li key={q}>
             <button
               type="button"
               onClick={() => onPick(q)}
-              className="flex min-h-16 w-full cursor-pointer items-center rounded-xl border border-line bg-surface px-4 py-3 text-left text-[15px] leading-snug text-ink transition-colors hover:border-cite"
+              className="group flex min-h-14 w-full cursor-pointer items-center justify-between gap-3 rounded-xl border border-line bg-surface px-4 py-3 text-left text-[15px] leading-snug text-ink transition-[border-color,background-color,transform] hover:border-cite hover:bg-cite-tint active:scale-[0.99]"
             >
-              {q}
+              <span>{q}</span>
+              <ArrowUpRight
+                aria-hidden="true"
+                className="size-4 shrink-0 text-ink-muted transition-colors group-hover:text-cite"
+              />
             </button>
           </li>
         ))}
@@ -40,23 +49,64 @@ export function ExampleQuestions({ onPick }: { onPick: (q: string) => void }) {
   );
 }
 
-export function TrustRow() {
-  const item = (Icon: typeof FileCheck2, text: string) => (
-    <li className="flex items-center gap-2 text-sm text-ink-muted">
-      <Icon className="size-[18px] text-cite" aria-hidden="true" />
-      <span>{text}</span>
-    </li>
-  );
+const STEPS = [
+  {
+    icon: MessageCircleQuestion,
+    title: "Tulis pertanyaan",
+    text: "Pakai bahasa sehari-hari. Tidak perlu tahu nomor pasalnya lebih dulu.",
+  },
+  {
+    icon: FileSearch,
+    title: "Sistem mencari pasal",
+    text: "Pasal yang paling relevan dicari dari dokumen resmi, lalu jawaban disusun hanya dari pasal itu.",
+  },
+  {
+    icon: FileCheck2,
+    title: "Kutipan diperiksa",
+    text: "Setiap sitasi dicocokkan dengan teks sumber sebelum ditampilkan. Bila bukti kurang, sistem menolak menjawab.",
+  },
+  {
+    icon: ShieldCheck,
+    title: "Cek sendiri di PDF",
+    text: "Klik nomor sitasi untuk membuka halaman PDF dengan kalimat yang dikutip tersorot.",
+  },
+];
+
+export function HowItWorks() {
   return (
-    <ul
+    <section
       id="cara-kerja"
-      aria-label="Jaminan layanan"
-      className="mt-4 flex list-none flex-wrap justify-center gap-x-8 gap-y-3 p-0"
+      aria-labelledby="cara"
+      className="mx-auto w-full max-w-[1160px] scroll-mt-20 px-6 py-14"
     >
-      {item(FileCheck2, "Dijawab hanya dari dokumen resmi")}
-      {item(ListChecks, "Setiap jawaban menyertakan pasal")}
-      {item(ShieldAlert, "Menolak menjawab bila bukti tidak cukup")}
-    </ul>
+      <h2 id="cara" className={H2}>
+        Dari pertanyaan ke pasal, dalam empat langkah
+      </h2>
+      <ol className="m-0 mt-8 grid list-none grid-cols-1 gap-4 p-0 sm:grid-cols-2 lg:grid-cols-4">
+        {STEPS.map(({ icon: Icon, title, text }, i) => (
+          <li
+            key={title}
+            className="flex flex-col gap-3 rounded-2xl border border-line bg-surface p-5"
+          >
+            <div className="flex items-center justify-between">
+              <span className="flex size-11 items-center justify-center rounded-xl bg-brand text-brand-ink">
+                <Icon aria-hidden="true" className="size-5" />
+              </span>
+              <span
+                aria-hidden="true"
+                className="font-heading text-2xl font-bold text-line"
+              >
+                {i + 1}
+              </span>
+            </div>
+            <h3 className="m-0 text-lg font-semibold leading-snug">{title}</h3>
+            <p className="m-0 text-[15px] leading-relaxed text-ink-muted">
+              {text}
+            </p>
+          </li>
+        ))}
+      </ol>
+    </section>
   );
 }
 
@@ -70,35 +120,59 @@ export function CorpusChips() {
     <section
       id="dokumen"
       aria-labelledby="korpus"
-      className="flex flex-col items-center gap-3.5 px-6 pb-10 pt-6"
+      className="mx-auto w-full max-w-[1160px] scroll-mt-20 px-6 pb-14"
     >
-      <h2
-        id="korpus"
-        className="text-[13px] font-semibold uppercase tracking-[0.06em] text-ink-muted"
-      >
-        Dokumen dalam korpus
+      <h2 id="korpus" className={H2}>
+        Dokumen yang menjadi sumber jawaban
       </h2>
+      <p className="m-0 mt-2 max-w-2xl text-[15px] leading-relaxed text-ink-muted">
+        Hanya dokumen publik berbahasa Indonesia di bawah ini. Tidak ada sumber
+        lain yang dipakai untuk menjawab.
+      </p>
       {docs.isPending ? (
-        <div className="flex gap-2" aria-busy="true">
-          <Skeleton className="h-8 w-40 rounded-full" />
-          <Skeleton className="h-8 w-48 rounded-full" />
-          <Skeleton className="h-8 w-32 rounded-full" />
+        <div
+          className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-3"
+          aria-busy="true"
+        >
+          <Skeleton className="h-28 rounded-2xl" />
+          <Skeleton className="h-28 rounded-2xl" />
+          <Skeleton className="h-28 rounded-2xl" />
         </div>
       ) : docs.isError ? (
-        <p role="status" className="text-sm text-ink-muted">
-          Daftar dokumen belum dapat dimuat.
+        <p role="status" className="mt-6 text-sm text-ink-muted">
+          Daftar dokumen belum dapat dimuat. Muat ulang halaman sebentar lagi.
         </p>
       ) : (
-        <ul className="flex max-w-3xl list-none flex-wrap justify-center gap-2 p-0">
+        <ul className="m-0 mt-6 grid list-none grid-cols-1 gap-3 p-0 sm:grid-cols-2 lg:grid-cols-3">
           {docs.data
             .filter((d) => d.indexed)
             .map((d) => (
               <li
                 key={d.id}
-                className="rounded-full border border-line bg-surface px-3.5 py-1.5 text-[13px]"
-                title={d.title}
+                className="flex flex-col gap-2 rounded-2xl border border-line bg-surface p-5"
               >
-                {shortTitle(d.title)}
+                <span className="font-semibold leading-snug">
+                  {shortTitle(d.title)}
+                </span>
+                {topic(d.title) ? (
+                  <span className="text-[15px] leading-snug text-ink-muted">
+                    {topic(d.title)}
+                  </span>
+                ) : null}
+                <span className="mt-auto flex flex-col items-start gap-1 pt-2 text-[13px] text-ink-muted">
+                  <span>{d.publisher ?? "Penerbit tidak dicatat"}</span>
+                  {d.source_url ? (
+                    <a
+                      href={d.source_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex min-h-6 items-center gap-1 font-medium text-cite hover:underline"
+                    >
+                      Sumber resmi
+                      <ArrowUpRight aria-hidden="true" className="size-3.5" />
+                    </a>
+                  ) : null}
+                </span>
               </li>
             ))}
         </ul>
@@ -113,4 +187,10 @@ export function shortTitle(title: string): string {
   return head
     .replace(/^Peraturan Menteri Ketenagakerjaan/i, "Permenaker")
     .replace(/^Peraturan Menteri/i, "Permen");
+}
+
+/** The "tentang ..." part of a regulation title, if it has one. */
+function topic(title: string): string {
+  const parts = title.split(/\s+tentang\s+/i);
+  return parts.length > 1 ? parts.slice(1).join(" tentang ") : "";
 }
