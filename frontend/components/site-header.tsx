@@ -2,6 +2,7 @@
 
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 import { Logo } from "@/components/logo";
 import { ThemeToggle } from "@/components/theme-toggle";
@@ -19,6 +20,8 @@ export function SiteHeader() {
     staleTime: 60_000,
   });
   const role = me.data?.role ?? null;
+  const pathname = usePathname();
+  if (pathname.startsWith("/admin")) return null; // the admin area has its own shell
   return (
     <header className="flex flex-wrap items-center justify-between gap-3 border-b border-line bg-surface px-4 py-3 sm:px-8 lg:px-12">
       <Logo />

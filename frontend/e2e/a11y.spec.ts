@@ -1,7 +1,13 @@
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test, type Page } from "@playwright/test";
 
-import { ADMIN_TOKEN, loginUi, mockAsk, openAnswer } from "./helpers";
+import {
+  ADMIN_TOKEN,
+  gotoSection,
+  loginUi,
+  mockAsk,
+  openAnswer,
+} from "./helpers";
 
 const TAGS = ["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"];
 
@@ -44,8 +50,11 @@ for (const theme of ["light", "dark"] as const) {
         route.fulfill({ contentType: "application/json", body: "[]" }),
       );
       await loginUi(page, ADMIN_TOKEN);
+      await expect(page.getByTestId("readiness")).toBeVisible();
+      await expectNoViolations(page, `admin ringkasan ${theme}`);
+      await gotoSection(page, "Dokumen");
       await expect(page.getByTestId("doc-D2")).toBeVisible();
-      await expectNoViolations(page, `admin ${theme}`);
+      await expectNoViolations(page, `admin dokumen ${theme}`);
     });
   });
 }

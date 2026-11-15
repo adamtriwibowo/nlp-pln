@@ -35,5 +35,16 @@ Catatan desain:
 - Viewer PDF: korpus berupa PDF scan (JBIG2) dengan lapisan teks OCR; bbox sorotan berasal dari lapisan OCR itu. pdf.js memerlukan aset WASM yang disalin ke `frontend/public/pdfjs` (otomatis).
 - Uji: `make e2e` (kontras token AA + Playwright + axe pada tema terang/gelap). `pnpm live-check` menjalankan satu alur penuh dengan LLM asli terhadap stack yang sedang berjalan.
 
-## Halaman admin (5 tab)
-Dokumen (status ingesti, unggah, re-index), **Dataset** (kelola `qa.jsonl`, cari kandidat gold, bekukan split test), **Uji pertanyaan** (peringkat retrieval, gold, jawaban + cek sitasi), **Konfigurasi** (baca-saja + jalankan evaluasi dev dengan konfirmasi biaya), Evaluasi (daftar dan perbandingan run). Lokasi dataset dapat dialihkan dengan `EVAL_DIR` (dipakai tes e2e agar `data/eval/qa.jsonl` tidak tersentuh).
+## Halaman admin (sidebar kiri)
+Kerangka dengan sidebar kiri (bisa diciutkan menjadi rel ikon; di ponsel menjadi laci) dan satu URL per menu, sehingga bisa di-bookmark dan tombol Back bekerja:
+
+| Menu | URL | Isi |
+|---|---|---|
+| Ringkasan | `/admin` | Angka utama dan **daftar kesiapan evaluasi final** (7 langkah wajib + 1 opsional, tiap langkah menautkan ke halaman terkait), run terbaru |
+| Dokumen | `/admin/dokumen` | Status ingesti, unggah PDF, re-index |
+| Dataset | `/admin/dataset` | Kelola `qa.jsonl`, cari kandidat gold, bekukan split test |
+| Uji pertanyaan | `/admin/uji` | Peringkat retrieval, posisi gold, jawaban + cek sitasi |
+| Evaluasi | `/admin/evaluasi` | Daftar dan perbandingan run |
+| Konfigurasi | `/admin/konfigurasi` | Tampilan baca-saja + jalankan evaluasi dev |
+
+Lencana di menu menunjukkan kemajuan dataset (mis. 4/60) dan jumlah peringatan konfigurasi. Lokasi dataset dapat dialihkan dengan `EVAL_DIR` (dipakai tes e2e agar `data/eval/qa.jsonl` tidak tersentuh).

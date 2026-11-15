@@ -1,6 +1,12 @@
 import { expect, test } from "@playwright/test";
 
-import { ADMIN_TOKEN, appAlert, loginUi, REVIEW_TOKEN } from "./helpers";
+import {
+  ADMIN_TOKEN,
+  appAlert,
+  gotoSection,
+  loginUi,
+  REVIEW_TOKEN,
+} from "./helpers";
 
 const ITEM = {
   item_id: 7,
@@ -165,6 +171,7 @@ test.describe("admin", () => {
   test("daftar dokumen nyata dengan status ingesti", async ({ page }) => {
     await loginUi(page, ADMIN_TOKEN);
     await expect(page).toHaveURL(/\/admin/);
+    await gotoSection(page, "Dokumen");
     const d2 = page.getByTestId("doc-D2");
     await expect(d2).toContainText("Peraturan Menteri ESDM");
     await expect(d2).toContainText("ada (");
@@ -208,6 +215,7 @@ test.describe("admin", () => {
       });
     });
     await loginUi(page, ADMIN_TOKEN);
+    await gotoSection(page, "Dokumen");
     await page.getByTestId("reindex").click();
     await expect(page.getByTestId("job-status")).toHaveText("Berjalan");
     await expect(page.getByTestId("job-status")).toHaveText("Selesai", {
@@ -220,6 +228,7 @@ test.describe("admin", () => {
     page,
   }) => {
     await loginUi(page, ADMIN_TOKEN);
+    await gotoSection(page, "Dokumen");
     await page.getByText("Unggah PDF baru").click();
     await page.getByLabel("Berkas PDF (maks. 30 MB)").setInputFiles({
       name: "palsu.pdf",
@@ -239,7 +248,7 @@ test.describe("admin", () => {
       route.fulfill({ contentType: "application/json", body: "[]" }),
     );
     await loginUi(page, ADMIN_TOKEN);
-    await page.getByRole("tab", { name: "Evaluasi" }).click();
+    await gotoSection(page, "Evaluasi");
     await expect(page.getByTestId("eval-empty")).toContainText(
       "Belum ada run evaluasi",
     );
@@ -270,7 +279,7 @@ test.describe("admin", () => {
       }),
     );
     await page.reload();
-    await page.getByRole("tab", { name: "Evaluasi" }).click();
+    await gotoSection(page, "Evaluasi");
     await page.getByLabel("Bandingkan r_B1").check();
     await page.getByLabel("Bandingkan r_M1").check();
     const table = page.getByTestId("compare");

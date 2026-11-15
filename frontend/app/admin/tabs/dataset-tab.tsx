@@ -91,7 +91,7 @@ export function DatasetTab() {
         className="flex flex-col gap-4 rounded-2xl border border-line bg-surface p-5"
       >
         <h2 id="ringkasan-dataset" className="m-0 text-lg font-semibold">
-          Dataset pertanyaan uji
+          Kelengkapan dataset
         </h2>
         <p className="m-0 text-sm text-ink-muted">
           Pertanyaan, jawaban acuan, dan <code>gold_chunk_ids</code> ditulis

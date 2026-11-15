@@ -21,6 +21,12 @@
   --k2-danger: #9b1c1c;
   --k2-danger-tint: #fdecec;
   --k2-highlight: rgba(242, 183, 5, 0.3);
+  /* admin sidebar: a dark "control panel" in both themes */
+  --k2-side: #1c2430;
+  --k2-side-ink: #e8ecf1;
+  --k2-side-muted: #a8b3c2;
+  --k2-side-active: #2c3746;
+  --k2-side-line: #34404f;
   color-scheme: light;
 }
 
@@ -43,6 +49,9 @@
     --k2-danger: #ff9a9a;
     --k2-danger-tint: #3a1b1b;
     --k2-highlight: rgba(242, 183, 5, 0.38);
+    --k2-side: #0b1016;
+    --k2-side-active: #1d2733;
+    --k2-side-line: #232d3a;
     color-scheme: dark;
   }
 }
@@ -65,5 +74,8 @@
   --k2-danger: #ff9a9a;
   --k2-danger-tint: #3a1b1b;
   --k2-highlight: rgba(242, 183, 5, 0.38);
+  --k2-side: #0b1016;
+  --k2-side-active: #1d2733;
+  --k2-side-line: #232d3a;
   color-scheme: dark;
 }

@@ -117,3 +117,13 @@ export async function expectPdfRendered(scope: Locator) {
     )
     .toBeGreaterThan(300);
 }
+
+/** Open an admin section from the sidebar and wait for its page heading. */
+export async function gotoSection(page: Page, name: string) {
+  const nav = page.getByRole("navigation", { name: "Navigasi admin" });
+  await nav
+    .getByRole("link", { name: new RegExp(`^${name}`) })
+    .first()
+    .click();
+  await expect(page.getByRole("heading", { level: 1, name })).toBeVisible();
+}

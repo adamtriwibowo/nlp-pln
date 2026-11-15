@@ -29,7 +29,7 @@ const subscribe = (cb: () => void) => {
   };
 };
 
-export function ThemeToggle() {
+export function ThemeToggle({ onDark = false }: { onDark?: boolean }) {
   const theme = useSyncExternalStore(
     subscribe,
     current,
@@ -40,7 +40,11 @@ export function ThemeToggle() {
     <Button
       type="button"
       variant="outline"
-      className="size-11 min-h-11 rounded-xl"
+      className={
+        onDark
+          ? "size-11 min-h-11 shrink-0 rounded-xl border-side-line bg-transparent text-side-muted hover:bg-side-active/60 hover:text-side-ink"
+          : "size-11 min-h-11 rounded-xl"
+      }
       aria-label={next === "dark" ? "Pakai tema gelap" : "Pakai tema terang"}
       onClick={() => {
         document.documentElement.dataset.theme = next;

@@ -1,7 +1,7 @@
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test, type Page } from "@playwright/test";
 
-import { ADMIN_TOKEN, loginUi } from "./helpers";
+import { ADMIN_TOKEN, gotoSection, loginUi } from "./helpers";
 
 // One serial flow: the dataset created in the first test is used by the later ones. The API runs
 // with EVAL_DIR pointing at a temp directory, so the real data/eval/qa.jsonl is never touched.
@@ -32,7 +32,7 @@ const CANDIDATES = [
 async function openAdminTab(page: Page, tab: string) {
   await loginUi(page, ADMIN_TOKEN);
   await expect(page).toHaveURL(/\/admin/);
-  await page.getByRole("tab", { name: tab }).click();
+  await gotoSection(page, tab);
 }
 
 async function fillForm(
@@ -447,10 +447,10 @@ for (const scheme of ["light", "dark"] as const) {
     await openAdminTab(page, "Dataset");
     await expect(page.getByTestId("dataset-stats")).toBeVisible();
     await axeClean(page, `dataset ${scheme}`);
-    await page.getByRole("tab", { name: "Konfigurasi" }).click();
+    await gotoSection(page, "Konfigurasi");
     await expect(page.getByTestId("configs")).toBeVisible();
     await axeClean(page, `konfigurasi ${scheme}`);
-    await page.getByRole("tab", { name: "Uji pertanyaan" }).click();
+    await gotoSection(page, "Uji pertanyaan");
     await axeClean(page, `uji ${scheme}`);
   });
 }

@@ -26,6 +26,11 @@
   --color-danger: var(--k2-danger);
   --color-danger-tint: var(--k2-danger-tint);
   --color-highlight: var(--k2-highlight);
+  --color-side: var(--k2-side);
+  --color-side-ink: var(--k2-side-ink);
+  --color-side-muted: var(--k2-side-muted);
+  --color-side-active: var(--k2-side-active);
+  --color-side-line: var(--k2-side-line);
 
   /* shadcn semantic colours -> our tokens (so shadcn parts follow the design, not the defaults) */
   --color-background: var(--k2-ground);
