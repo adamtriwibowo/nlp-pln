@@ -364,5 +364,10 @@ test.describe("admin", () => {
     await expect(table.getByRole("row", { name: /Latensi p95/ })).toContainText(
       "900",
     );
+    // grouped bars: one labelled bar per run for each 0-1 metric
+    const bars = page.getByTestId("metric-bars");
+    await expect(bars).toBeVisible();
+    await expect(bars).toContainText("Recall@5");
+    await expect(bars).toContainText("0.800");
   });
 });

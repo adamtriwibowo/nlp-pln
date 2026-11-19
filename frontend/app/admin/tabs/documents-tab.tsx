@@ -220,11 +220,13 @@ function DocRow({
         ) : null}
       </td>
       <td className={cell}>
-        {d.file_present
-          ? `ada (${d.sha256})`
-          : d.file
-            ? "hilang"
-            : "belum diunduh"}
+        <span className="font-mono text-[13px]">
+          {d.file_present
+            ? `ada (${d.sha256})`
+            : d.file
+              ? "hilang"
+              : "belum diunduh"}
+        </span>
       </td>
       <td className={cell} data-testid={`ingest-${d.id}`}>
         {d.ingested ? (

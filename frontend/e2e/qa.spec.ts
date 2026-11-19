@@ -175,6 +175,21 @@ test.describe("jawaban dan sumber", () => {
     await expect(page.getByTestId("pdf-zoom")).toHaveText("100%");
   });
 
+  test("salin jawaban menyertakan sumber sebagai teks biasa", async ({
+    page,
+    context,
+  }) => {
+    await context.grantPermissions(["clipboard-read", "clipboard-write"]);
+    await openAnswer(page);
+    await page.getByTestId("copy-answer").click();
+    await expect(page.getByTestId("copy-answer")).toContainText("Tersalin");
+    const copied = await page.evaluate(() => navigator.clipboard.readText());
+    expect(copied).toContain("sertifikat laik operasi");
+    expect(copied).toContain("Sumber:");
+    expect(copied).toContain("[1] Pasal 18");
+    expect(copied).toContain("hlm. 14");
+  });
+
   test("abstain tampil sebagai jawaban yang jelas, bukan galat", async ({
     page,
   }) => {

@@ -107,7 +107,10 @@ export function EvalTab() {
                       />
                     </label>
                   </td>
-                  <th scope="row" className="px-3 py-2.5 font-medium">
+                  <th
+                    scope="row"
+                    className="px-3 py-2.5 font-mono text-[13px] font-medium"
+                  >
                     {r.run_id}
                   </th>
                   <td className="px-3 py-2.5">{r.config}</td>
@@ -155,7 +158,7 @@ function CompareTable({ runs }: { runs: EvalRun[] }) {
                   className="px-3 py-2.5 font-semibold"
                 >
                   {r.config}
-                  <span className="block text-[11px] font-normal">
+                  <span className="block font-mono text-[11px] font-normal">
                     {r.run_id}
                   </span>
                 </th>
@@ -195,6 +198,62 @@ function CompareTable({ runs }: { runs: EvalRun[] }) {
       <p className="m-0 text-[13px] text-ink-muted">
         Nilai terbaik per baris dicetak tebal.
       </p>
+      <MetricBars runs={runs} />
     </section>
+  );
+}
+
+// Colors only separate the bars; every bar also carries its configuration name and value as text.
+const SERIES = [
+  "var(--k2-cite)",
+  "var(--k2-brand)",
+  "var(--k2-ok)",
+  "var(--k2-danger)",
+  "var(--k2-muted)",
+];
+
+/** Grouped bars for the 0-1 metrics (the table above is the accessible equivalent). */
+function MetricBars({ runs }: { runs: EvalRun[] }) {
+  const rows = METRIC_ROWS.filter(
+    (m) => m.pct && runs.some((r) => r.metrics?.all?.[m.key] !== undefined),
+  );
+  if (rows.length === 0) return null;
+  return (
+    <div
+      aria-hidden="true"
+      data-testid="metric-bars"
+      className="flex flex-col gap-5 rounded-2xl border border-line bg-surface p-5"
+    >
+      {rows.map((m) => (
+        <div key={m.key} className="flex flex-col gap-1.5">
+          <span className="text-sm font-semibold">{m.label}</span>
+          {runs.map((r, i) => {
+            const v = r.metrics?.all?.[m.key];
+            return (
+              <div
+                key={r.run_id}
+                className="flex items-center gap-3 text-[13px]"
+              >
+                <span className="w-24 shrink-0 truncate text-ink-muted">
+                  {r.config}
+                </span>
+                <div className="h-3 flex-1 overflow-hidden rounded-full bg-surface-2">
+                  <div
+                    className="h-full rounded-full transition-[width] duration-500"
+                    style={{
+                      width: `${Math.round(Math.min(Math.max(v ?? 0, 0), 1) * 100)}%`,
+                      background: SERIES[i % SERIES.length],
+                    }}
+                  />
+                </div>
+                <span className="w-14 shrink-0 text-right font-mono tabular-nums">
+                  {fmt(v, true)}
+                </span>
+              </div>
+            );
+          })}
+        </div>
+      ))}
+    </div>
   );
 }

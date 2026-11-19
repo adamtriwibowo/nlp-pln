@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Inter, Space_Grotesk } from "next/font/google";
+import { EB_Garamond, Fira_Code, Inter, Space_Grotesk } from "next/font/google";
 
 import "./globals.css";
 import "../styles/tokens.css";
@@ -15,6 +15,21 @@ const grotesk = Space_Grotesk({
   variable: "--font-grotesk",
   subsets: ["latin"],
   weight: ["600", "700"],
+  display: "swap",
+});
+
+// Regulation wording is set in a book serif so quoted articles read as legal text, and ids/hashes
+// in the admin area use a monospace face with tabular figures.
+const garamond = EB_Garamond({
+  variable: "--font-garamond",
+  subsets: ["latin"],
+  weight: ["400", "500", "600"],
+  display: "swap",
+});
+const fira = Fira_Code({
+  variable: "--font-fira",
+  subsets: ["latin"],
+  weight: ["400", "500"],
   display: "swap",
 });
 
@@ -45,7 +60,7 @@ export default function RootLayout({
   return (
     <html
       lang="id"
-      className={`${inter.variable} ${grotesk.variable} h-full antialiased`}
+      className={`${inter.variable} ${grotesk.variable} ${garamond.variable} ${fira.variable} h-full antialiased`}
       suppressHydrationWarning
     >
       <head>

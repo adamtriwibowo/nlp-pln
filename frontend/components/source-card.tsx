@@ -37,7 +37,7 @@ export function SourceCard({
           {citation.ref}
           {citation.page_start ? ` · hlm. ${citation.page_start}` : ""}
         </p>
-        <blockquote className="m-0 whitespace-pre-line text-sm leading-relaxed text-ink">
+        <blockquote className="m-0 whitespace-pre-line border-l-2 border-brand pl-3 font-serif text-[19px] leading-relaxed text-ink">
           “{citation.quote}”
         </blockquote>
       </div>

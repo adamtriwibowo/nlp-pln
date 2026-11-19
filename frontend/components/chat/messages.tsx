@@ -1,6 +1,7 @@
 "use client";
 
-import { RotateCcw, Zap } from "lucide-react";
+import { Check, Copy, RotateCcw, Zap } from "lucide-react";
+import { useState } from "react";
 
 import { AgentSteps } from "@/components/agent-steps";
 import { AnswerView } from "@/components/answer-view";
@@ -111,8 +112,55 @@ export function AssistantTurn({
           ))}
         </section>
       ) : null}
-      <FeedbackBar key={turn.meta.query_id} queryId={turn.meta.query_id} />
+      <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+        <CopyAnswer turn={turn} />
+        <FeedbackBar key={turn.meta.query_id} queryId={turn.meta.query_id} />
+      </div>
     </AssistantFrame>
+  );
+}
+
+/** Copies the answer with its sources as plain text (article, document and page per citation). */
+function CopyAnswer({ turn }: { turn: FinishedAnswer }) {
+  const [copied, setCopied] = useState(false);
+  const text = [
+    turn.answer,
+    ...(turn.citations.length
+      ? [
+          "",
+          "Sumber:",
+          ...turn.citations.map(
+            (c) =>
+              `[${c.label}] ${c.ref}${c.doc_title ? `, ${c.doc_title}` : ""}${
+                c.page_start ? `, hlm. ${c.page_start}` : ""
+              }`,
+          ),
+        ]
+      : []),
+  ].join("\n");
+  return (
+    <Button
+      type="button"
+      variant="outline"
+      data-testid="copy-answer"
+      onClick={async () => {
+        try {
+          await navigator.clipboard.writeText(text);
+          setCopied(true);
+          setTimeout(() => setCopied(false), 2000);
+        } catch {
+          /* clipboard blocked (insecure context): nothing to confirm */
+        }
+      }}
+      className="min-h-11 rounded-xl px-4 text-sm"
+    >
+      {copied ? (
+        <Check aria-hidden="true" className="text-ok" />
+      ) : (
+        <Copy aria-hidden="true" />
+      )}
+      {copied ? "Tersalin" : "Salin jawaban"}
+    </Button>
   );
 }
 

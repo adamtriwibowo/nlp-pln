@@ -107,7 +107,7 @@ export function SourcePanel({
                 aria-label="Teks pasal (bisa digulir)"
                 className="flex max-h-56 flex-col gap-2 overflow-y-auto px-4 pb-4"
               >
-                <p className="m-0 whitespace-pre-line text-[15px] leading-[1.7]">
+                <p className="m-0 whitespace-pre-line font-serif text-[19px] leading-[1.7]">
                   {chunk.data.text}
                 </p>
                 {chunk.data.ocr_noisy ? (
