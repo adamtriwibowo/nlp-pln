@@ -393,6 +393,15 @@ test.describe("jawaban dan sumber", () => {
 test.describe("ponsel", () => {
   test.use({ viewport: { width: 390, height: 844 } });
 
+  test("layar sambutan dimulai dari atas: judul terlihat penuh", async ({
+    page,
+  }) => {
+    await page.goto("/");
+    const h1 = page.getByRole("heading", { level: 1 });
+    await expect(h1).toBeInViewport({ ratio: 1 });
+    await expect(page.getByLabel("Pertanyaan Anda")).toBeInViewport();
+  });
+
   test("menu percakapan terbuka sebagai laci dan riwayat bisa dibuka", async ({
     page,
   }) => {

@@ -116,11 +116,12 @@ export function ChatApp() {
   useEffect(() => {
     const el = scrollRef.current;
     if (!el) return;
+    if (turns.length === 0 && !live) return; // the welcome screen always starts at the top
     const nearBottom = el.scrollHeight - el.scrollTop - el.clientHeight < 200;
     if (nearBottom || (state.status === "loading" && partial === "")) {
       el.scrollTop = el.scrollHeight;
     }
-  }, [turns.length, partial, state.status]);
+  }, [turns.length, partial, state.status, live]);
 
   const go = (path: string) => {
     setDrawerOpen(false);
@@ -214,10 +215,10 @@ export function ChatApp() {
 
         <div ref={scrollRef} className="min-h-0 flex-1 overflow-y-auto">
           {empty ? (
-            <div className="mx-auto flex min-h-full w-full max-w-[760px] flex-col items-center justify-center gap-6 px-5 py-10">
+            <div className="mx-auto flex min-h-full w-full max-w-[760px] flex-col items-center justify-center gap-5 px-5 py-8 sm:py-10">
               <span
                 aria-hidden="true"
-                className="flex size-14 items-center justify-center rounded-2xl bg-brand text-brand-ink"
+                className="flex size-14 items-center justify-center rounded-2xl bg-brand text-brand-ink [@media(max-height:760px)]:hidden"
               >
                 <svg
                   viewBox="0 0 24 24"

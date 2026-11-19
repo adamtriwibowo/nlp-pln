@@ -26,7 +26,7 @@ export function ExampleQuestions({ onPick }: { onPick: (q: string) => void }) {
   return (
     <section aria-labelledby="contoh" className="flex w-full flex-col gap-3">
       <h2 id="contoh" className="m-0 text-[15px] font-semibold text-ink-muted">
-        Belum tahu mulai dari mana? Coba salah satu:
+        Contoh pertanyaan
       </h2>
       <ul className="m-0 grid list-none grid-cols-1 gap-2.5 p-0 sm:grid-cols-2">
         {EXAMPLES.map((q) => (
