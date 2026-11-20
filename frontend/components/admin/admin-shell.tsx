@@ -85,13 +85,13 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
             aria-label="Buka menu"
             data-testid="open-drawer"
             onClick={() => setDrawerPath(pathname)}
-            className="flex size-11 cursor-pointer items-center justify-center rounded-xl border border-line bg-surface text-ink hover:bg-surface-2"
+            className="flex size-11 cursor-pointer items-center justify-center rounded-lg border border-line bg-surface text-ink hover:bg-surface-2"
           >
             <Menu className="size-5" aria-hidden="true" />
           </button>
           <Link
             href="/admin"
-            className="font-heading text-lg font-bold tracking-tight no-underline"
+            className="font-heading text-lg font-semibold tracking-tight no-underline"
           >
             K2-RAG
           </Link>

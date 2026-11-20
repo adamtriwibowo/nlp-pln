@@ -90,7 +90,7 @@ function ReviewBoard({
     <main className="mx-auto flex w-full max-w-4xl flex-1 flex-col gap-6 px-4 py-6 sm:px-8">
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div className="flex flex-col gap-1">
-          <h1 className="m-0 font-heading text-3xl font-bold tracking-tight">
+          <h1 className="m-0 font-heading text-3xl font-semibold tracking-tight">
             Review jawaban
           </h1>
           <p className="m-0 text-sm text-ink-muted">
@@ -101,7 +101,7 @@ function ReviewBoard({
         <a
           href="/api/review/export.csv"
           download
-          className="inline-flex min-h-11 items-center gap-2 rounded-xl border border-line bg-surface px-4 text-sm font-semibold text-cite hover:bg-surface-2"
+          className="inline-flex min-h-11 items-center gap-2 rounded-lg border border-line bg-surface px-4 text-sm font-semibold text-cite hover:bg-surface-2"
         >
           <Download className="size-4" aria-hidden="true" />
           Ekspor CSV
@@ -132,7 +132,7 @@ function ReviewBoard({
 
       {item === null ? (
         <section
-          className="rounded-2xl border border-line bg-surface p-8 text-center"
+          className="rounded-xl border border-line bg-surface p-8 text-center"
           data-testid="review-empty"
         >
           <h2 className="m-0 text-xl font-semibold">
@@ -234,7 +234,7 @@ function ReviewItemCard({
   return (
     <div className="flex flex-col gap-6">
       <section
-        className="flex flex-col gap-3 rounded-2xl border border-line bg-surface p-6"
+        className="flex flex-col gap-3 rounded-xl border border-line bg-surface p-6"
         aria-label="Pertanyaan dan jawaban"
       >
         <span className="text-xs font-semibold uppercase tracking-[0.06em] text-ink-muted">
@@ -277,7 +277,7 @@ function ReviewItemCard({
           {item.answer.citations.map((c) => (
             <div
               key={c.label}
-              className="rounded-xl border border-line bg-surface p-4"
+              className="rounded-lg border border-line bg-surface p-4"
             >
               <div className="flex flex-wrap items-center justify-between gap-2">
                 <p className="m-0 text-sm font-semibold">
@@ -318,7 +318,7 @@ function ReviewItemCard({
 
       <section
         aria-label="Penilaian"
-        className="flex flex-col gap-5 rounded-2xl border border-line bg-surface p-6"
+        className="flex flex-col gap-5 rounded-xl border border-line bg-surface p-6"
       >
         {DIMENSIONS.map((d, i) => (
           <div
@@ -327,7 +327,7 @@ function ReviewItemCard({
             aria-label={`${d.label}: ${d.hint}`}
             data-active={row === i}
             onFocus={() => setRow(i)}
-            className={`flex flex-wrap items-center justify-between gap-3 rounded-xl p-2 ${
+            className={`flex flex-wrap items-center justify-between gap-3 rounded-lg p-2 ${
               row === i ? "bg-cite-tint" : ""
             }`}
           >
@@ -348,7 +348,7 @@ function ReviewItemCard({
                     setRow(i);
                     setScores((s) => ({ ...s, [d.key]: n }));
                   }}
-                  className={`size-11 cursor-pointer rounded-xl border text-base font-semibold transition-colors ${
+                  className={`size-11 cursor-pointer rounded-lg border text-base font-semibold transition-colors ${
                     scores[d.key] === n
                       ? "border-cite bg-cite text-on-cite"
                       : "border-field bg-surface text-ink hover:bg-surface-2"
@@ -391,7 +391,7 @@ function ReviewItemCard({
             data-testid="submit-score"
             disabled={!complete || send.isPending}
             onClick={() => send.mutate()}
-            className="min-h-12 rounded-xl bg-brand px-6 text-base font-semibold text-brand-ink hover:bg-brand/90"
+            className="min-h-12 rounded-lg bg-brand px-6 text-base font-semibold text-brand-ink hover:bg-brand/90"
           >
             {send.isPending ? "Menyimpan…" : "Kirim penilaian"}
           </Button>

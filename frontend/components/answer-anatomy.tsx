@@ -20,7 +20,7 @@ export function AnswerAnatomy() {
     >
       <div
         aria-hidden="true"
-        className="relative overflow-hidden rounded-3xl border border-line bg-surface p-5 shadow-[0_2px_4px_rgba(28,36,48,0.05),0_24px_48px_-12px_rgba(28,36,48,0.16)] sm:p-6"
+        className="relative overflow-hidden rounded-2xl border border-line bg-surface p-5 shadow-[0_2px_4px_rgba(28,36,48,0.05),0_24px_48px_-12px_rgba(28,36,48,0.16)] sm:p-6"
       >
         {/* question */}
         <div className="flex items-center gap-3">
@@ -34,7 +34,7 @@ export function AnswerAnatomy() {
         </div>
 
         {/* answer with citation chips */}
-        <div className="mt-5 flex flex-col gap-2.5 rounded-2xl bg-ground p-4">
+        <div className="mt-5 flex flex-col gap-2.5 rounded-xl bg-ground p-4">
           <div className="flex items-center gap-2">
             <div className={bar("w-2/3", "bg-ink/25")} />
             <Chip n={1} />
@@ -48,7 +48,7 @@ export function AnswerAnatomy() {
 
         {/* source page with the highlighted passage */}
         <div className="mt-4 flex gap-4">
-          <div className="relative w-[46%] shrink-0 rounded-xl border border-line bg-white p-3 shadow-sm">
+          <div className="relative w-[46%] shrink-0 rounded-lg border border-line bg-white p-3 shadow-sm">
             <div className="flex flex-col gap-2">
               <div className="h-2 w-2/5 rounded-full bg-slate-300" />
               <div className="h-1.5 w-full rounded-full bg-slate-200" />

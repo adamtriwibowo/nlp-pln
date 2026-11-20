@@ -30,7 +30,7 @@ export function BottomSheet({
       onClick={(e) => {
         if (e.target === ref.current) onClose();
       }}
-      className="sheet m-0 mt-auto max-h-[88dvh] w-full max-w-none overflow-y-auto rounded-t-2xl border border-line bg-surface p-0 text-ink shadow-2xl"
+      className="sheet m-0 mt-auto max-h-[88dvh] w-full max-w-none overflow-y-auto rounded-t-xl border border-line bg-surface p-0 text-ink shadow-2xl"
     >
       <div
         className="mx-auto mt-2 h-1.5 w-10 rounded-full bg-line"

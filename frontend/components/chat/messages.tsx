@@ -27,7 +27,7 @@ export function UserBubble({
       <div className="flex max-w-[88%] flex-col items-end gap-1 sm:max-w-[80%]">
         <p
           data-testid="user-message"
-          className="m-0 whitespace-pre-line rounded-3xl rounded-br-lg bg-surface-2 px-5 py-3 text-[17px] leading-relaxed"
+          className="m-0 whitespace-pre-line rounded-2xl rounded-br-sm bg-surface-2 px-5 py-3 text-[17px] leading-relaxed"
         >
           {text}
         </p>
@@ -91,7 +91,7 @@ export function AssistantTurn({
         streaming={false}
       />
       {turn.meta.abstained ? (
-        <p className="m-0 rounded-xl bg-warn-tint px-3.5 py-2.5 text-sm text-warn">
+        <p className="m-0 rounded-lg bg-warn-tint px-3.5 py-2.5 text-sm text-warn">
           Sistem memilih tidak menjawab karena bukti di dokumen belum cukup.
           Coba rumuskan pertanyaan dengan istilah yang dipakai dalam peraturan,
           atau rujuk dokumen aslinya.
@@ -152,7 +152,7 @@ function CopyAnswer({ turn }: { turn: FinishedAnswer }) {
           /* clipboard blocked (insecure context): nothing to confirm */
         }
       }}
-      className="min-h-11 rounded-xl px-4 text-sm"
+      className="min-h-11 rounded-lg px-4 text-sm"
     >
       {copied ? (
         <Check aria-hidden="true" className="text-ok" />
@@ -197,7 +197,7 @@ export function LiveTurn({
             <Button
               type="button"
               variant="outline"
-              className="min-h-11 rounded-xl px-4"
+              className="min-h-11 rounded-lg px-4"
               onClick={onRetry}
             >
               <RotateCcw aria-hidden="true" />

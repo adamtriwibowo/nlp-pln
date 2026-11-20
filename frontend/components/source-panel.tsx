@@ -62,7 +62,7 @@ export function SourcePanel({
             variant="outline"
             aria-label="Tutup panel sumber"
             onClick={onClose}
-            className="size-11 min-h-11 shrink-0 rounded-[10px]"
+            className="size-11 min-h-11 shrink-0 rounded-lg"
           >
             <X aria-hidden="true" />
           </Button>
@@ -96,7 +96,7 @@ export function SourcePanel({
             />
             <details
               open
-              className="shrink-0 rounded-xl border border-line bg-surface"
+              className="shrink-0 rounded-lg border border-line bg-surface"
             >
               <summary className="min-h-11 cursor-pointer px-4 py-2.5 text-sm font-semibold">
                 Teks pasal

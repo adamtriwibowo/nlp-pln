@@ -198,7 +198,7 @@ export function ChatApp() {
             aria-label="Buka menu percakapan"
             data-testid="open-chat-menu"
             onClick={() => setDrawerOpen(true)}
-            className="flex size-11 cursor-pointer items-center justify-center rounded-xl text-ink hover:bg-surface-2"
+            className="flex size-11 cursor-pointer items-center justify-center rounded-lg text-ink hover:bg-surface-2"
           >
             <Menu aria-hidden="true" />
           </button>
@@ -207,7 +207,7 @@ export function ChatApp() {
             type="button"
             aria-label="Percakapan baru"
             onClick={newChat}
-            className="flex size-11 cursor-pointer items-center justify-center rounded-xl text-ink hover:bg-surface-2"
+            className="flex size-11 cursor-pointer items-center justify-center rounded-lg text-ink hover:bg-surface-2"
           >
             <SquarePen aria-hidden="true" />
           </button>
@@ -218,7 +218,7 @@ export function ChatApp() {
             <div className="mx-auto flex min-h-full w-full max-w-[760px] flex-col items-center justify-center gap-5 px-5 py-8 sm:py-10">
               <span
                 aria-hidden="true"
-                className="flex size-14 items-center justify-center rounded-2xl bg-brand text-brand-ink [@media(max-height:760px)]:hidden"
+                className="flex size-14 items-center justify-center rounded-xl bg-brand text-brand-ink [@media(max-height:760px)]:hidden"
               >
                 <svg
                   viewBox="0 0 24 24"
@@ -233,7 +233,7 @@ export function ChatApp() {
                   <path d="M13 2 4 14h7l-1 8 9-12h-7l1-8z" />
                 </svg>
               </span>
-              <h1 className="m-0 text-balance text-center font-heading text-3xl font-bold leading-tight tracking-tight sm:text-4xl">
+              <h1 className="m-0 text-balance text-center font-heading text-3xl font-semibold leading-tight tracking-tight sm:text-4xl">
                 Tanya aturan K3 listrik, lengkap dengan pasalnya
               </h1>
               <p className="m-0 max-w-[560px] text-center text-base leading-relaxed text-ink-muted">

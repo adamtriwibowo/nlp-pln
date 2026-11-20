@@ -1,20 +1,14 @@
 import type { Metadata, Viewport } from "next";
-import { EB_Garamond, Fira_Code, Inter, Space_Grotesk } from "next/font/google";
+import { EB_Garamond, Geist, Geist_Mono } from "next/font/google";
 
 import "./globals.css";
 import "../styles/tokens.css";
 import { SiteHeader } from "@/components/site-header";
 import { QueryProvider } from "@/lib/query-provider";
 
-const inter = Inter({
-  variable: "--font-inter",
+const geist = Geist({
+  variable: "--font-geist",
   subsets: ["latin"],
-  display: "swap",
-});
-const grotesk = Space_Grotesk({
-  variable: "--font-grotesk",
-  subsets: ["latin"],
-  weight: ["600", "700"],
   display: "swap",
 });
 
@@ -26,10 +20,9 @@ const garamond = EB_Garamond({
   weight: ["400", "500", "600"],
   display: "swap",
 });
-const fira = Fira_Code({
-  variable: "--font-fira",
+const geistMono = Geist_Mono({
+  variable: "--font-geist-mono",
   subsets: ["latin"],
-  weight: ["400", "500"],
   display: "swap",
 });
 
@@ -60,7 +53,7 @@ export default function RootLayout({
   return (
     <html
       lang="id"
-      className={`${inter.variable} ${grotesk.variable} ${garamond.variable} ${fira.variable} h-full antialiased`}
+      className={`${geist.variable} ${garamond.variable} ${geistMono.variable} h-full antialiased`}
       suppressHydrationWarning
     >
       <head>

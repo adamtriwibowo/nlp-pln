@@ -4,10 +4,10 @@
 
 /* Design tokens live in styles/tokens.css (--k2-*). Everything below maps them to Tailwind. */
 @theme inline {
-  --font-sans: var(--font-inter), system-ui, sans-serif;
-  --font-heading: var(--font-grotesk), var(--font-inter), system-ui, sans-serif;
+  --font-sans: var(--font-geist), system-ui, sans-serif;
+  --font-heading: var(--font-geist), system-ui, sans-serif;
   --font-serif: var(--font-garamond), Georgia, serif;
-  --font-mono: var(--font-fira), ui-monospace, monospace;
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
 
   --color-ink: var(--k2-ink);
   --color-ink-muted: var(--k2-muted);
@@ -61,7 +61,7 @@
 }
 
 :root {
-  --radius: 0.75rem;
+  --radius: 0.5rem;
 }
 
 html {
@@ -72,8 +72,9 @@ body {
   background: var(--k2-ground);
   color: var(--k2-ink);
   font-family: var(--font-sans);
-  font-size: 16px;
+  font-size: 15px;
   line-height: 1.6;
+  letter-spacing: -0.006em;
 }
 
 :focus-visible {
@@ -125,4 +126,11 @@ dialog.sheet::backdrop {
 .hero-highlight {
   transform-origin: left center;
   animation: hero-sweep 0.9s 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* Tighter, calmer headings (shadcn-style). */
+h1,
+h2,
+h3 {
+  letter-spacing: -0.02em;
 }

@@ -16,7 +16,7 @@ export default function TentangPage() {
       >
         <div className="mx-auto grid w-full max-w-[1160px] items-center gap-12 px-6 py-12 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)] lg:py-16">
           <div className="flex flex-col items-start gap-5">
-            <h1 className="m-0 max-w-[620px] text-balance font-heading text-4xl font-bold leading-[1.1] tracking-tight sm:text-5xl">
+            <h1 className="m-0 max-w-[620px] text-balance font-heading text-4xl font-semibold leading-[1.1] tracking-tight sm:text-5xl">
               Jawaban K3 listrik yang bisa Anda periksa sendiri
             </h1>
             <p className="m-0 max-w-[560px] text-lg leading-relaxed text-ink-muted">

@@ -17,7 +17,7 @@ export function SourceCard({
   return (
     <article
       data-testid={`source-${citation.label}`}
-      className={`flex flex-wrap items-start gap-3.5 rounded-[14px] bg-surface p-4 ${
+      className={`flex flex-wrap items-start gap-3.5 rounded-xl bg-surface p-4 ${
         active ? "border-2 border-cite" : "border border-line"
       }`}
     >
@@ -45,7 +45,7 @@ export function SourceCard({
         type="button"
         variant="outline"
         onClick={onOpen}
-        className="min-h-11 rounded-[10px] border-cite px-4 text-sm font-semibold text-cite"
+        className="min-h-11 rounded-lg border-cite px-4 text-sm font-semibold text-cite"
       >
         Buka di PDF
         <ExternalLink aria-hidden="true" />

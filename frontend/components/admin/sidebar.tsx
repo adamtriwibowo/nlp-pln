@@ -73,7 +73,7 @@ function NavLink({
         collapsed ? "justify-center px-0" : ""
       } ${
         active
-          ? "bg-side-active text-side-ink before:absolute before:bottom-2 before:left-0 before:top-2 before:w-[3px] before:rounded-full before:bg-brand"
+          ? "bg-side-active text-side-ink before:absolute before:bottom-2 before:left-0 before:top-2 before:w-[3px] before:rounded-full before:bg-side-ink"
           : "text-side-muted hover:bg-side-active/60 hover:text-side-ink"
       }`}
     >
@@ -137,7 +137,7 @@ export function SidebarContent({
           className="flex items-center gap-3 rounded-lg no-underline"
         >
           <span
-            className="flex size-9 shrink-0 items-center justify-center rounded-[10px] bg-brand"
+            className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-brand"
             aria-hidden="true"
           >
             <svg
@@ -155,7 +155,7 @@ export function SidebarContent({
           </span>
           {collapsed ? null : (
             <span className="flex flex-col leading-tight">
-              <span className="font-heading text-lg font-bold tracking-tight text-side-ink">
+              <span className="font-heading text-lg font-semibold tracking-tight text-side-ink">
                 K2-RAG
               </span>
               <span className="text-[13px] text-side-muted">Panel admin</span>

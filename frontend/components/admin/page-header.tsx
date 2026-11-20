@@ -11,7 +11,7 @@ export function PageHeader({
   return (
     <header className="mb-7 flex flex-wrap items-end justify-between gap-x-6 gap-y-3">
       <div className="flex max-w-2xl flex-col gap-1.5">
-        <h1 className="m-0 font-heading text-[28px] font-bold leading-tight tracking-tight">
+        <h1 className="m-0 font-heading text-[28px] font-semibold leading-tight tracking-tight">
           {title}
         </h1>
         <p className="m-0 text-[15px] leading-relaxed text-ink-muted">

@@ -106,7 +106,7 @@ export default function PdfViewerInner({
               aria-label="Perkecil"
               disabled={zoom <= ZOOM_MIN}
               onClick={() => setZoom((z) => Math.max(ZOOM_MIN, z - ZOOM_STEP))}
-              className="size-11 min-h-11 rounded-[10px]"
+              className="size-11 min-h-11 rounded-lg"
             >
               <Minus aria-hidden="true" />
             </Button>
@@ -116,7 +116,7 @@ export default function PdfViewerInner({
               title="Sesuaikan ke lebar panel"
               onClick={() => setZoom(1)}
               data-testid="pdf-zoom"
-              className="min-h-11 min-w-14 cursor-pointer rounded-[10px] px-2 text-sm font-semibold tabular-nums hover:bg-surface-2"
+              className="min-h-11 min-w-14 cursor-pointer rounded-lg px-2 text-sm font-semibold tabular-nums hover:bg-surface-2"
             >
               {Math.round(zoom * 100)}%
             </button>
@@ -126,7 +126,7 @@ export default function PdfViewerInner({
               aria-label="Perbesar"
               disabled={zoom >= ZOOM_MAX}
               onClick={() => setZoom((z) => Math.min(ZOOM_MAX, z + ZOOM_STEP))}
-              className="size-11 min-h-11 rounded-[10px]"
+              className="size-11 min-h-11 rounded-lg"
             >
               <Plus aria-hidden="true" />
             </Button>
@@ -137,7 +137,7 @@ export default function PdfViewerInner({
             aria-label="Halaman sebelumnya"
             disabled={page <= 1}
             onClick={() => go(-1)}
-            className="size-11 min-h-11 rounded-[10px]"
+            className="size-11 min-h-11 rounded-lg"
           >
             <ChevronLeft aria-hidden="true" />
           </Button>
@@ -147,7 +147,7 @@ export default function PdfViewerInner({
             aria-label="Halaman berikutnya"
             disabled={numPages !== null && page >= numPages}
             onClick={() => go(1)}
-            className="size-11 min-h-11 rounded-[10px]"
+            className="size-11 min-h-11 rounded-lg"
           >
             <ChevronRight aria-hidden="true" />
           </Button>
@@ -155,7 +155,7 @@ export default function PdfViewerInner({
             href={url}
             download
             aria-label="Unduh PDF"
-            className="inline-flex size-11 items-center justify-center rounded-[10px] border border-line bg-surface text-ink hover:bg-surface-2"
+            className="inline-flex size-11 items-center justify-center rounded-lg border border-line bg-surface text-ink hover:bg-surface-2"
           >
             <Download className="size-[18px]" aria-hidden="true" />
           </a>

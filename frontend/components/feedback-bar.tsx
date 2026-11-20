@@ -31,7 +31,7 @@ export function FeedbackBar({ queryId }: { queryId: number }) {
       aria-label={label}
       aria-pressed={thumbs === value}
       onClick={() => setThumbs(value)}
-      className={`size-11 min-h-11 rounded-xl ${thumbs === value ? "border-cite bg-cite-tint text-cite" : ""}`}
+      className={`size-11 min-h-11 rounded-lg ${thumbs === value ? "border-cite bg-cite-tint text-cite" : ""}`}
     >
       <Icon className="size-5" aria-hidden="true" />
     </Button>
@@ -61,7 +61,7 @@ export function FeedbackBar({ queryId }: { queryId: number }) {
               type="button"
               disabled={send.isPending}
               onClick={() => send.mutate()}
-              className="min-h-11 rounded-xl bg-brand px-5 font-semibold text-brand-ink hover:bg-brand/90"
+              className="min-h-11 rounded-lg bg-brand px-5 font-semibold text-brand-ink hover:bg-brand/90"
             >
               Kirim umpan balik
             </Button>

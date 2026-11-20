@@ -51,7 +51,7 @@ const pairs = [
   ["side-muted", "side", 4.5, "sidebar secondary text"],
   ["side-ink", "side-active", 4.5, "sidebar active item"],
   ["side-muted", "side-active", 4.5, "sidebar muted on active"],
-  ["brand", "side", 3, "sidebar active indicator"],
+  ["field", "side", 3, "sidebar controls and dividers"],
   ["field", "surface", 3, "form control border on cards"],
   ["field", "ground", 3, "form control border on page"],
   ["line", "ground", 1.2, "card borders (decorative, informational only)"],

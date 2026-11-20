@@ -42,8 +42,8 @@ export function ThemeToggle({ onDark = false }: { onDark?: boolean }) {
       variant="outline"
       className={
         onDark
-          ? "size-11 min-h-11 shrink-0 rounded-xl border-side-line bg-transparent text-side-muted hover:bg-side-active/60 hover:text-side-ink"
-          : "size-11 min-h-11 rounded-xl"
+          ? "size-11 min-h-11 shrink-0 rounded-lg border-side-line bg-transparent text-side-muted hover:bg-side-active/60 hover:text-side-ink"
+          : "size-11 min-h-11 rounded-lg"
       }
       aria-label={next === "dark" ? "Pakai tema gelap" : "Pakai tema terang"}
       onClick={() => {

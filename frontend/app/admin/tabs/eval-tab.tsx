@@ -52,7 +52,7 @@ export function EvalTab() {
   if (runs.data.length === 0) {
     return (
       <section
-        className="rounded-2xl border border-line bg-surface p-8 text-center"
+        className="rounded-xl border border-line bg-surface p-8 text-center"
         data-testid="eval-empty"
       >
         <h2 className="m-0 text-lg font-semibold">Belum ada run evaluasi</h2>
@@ -73,7 +73,7 @@ export function EvalTab() {
         <h2 id="daftar-run" className="m-0 text-lg font-semibold">
           Run evaluasi
         </h2>
-        <div className="overflow-x-auto rounded-2xl border border-line bg-surface">
+        <div className="overflow-x-auto rounded-xl border border-line bg-surface">
           <table className="w-full min-w-[640px] border-collapse text-left text-sm">
             <caption className="sr-only">
               Daftar run evaluasi; centang untuk membandingkan
@@ -141,7 +141,7 @@ function CompareTable({ runs }: { runs: EvalRun[] }) {
       <h2 id="bandingkan" className="m-0 text-lg font-semibold">
         Perbandingan (semua pertanyaan)
       </h2>
-      <div className="overflow-x-auto rounded-2xl border border-line bg-surface">
+      <div className="overflow-x-auto rounded-xl border border-line bg-surface">
         <table
           className="w-full border-collapse text-left text-sm"
           data-testid="compare"
@@ -222,7 +222,7 @@ function MetricBars({ runs }: { runs: EvalRun[] }) {
     <div
       aria-hidden="true"
       data-testid="metric-bars"
-      className="flex flex-col gap-5 rounded-2xl border border-line bg-surface p-5"
+      className="flex flex-col gap-5 rounded-xl border border-line bg-surface p-5"
     >
       {rows.map((m) => (
         <div key={m.key} className="flex flex-col gap-1.5">

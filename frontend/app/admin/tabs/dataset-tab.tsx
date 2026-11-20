@@ -88,7 +88,7 @@ export function DatasetTab() {
       <section
         aria-labelledby="ringkasan-dataset"
         data-testid="dataset-stats"
-        className="flex flex-col gap-4 rounded-2xl border border-line bg-surface p-5"
+        className="flex flex-col gap-4 rounded-xl border border-line bg-surface p-5"
       >
         <h2 id="ringkasan-dataset" className="m-0 text-lg font-semibold">
           Kelengkapan dataset
@@ -125,7 +125,7 @@ export function DatasetTab() {
             ["Lintas pasal", view.stats.by_type.multihop],
             ["Di luar korpus", view.stats.by_type.unanswerable],
           ].map(([k, v]) => (
-            <div key={k} className="rounded-xl bg-surface-2 px-3 py-2">
+            <div key={k} className="rounded-lg bg-surface-2 px-3 py-2">
               <dt className="text-[13px] text-ink-muted">{k}</dt>
               <dd className="m-0 text-xl font-semibold tabular-nums">{v}</dd>
             </div>
@@ -182,14 +182,14 @@ export function DatasetTab() {
                   data-testid="freeze-confirm"
                   disabled={freeze.isPending}
                   onClick={() => freeze.mutate()}
-                  className="min-h-11 rounded-xl bg-danger px-5 font-semibold text-surface hover:bg-danger/90"
+                  className="min-h-11 rounded-lg bg-danger px-5 font-semibold text-surface hover:bg-danger/90"
                 >
                   Ya, bekukan
                 </Button>
                 <Button
                   type="button"
                   variant="outline"
-                  className="min-h-11 rounded-xl px-5"
+                  className="min-h-11 rounded-lg px-5"
                   onClick={() => setConfirmFreeze(false)}
                 >
                   Batal
@@ -203,7 +203,7 @@ export function DatasetTab() {
                   data-testid="freeze"
                   disabled={view.stats.by_split.test === 0}
                   onClick={() => setConfirmFreeze(true)}
-                  className="min-h-11 rounded-xl px-4"
+                  className="min-h-11 rounded-lg px-4"
                 >
                   <Lock aria-hidden="true" />
                   Bekukan split test
@@ -228,7 +228,7 @@ export function DatasetTab() {
             <a
               href="/api/admin/qa/export"
               download
-              className="inline-flex min-h-11 items-center gap-2 rounded-xl border border-line bg-surface px-4 text-sm font-semibold text-cite hover:bg-surface-2"
+              className="inline-flex min-h-11 items-center gap-2 rounded-lg border border-line bg-surface px-4 text-sm font-semibold text-cite hover:bg-surface-2"
             >
               <Download className="size-4" aria-hidden="true" />
               Ekspor JSONL
@@ -237,7 +237,7 @@ export function DatasetTab() {
               type="button"
               data-testid="add-qa"
               onClick={() => setEditing("new")}
-              className="min-h-11 rounded-xl bg-brand px-5 font-semibold text-brand-ink hover:bg-brand/90"
+              className="min-h-11 rounded-lg bg-brand px-5 font-semibold text-brand-ink hover:bg-brand/90"
             >
               <Plus aria-hidden="true" />
               Tambah pertanyaan
@@ -281,7 +281,7 @@ export function DatasetTab() {
         {view.items.length === 0 ? (
           <div
             data-testid="qa-empty"
-            className="rounded-2xl border border-line bg-surface p-8 text-center"
+            className="rounded-xl border border-line bg-surface p-8 text-center"
           >
             <h3 className="m-0 text-lg font-semibold">Belum ada pertanyaan</h3>
             <p className="mx-auto mt-2 max-w-md text-sm text-ink-muted">
@@ -291,7 +291,7 @@ export function DatasetTab() {
             </p>
           </div>
         ) : (
-          <div className="overflow-x-auto rounded-2xl border border-line bg-surface">
+          <div className="overflow-x-auto rounded-xl border border-line bg-surface">
             <table className="w-full min-w-[760px] border-collapse text-left text-sm">
               <caption className="sr-only">Pertanyaan uji</caption>
               <thead>
@@ -509,7 +509,7 @@ function QAForm({
     <section
       aria-labelledby="form-qa"
       data-testid="qa-form"
-      className="flex flex-col gap-4 rounded-2xl border-2 border-cite bg-surface p-5"
+      className="flex flex-col gap-4 rounded-xl border-2 border-cite bg-surface p-5"
     >
       <div className="flex items-center justify-between gap-3">
         <h2 id="form-qa" className="m-0 text-lg font-semibold">
@@ -520,7 +520,7 @@ function QAForm({
           variant="outline"
           aria-label="Tutup formulir"
           onClick={onClose}
-          className="size-11 min-h-11 rounded-xl"
+          className="size-11 min-h-11 rounded-lg"
         >
           <X aria-hidden="true" />
         </Button>
@@ -623,7 +623,7 @@ function QAForm({
         </div>
 
         <fieldset
-          className="flex flex-col gap-3 rounded-xl border border-line p-4 sm:col-span-2"
+          className="flex flex-col gap-3 rounded-lg border border-line p-4 sm:col-span-2"
           disabled={type === "unanswerable"}
         >
           <legend className="px-1 text-sm font-semibold">Chunk gold</legend>
@@ -677,7 +677,7 @@ function QAForm({
                   variant="outline"
                   disabled={searching}
                   onClick={search}
-                  className="min-h-11 rounded-xl px-4"
+                  className="min-h-11 rounded-lg px-4"
                 >
                   <Search aria-hidden="true" />
                   {searching ? "Mencari…" : "Cari kandidat"}
@@ -732,7 +732,7 @@ function QAForm({
                     {cands.map((c) => (
                       <li
                         key={c.chunk_id}
-                        className="flex flex-wrap items-start justify-between gap-3 rounded-xl bg-surface-2 p-3"
+                        className="flex flex-wrap items-start justify-between gap-3 rounded-lg bg-surface-2 p-3"
                       >
                         <div className="min-w-0 flex-[1_1_300px]">
                           <p className="m-0 text-sm font-semibold">
@@ -775,7 +775,7 @@ function QAForm({
             type="submit"
             data-testid="save-qa"
             disabled={save.isPending || blockedByFreeze}
-            className="min-h-11 rounded-xl bg-brand px-6 font-semibold text-brand-ink hover:bg-brand/90"
+            className="min-h-11 rounded-lg bg-brand px-6 font-semibold text-brand-ink hover:bg-brand/90"
           >
             {save.isPending
               ? "Menyimpan…"
@@ -787,7 +787,7 @@ function QAForm({
             type="button"
             variant="outline"
             onClick={onClose}
-            className="min-h-11 rounded-xl px-5"
+            className="min-h-11 rounded-lg px-5"
           >
             Batal
           </Button>

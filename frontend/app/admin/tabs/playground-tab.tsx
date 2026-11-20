@@ -53,7 +53,7 @@ export function PlaygroundTab() {
     <>
       <section
         aria-labelledby="uji"
-        className="flex flex-col gap-4 rounded-2xl border border-line bg-surface p-5"
+        className="flex flex-col gap-4 rounded-xl border border-line bg-surface p-5"
       >
         <h2 id="uji" className="m-0 text-lg font-semibold">
           Pertanyaan dan konfigurasi
@@ -159,7 +159,7 @@ export function PlaygroundTab() {
               type="submit"
               data-testid="run-playground"
               disabled={run.isPending || question.trim().length < 3}
-              className="min-h-11 rounded-xl bg-brand px-6 font-semibold text-brand-ink hover:bg-brand/90"
+              className="min-h-11 rounded-lg bg-brand px-6 font-semibold text-brand-ink hover:bg-brand/90"
             >
               <FlaskConical aria-hidden="true" />
               {run.isPending ? "Menjalankan…" : "Jalankan"}
@@ -213,7 +213,7 @@ function PlaygroundResultView({ r }: { r: PlaygroundResult }) {
             tidak ditampilkan).
           </p>
         ) : (
-          <div className="overflow-x-auto rounded-2xl border border-line bg-surface">
+          <div className="overflow-x-auto rounded-xl border border-line bg-surface">
             <table
               className="w-full min-w-[720px] border-collapse text-left text-sm"
               data-testid="ranking"
@@ -274,7 +274,7 @@ function PlaygroundResultView({ r }: { r: PlaygroundResult }) {
       {r.answer ? (
         <section
           aria-labelledby="jawaban-uji"
-          className="flex flex-col gap-3 rounded-2xl border border-line bg-surface p-5"
+          className="flex flex-col gap-3 rounded-xl border border-line bg-surface p-5"
         >
           <h3 id="jawaban-uji" className="m-0 text-base font-semibold">
             Jawaban {r.answer.abstained ? "(abstain)" : ""}
@@ -330,7 +330,7 @@ function PlaygroundResultView({ r }: { r: PlaygroundResult }) {
                       : !c.in_context
                         ? "chunk TIDAK ada di konteks"
                         : "kutipan TIDAK ditemukan di teks chunk"}
-                    <span className="block text-[13px] opacity-90">
+                    <span className="block text-[13px]">
                       “{c.quote}”
                     </span>
                   </span>

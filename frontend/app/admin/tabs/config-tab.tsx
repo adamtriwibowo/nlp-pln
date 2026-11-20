@@ -33,7 +33,7 @@ export function ConfigTab() {
   const limit = c.limits.daily_cost_limit_usd;
   const pct = limit > 0 ? Math.min(100, Math.round((used / limit) * 100)) : 0;
   const card =
-    "flex flex-col gap-3 rounded-2xl border border-line bg-surface p-5";
+    "flex flex-col gap-3 rounded-xl border border-line bg-surface p-5";
   const row = (k: string, v: React.ReactNode) => (
     <div className="flex flex-wrap justify-between gap-2 border-b border-line py-1.5 text-sm last:border-0">
       <dt className="text-ink-muted">{k}</dt>
@@ -164,7 +164,7 @@ export function ConfigTab() {
         <h2 id="konfigurasi-eksperimen" className="m-0 text-lg font-semibold">
           Konfigurasi eksperimen
         </h2>
-        <div className="overflow-x-auto rounded-2xl border border-line bg-surface">
+        <div className="overflow-x-auto rounded-xl border border-line bg-surface">
           <table
             className="w-full min-w-[760px] border-collapse text-left text-sm"
             data-testid="configs"
@@ -251,7 +251,7 @@ function EvalRunner() {
   return (
     <section
       aria-labelledby="jalankan-eval"
-      className="flex flex-col gap-4 rounded-2xl border border-line bg-surface p-5"
+      className="flex flex-col gap-4 rounded-xl border border-line bg-surface p-5"
     >
       <h2 id="jalankan-eval" className="m-0 text-lg font-semibold">
         Jalankan evaluasi (split dev)
@@ -306,7 +306,7 @@ function EvalRunner() {
           data-testid="estimate-eval"
           disabled={running || estimate.isPending}
           onClick={() => estimate.mutate()}
-          className="min-h-11 rounded-xl px-4"
+          className="min-h-11 rounded-lg px-4"
         >
           Perkirakan biaya
         </Button>
@@ -324,7 +324,7 @@ function EvalRunner() {
       {estimate.data ? (
         <div
           data-testid="estimate-box"
-          className="flex flex-col gap-2 rounded-xl bg-surface-2 p-4 text-sm"
+          className="flex flex-col gap-2 rounded-lg bg-surface-2 p-4 text-sm"
         >
           <p className="m-0">
             <strong>{estimate.data.n_questions}</strong> pertanyaan · perkiraan
@@ -337,7 +337,7 @@ function EvalRunner() {
               data-testid="start-eval"
               disabled={running}
               onClick={() => start.mutate()}
-              className="min-h-11 rounded-xl bg-brand px-5 font-semibold text-brand-ink hover:bg-brand/90"
+              className="min-h-11 rounded-lg bg-brand px-5 font-semibold text-brand-ink hover:bg-brand/90"
             >
               <Play aria-hidden="true" />
               Ya, jalankan {kind === "retrieval"

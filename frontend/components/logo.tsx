@@ -8,7 +8,7 @@ export function Logo() {
       aria-label="K2-RAG, ke beranda"
     >
       <span
-        className="flex size-9 items-center justify-center rounded-[10px] bg-brand"
+        className="flex size-9 items-center justify-center rounded-lg bg-brand"
         aria-hidden="true"
       >
         <svg
@@ -24,7 +24,7 @@ export function Logo() {
           <path d="M13 2 4 14h7l-1 8 9-12h-7l1-8z" />
         </svg>
       </span>
-      <span className="font-heading text-xl font-bold tracking-tight">
+      <span className="font-heading text-xl font-semibold tracking-tight">
         K2-RAG
       </span>
     </Link>

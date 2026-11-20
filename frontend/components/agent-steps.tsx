@@ -29,9 +29,9 @@ export function AgentSteps({
   return (
     <Collapsible
       defaultOpen={running}
-      className="rounded-xl border border-line bg-surface"
+      className="rounded-lg border border-line bg-surface"
     >
-      <CollapsibleTrigger className="flex min-h-11 w-full cursor-pointer items-center justify-between gap-2 rounded-xl px-4 text-left text-sm font-semibold">
+      <CollapsibleTrigger className="flex min-h-11 w-full cursor-pointer items-center justify-between gap-2 rounded-lg px-4 text-left text-sm font-semibold">
         <span className="flex items-center gap-2">
           <Search className="size-4 text-cite" aria-hidden="true" />
           Langkah pencarian ({steps.length}){running ? " …" : ""}

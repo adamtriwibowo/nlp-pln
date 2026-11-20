@@ -164,7 +164,7 @@ export function Overview() {
             href="/admin/uji"
             className={cn(
               buttonVariants({ variant: "outline" }),
-              "min-h-11 rounded-xl px-4 text-sm",
+              "min-h-11 rounded-lg px-4 text-sm",
             )}
           >
             Uji satu pertanyaan
@@ -173,7 +173,7 @@ export function Overview() {
             href="/admin/dataset"
             className={cn(
               buttonVariants(),
-              "min-h-11 rounded-xl bg-brand px-5 text-sm font-semibold text-brand-ink hover:bg-brand/90",
+              "min-h-11 rounded-lg bg-brand px-5 text-sm font-semibold text-brand-ink hover:bg-brand/90",
             )}
           >
             Tulis pertanyaan uji
@@ -264,7 +264,7 @@ export function Overview() {
 
       <dl
         data-testid="overview-figures"
-        className="m-0 mb-8 grid grid-cols-2 overflow-hidden rounded-2xl border border-line bg-surface lg:grid-cols-4"
+        className="m-0 mb-8 grid grid-cols-2 overflow-hidden rounded-xl border border-line bg-surface lg:grid-cols-4"
       >
         {figures.map(([label, value, hint], i) => (
           <div
@@ -272,7 +272,7 @@ export function Overview() {
             className={`flex flex-col gap-0.5 px-5 py-4 ${i > 0 ? "lg:border-l lg:border-line" : ""} ${i % 2 === 1 ? "border-l border-line lg:border-l" : ""} ${i > 1 ? "border-t border-line lg:border-t-0" : ""}`}
           >
             <dt className="text-sm text-ink-muted">{label}</dt>
-            <dd className="m-0 font-heading text-[28px] font-bold leading-tight tabular-nums">
+            <dd className="m-0 font-heading text-[28px] font-semibold leading-tight tabular-nums">
               {value}
             </dd>
             <dd className="m-0 text-[13px] text-ink-muted">{hint}</dd>
@@ -382,7 +382,7 @@ export function Overview() {
           {runs.data.length === 0 ? (
             <p
               data-testid="no-runs"
-              className="m-0 rounded-xl border border-dashed border-field p-4 text-sm leading-relaxed text-ink-muted"
+              className="m-0 rounded-lg border border-dashed border-field p-4 text-sm leading-relaxed text-ink-muted"
             >
               Belum ada run evaluasi. Setelah dataset terisi, jalankan evaluasi
               split dev dari menu Konfigurasi.

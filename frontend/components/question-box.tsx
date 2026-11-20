@@ -99,7 +99,7 @@ export function QuestionBox({
         submit();
       }}
     >
-      <div className="relative w-full overflow-hidden rounded-3xl border-[1.5px] border-field/60 bg-surface shadow-[0_8px_24px_-8px_rgba(28,36,48,0.18)] transition-[box-shadow,border-color,transform] before:absolute before:inset-y-0 before:left-0 before:w-[3px] before:bg-brand before:opacity-70 before:transition-all focus-within:-translate-y-px focus-within:border-cite focus-within:shadow-[0_0_0_4px_var(--k2-cite-tint),0_16px_32px_-12px_rgba(28,36,48,0.22)] focus-within:before:w-1 focus-within:before:opacity-100">
+      <div className="relative w-full overflow-hidden rounded-2xl border border-line bg-surface shadow-sm transition-[box-shadow,border-color] focus-within:border-field focus-within:shadow-[0_0_0_3px_var(--k2-cite-tint)]">
         <label htmlFor={id} className="sr-only">
           Pertanyaan Anda
         </label>

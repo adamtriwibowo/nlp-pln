@@ -76,7 +76,7 @@ export function DocumentsTab() {
     <>
       <section
         aria-labelledby="reindex"
-        className="flex flex-col gap-3 rounded-2xl border border-line bg-surface p-5"
+        className="flex flex-col gap-3 rounded-xl border border-line bg-surface p-5"
       >
         <h2 id="reindex" className="m-0 text-lg font-semibold">
           Re-index
@@ -91,7 +91,7 @@ export function DocumentsTab() {
             disabled={running}
             onClick={() => reindex.mutate(undefined)}
             data-testid="reindex"
-            className="min-h-11 rounded-xl bg-brand px-5 font-semibold text-brand-ink hover:bg-brand/90"
+            className="min-h-11 rounded-lg bg-brand px-5 font-semibold text-brand-ink hover:bg-brand/90"
           >
             <RefreshCw
               aria-hidden="true"
@@ -125,7 +125,7 @@ export function DocumentsTab() {
                 {changeError}
               </p>
             ) : null}
-            <div className="overflow-x-auto rounded-2xl border border-line bg-surface">
+            <div className="overflow-x-auto rounded-xl border border-line bg-surface">
               <table className="w-full min-w-[980px] border-collapse text-left text-sm">
                 <caption className="sr-only">
                   Status dokumen korpus dan ingesti
@@ -260,7 +260,7 @@ function DocRow({
           onClick={onReindex}
           data-testid={`reindex-${d.id}`}
           aria-label={`Re-index ${d.id}`}
-          className="min-h-11 rounded-xl border-field"
+          className="min-h-9 rounded-lg border-field px-3 text-[13px] pointer-coarse:min-h-11"
         >
           <RefreshCw aria-hidden="true" />
           Re-index
@@ -304,7 +304,7 @@ function FlagControl({
         <div
           role="group"
           aria-label={`Konfirmasi ${FLAG_LABEL[flag]} ${d.id}`}
-          className="flex max-w-56 flex-col gap-2 rounded-xl border border-line bg-surface-2 p-3"
+          className="flex max-w-56 flex-col gap-2 rounded-lg border border-line bg-surface-2 p-3"
         >
           <p className="m-0 text-[13px] leading-snug">
             Ubah <strong>{FLAG_LABEL[flag]}</strong> {d.id} menjadi{" "}
@@ -317,7 +317,7 @@ function FlagControl({
               disabled={saving}
               onClick={() => onConfirm(pending)}
               data-testid={`confirm-${d.id}-${flag}`}
-              className="min-h-11 rounded-xl bg-brand px-4 font-semibold text-brand-ink hover:bg-brand/90"
+              className="min-h-11 rounded-lg bg-brand px-4 font-semibold text-brand-ink hover:bg-brand/90"
             >
               {saving ? "Menyimpan…" : "Ya, ubah"}
             </Button>
@@ -326,7 +326,7 @@ function FlagControl({
               variant="outline"
               disabled={saving}
               onClick={onCancel}
-              className="min-h-11 rounded-xl border-field"
+              className="min-h-9 rounded-lg border-field px-3 text-[13px] pointer-coarse:min-h-11"
             >
               Batal
             </Button>
@@ -340,7 +340,7 @@ function FlagControl({
           onClick={() => onAsk({ id: d.id, flag, value: next })}
           data-testid={`toggle-${d.id}-${flag}`}
           aria-label={`Jadikan ${yesNo(next)}: ${FLAG_LABEL[flag]} ${d.id}`}
-          className="min-h-11 rounded-xl border-field"
+          className="min-h-9 rounded-lg border-field px-3 text-[13px] pointer-coarse:min-h-11"
         >
           Jadikan {yesNo(next)}
         </Button>
@@ -413,7 +413,7 @@ function UploadForm({ onUploaded }: { onUploaded: () => Promise<unknown> }) {
   const field = "min-h-11 border-field bg-surface text-base";
   return (
     <details
-      className="rounded-2xl border border-line bg-surface p-5"
+      className="rounded-xl border border-line bg-surface p-5"
       open={false}
     >
       <summary className="min-h-11 cursor-pointer py-2 text-lg font-semibold">
@@ -513,7 +513,7 @@ function UploadForm({ onUploaded }: { onUploaded: () => Promise<unknown> }) {
           <Button
             type="submit"
             disabled={m.isPending}
-            className="min-h-11 rounded-xl bg-brand px-5 font-semibold text-brand-ink hover:bg-brand/90"
+            className="min-h-11 rounded-lg bg-brand px-5 font-semibold text-brand-ink hover:bg-brand/90"
           >
             <Upload aria-hidden="true" />
             {m.isPending ? "Mengunggah…" : "Unggah"}

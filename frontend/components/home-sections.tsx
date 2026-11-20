@@ -20,7 +20,8 @@ export const EXAMPLES = [
   "Bagaimana ketentuan APD untuk pekerjaan listrik?",
 ];
 
-const H2 = "m-0 font-heading text-2xl font-bold tracking-tight sm:text-[28px]";
+const H2 =
+  "m-0 font-heading text-2xl font-semibold tracking-tight sm:text-[28px]";
 
 export function ExampleQuestions({ onPick }: { onPick: (q: string) => void }) {
   return (
@@ -34,7 +35,7 @@ export function ExampleQuestions({ onPick }: { onPick: (q: string) => void }) {
             <button
               type="button"
               onClick={() => onPick(q)}
-              className="group flex min-h-14 w-full cursor-pointer items-center justify-between gap-3 rounded-xl border border-line bg-surface px-4 py-3 text-left text-[15px] leading-snug text-ink transition-[border-color,background-color,transform] hover:border-cite hover:bg-cite-tint active:scale-[0.99]"
+              className="group flex min-h-14 w-full cursor-pointer items-center justify-between gap-3 rounded-lg border border-line bg-surface px-4 py-3 text-left text-[15px] leading-snug text-ink transition-[border-color,background-color,transform] hover:border-cite hover:bg-cite-tint active:scale-[0.99]"
             >
               <span>{q}</span>
               <ArrowUpRight
@@ -86,15 +87,15 @@ export function HowItWorks() {
         {STEPS.map(({ icon: Icon, title, text }, i) => (
           <li
             key={title}
-            className="flex flex-col gap-3 rounded-2xl border border-line bg-surface p-5"
+            className="flex flex-col gap-3 rounded-xl border border-line bg-surface p-5"
           >
             <div className="flex items-center justify-between">
-              <span className="flex size-11 items-center justify-center rounded-xl bg-brand text-brand-ink">
+              <span className="flex size-11 items-center justify-center rounded-lg bg-brand text-brand-ink">
                 <Icon aria-hidden="true" className="size-5" />
               </span>
               <span
                 aria-hidden="true"
-                className="font-heading text-2xl font-bold text-line"
+                className="font-heading text-2xl font-semibold text-line"
               >
                 {i + 1}
               </span>
@@ -134,9 +135,9 @@ export function CorpusChips() {
           className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-3"
           aria-busy="true"
         >
-          <Skeleton className="h-28 rounded-2xl" />
-          <Skeleton className="h-28 rounded-2xl" />
-          <Skeleton className="h-28 rounded-2xl" />
+          <Skeleton className="h-28 rounded-xl" />
+          <Skeleton className="h-28 rounded-xl" />
+          <Skeleton className="h-28 rounded-xl" />
         </div>
       ) : docs.isError ? (
         <p role="status" className="mt-6 text-sm text-ink-muted">
@@ -149,7 +150,7 @@ export function CorpusChips() {
             .map((d) => (
               <li
                 key={d.id}
-                className="flex flex-col gap-2 rounded-2xl border border-line bg-surface p-5"
+                className="flex flex-col gap-2 rounded-xl border border-line bg-surface p-5"
               >
                 <span className="font-semibold leading-snug">
                   {shortTitle(d.title)}

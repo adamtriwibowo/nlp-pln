@@ -28,7 +28,7 @@ function groupChats(chats: Chat[], now = Date.now()) {
 }
 
 const rowLink =
-  "flex min-h-11 w-full items-center gap-2.5 rounded-xl px-3 text-[15px] font-medium text-ink-muted no-underline transition-colors hover:bg-surface-2 hover:text-ink";
+  "flex min-h-11 w-full items-center gap-2.5 rounded-lg px-3 text-[15px] font-medium text-ink-muted no-underline transition-colors hover:bg-surface-2 hover:text-ink";
 
 /** Left column of the chat app: new chat, history grouped by day, links and account. */
 export function ChatSidebar({
@@ -62,7 +62,7 @@ export function ChatSidebar({
         type="button"
         onClick={onNew}
         data-testid="new-chat"
-        className="flex min-h-11 w-full cursor-pointer items-center gap-2.5 rounded-xl border border-line bg-surface px-3 text-[15px] font-semibold text-ink transition-colors hover:border-cite hover:bg-cite-tint"
+        className="flex min-h-11 w-full cursor-pointer items-center gap-2.5 rounded-lg border border-line bg-surface px-3 text-[15px] font-semibold text-ink transition-colors hover:border-cite hover:bg-cite-tint"
       >
         <Plus aria-hidden="true" className="size-[18px]" />
         Percakapan baru
@@ -92,7 +92,7 @@ export function ChatSidebar({
                       data-testid="chat-item"
                       aria-current={c.id === activeId ? "page" : undefined}
                       onClick={() => onSelect(c.id)}
-                      className={`min-h-11 w-full cursor-pointer truncate rounded-xl py-2 pl-3 pr-11 text-left text-[15px] transition-colors ${
+                      className={`min-h-11 w-full cursor-pointer truncate rounded-lg py-2 pl-3 pr-11 text-left text-[15px] transition-colors ${
                         c.id === activeId
                           ? "bg-cite-tint font-semibold text-ink"
                           : "text-ink hover:bg-surface-2"

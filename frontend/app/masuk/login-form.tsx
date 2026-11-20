@@ -39,7 +39,7 @@ export function LoginForm() {
 
   return (
     <form
-      className="flex flex-col gap-5 rounded-2xl border border-line bg-surface p-6"
+      className="flex flex-col gap-5 rounded-xl border border-line bg-surface p-6"
       onSubmit={(e) => {
         e.preventDefault();
         m.mutate();
@@ -89,7 +89,7 @@ export function LoginForm() {
       <Button
         type="submit"
         disabled={m.isPending || token.length === 0}
-        className="min-h-12 rounded-xl bg-brand text-base font-semibold text-brand-ink hover:bg-brand/90"
+        className="min-h-12 rounded-lg bg-brand text-base font-semibold text-brand-ink hover:bg-brand/90"
       >
         {m.isPending ? "Memeriksa…" : "Masuk"}
       </Button>
