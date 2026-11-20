@@ -358,12 +358,119 @@ test.describe("jawaban dan sumber", () => {
 
     // delete the open conversation: back to the empty chat
     await page
-      .getByRole("button", { name: /Hapus percakapan: Pertanyaan tersimpan A/ })
+      .getByRole("button", { name: /Opsi percakapan: Pertanyaan tersimpan A/ })
       .click();
+    await page.getByRole("menuitem", { name: "Hapus" }).click();
+    // cancel keeps it; confirming removes it
+    await page.getByRole("button", { name: "Batal" }).click();
+    await expect(page.getByTestId("chat-item")).toHaveCount(2);
+    await page
+      .getByRole("button", { name: /Opsi percakapan: Pertanyaan tersimpan A/ })
+      .click();
+    await page.getByRole("menuitem", { name: "Hapus" }).click();
+    await page.getByTestId("confirm-delete-chat").click();
     await expect(page.getByTestId("chat-item")).toHaveCount(1);
     await expect(
       page.getByRole("heading", { level: 1, name: /Tanya aturan K3 listrik/ }),
     ).toBeVisible();
+  });
+
+  test("sidebar: cari riwayat, ganti nama, sematkan, dan ciutkan (tersimpan di browser)", async ({
+    page,
+  }) => {
+    await openAnswer(page, "Pertanyaan alpha tentang APD");
+    await page.getByTestId("new-chat").click();
+    await page
+      .getByLabel("Pertanyaan Anda")
+      .fill("Pertanyaan beta tentang SMK2");
+    await page.getByRole("button", { name: /^Tanya/ }).click();
+    await expect(page.getByTestId("chat-item")).toHaveCount(2);
+
+    // search by title or by a question in the conversation
+    const search = page.getByRole("searchbox", {
+      name: "Cari riwayat percakapan",
+    });
+    await search.fill("alpha");
+    await expect(page.getByTestId("chat-item")).toHaveText([
+      "Pertanyaan alpha tentang APD",
+    ]);
+    await search.fill("tidak-ada-yang-cocok");
+    await expect(
+      page.getByText(/Tidak ada percakapan yang cocok/),
+    ).toBeVisible();
+    await search.fill("");
+
+    // rename
+    await page
+      .getByRole("button", { name: /Opsi percakapan: Pertanyaan alpha/ })
+      .click();
+    await page.getByRole("menuitem", { name: "Ganti nama" }).click();
+    const rename = page.getByLabel("Nama percakapan");
+    await rename.fill("Catatan APD");
+    await rename.press("Enter");
+    await expect(
+      page.getByTestId("chat-item").filter({ hasText: "Catatan APD" }),
+    ).toBeVisible();
+
+    // pin: moves into its own group at the top
+    await page
+      .getByRole("button", { name: /Opsi percakapan: Catatan APD/ })
+      .click();
+    await page.getByRole("menuitem", { name: "Sematkan" }).click();
+    await expect(
+      page.getByRole("heading", { name: "Disematkan" }),
+    ).toBeVisible();
+    await expect(page.getByTestId("chat-item").first()).toContainText(
+      "Catatan APD",
+    );
+
+    // everything survives a reload
+    await page.reload();
+    await expect(page.getByTestId("chat-item").first()).toContainText(
+      "Catatan APD",
+    );
+    await expect(
+      page.getByRole("heading", { name: "Disematkan" }),
+    ).toBeVisible();
+
+    // collapse to an icon rail; the choice is remembered
+    await page.getByTestId("collapse-sidebar").click();
+    await expect(page.getByTestId("chat-item")).toHaveCount(0);
+    await expect(page.getByTestId("expand-sidebar")).toBeVisible();
+    await page.reload();
+    await expect(page.getByTestId("expand-sidebar")).toBeVisible();
+    await page.getByTestId("expand-sidebar").click();
+    await expect(page.getByTestId("chat-item")).toHaveCount(2);
+  });
+
+  test("tombol Berhenti menghentikan jawaban dan membuang percakapan kosong", async ({
+    page,
+  }) => {
+    await page.route("**/api/ask", () => {
+      /* never answers: the request stays open until the reader stops it */
+    });
+    await page.goto("/");
+    await page
+      .getByLabel("Pertanyaan Anda")
+      .fill("Pertanyaan yang menggantung");
+    await page.getByLabel("Pertanyaan Anda").press("Enter");
+    await expect(
+      page.getByRole("status", { name: "Mencari jawaban" }),
+    ).toBeVisible();
+    await page.getByTestId("stop-answer").click();
+    await expect(
+      page.getByRole("heading", { level: 1, name: /Tanya aturan K3 listrik/ }),
+    ).toBeVisible();
+    await expect(page.getByTestId("chat-item")).toHaveCount(0);
+  });
+
+  test("layar sambutan menyebut jumlah dokumen sumber dari data nyata", async ({
+    page,
+  }) => {
+    await page.goto("/");
+    await expect(page.getByTestId("corpus-line")).toContainText(
+      "3 dokumen resmi berbahasa Indonesia",
+    );
   });
 
   test("halaman /tentang menampilkan cara kerja dan korpus nyata", async ({

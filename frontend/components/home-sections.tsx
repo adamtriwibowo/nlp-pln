@@ -9,6 +9,8 @@ import {
   ShieldCheck,
 } from "lucide-react";
 
+import Link from "next/link";
+
 import { Skeleton } from "@/components/ui/skeleton";
 import { fetchDocuments } from "@/lib/api";
 
@@ -19,6 +21,28 @@ export const EXAMPLES = [
   "Pasal mana yang mengatur SMK2 bagi pemilik instalasi?",
   "Bagaimana ketentuan APD untuk pekerjaan listrik?",
 ];
+
+/** One line of trust under the welcome text: how many official documents answers come from. */
+export function CorpusLine() {
+  const docs = useQuery({
+    queryKey: ["documents"],
+    queryFn: fetchDocuments,
+    staleTime: 5 * 60_000,
+  });
+  const n = docs.data?.filter((d) => d.indexed).length ?? 0;
+  if (n === 0) return null;
+  return (
+    <p className="m-0 text-[13px] text-ink-muted" data-testid="corpus-line">
+      Sumber jawaban: {n} dokumen resmi berbahasa Indonesia.{" "}
+      <Link
+        href="/tentang#dokumen"
+        className="font-medium text-cite underline-offset-2 hover:underline"
+      >
+        Lihat daftarnya
+      </Link>
+    </p>
+  );
+}
 
 const H2 =
   "m-0 font-heading text-2xl font-semibold tracking-tight sm:text-[28px]";

@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowUp, GitBranch, Loader2, Zap } from "lucide-react";
+import { ArrowUp, GitBranch, Square, Zap } from "lucide-react";
 import { useId, type Ref } from "react";
 
 import type { AskBody } from "@/lib/sse";
@@ -68,6 +68,7 @@ export function QuestionBox({
   onSubmit,
   mode,
   onModeChange,
+  onStop,
   busy = false,
   large = false,
   align = "center",
@@ -78,6 +79,8 @@ export function QuestionBox({
   onSubmit: () => void;
   mode: AskBody["mode"];
   onModeChange: (m: AskBody["mode"]) => void;
+  /** Shown instead of the send button while an answer is being produced. */
+  onStop?: () => void;
   busy?: boolean;
   large?: boolean;
   align?: "center" | "start";
@@ -146,22 +149,34 @@ export function QuestionBox({
                 Enter kirim · Shift+Enter baris baru
               </span>
             )}
-            <button
-              type="submit"
-              disabled={tooShort || busy}
-              aria-label={busy ? "Mencari…" : "Tanya"}
-              className="flex size-12 shrink-0 items-center justify-center rounded-full bg-brand text-brand-ink transition-[background-color,transform,color] hover:scale-105 active:scale-95 disabled:scale-100 disabled:cursor-not-allowed disabled:bg-surface-2 disabled:text-ink-muted"
-            >
-              {busy ? (
-                <Loader2 aria-hidden="true" className="size-5 animate-spin" />
-              ) : (
+            {busy && onStop ? (
+              <button
+                type="button"
+                onClick={onStop}
+                aria-label="Berhenti"
+                data-testid="stop-answer"
+                className="flex size-12 shrink-0 cursor-pointer items-center justify-center rounded-full bg-ink text-surface transition-transform hover:scale-105 active:scale-95"
+              >
+                <Square
+                  aria-hidden="true"
+                  className="size-4"
+                  fill="currentColor"
+                />
+              </button>
+            ) : (
+              <button
+                type="submit"
+                disabled={tooShort || busy}
+                aria-label={busy ? "Mencari…" : "Tanya"}
+                className="flex size-12 shrink-0 items-center justify-center rounded-full bg-brand text-brand-ink transition-[background-color,transform,color] hover:scale-105 active:scale-95 disabled:scale-100 disabled:cursor-not-allowed disabled:bg-surface-2 disabled:text-ink-muted"
+              >
                 <ArrowUp
                   aria-hidden="true"
                   className="size-5"
                   strokeWidth={2.5}
                 />
-              )}
-            </button>
+              </button>
+            )}
           </div>
         </div>
       </div>

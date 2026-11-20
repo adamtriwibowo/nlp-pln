@@ -22,10 +22,11 @@ import {
   panelMax,
   usePanelWidth,
 } from "@/components/chat/resizable-panel";
-import { ExampleQuestions } from "@/components/home-sections";
+import { CorpusLine, ExampleQuestions } from "@/components/home-sections";
 import { Logo } from "@/components/logo";
 import { QuestionBox } from "@/components/question-box";
 import { SourcePanel } from "@/components/source-panel";
+import { useSidebarCollapsed } from "@/lib/chat-ui";
 import { newChatId, useChats } from "@/lib/chats";
 import type { AskBody } from "@/lib/sse";
 import { useAsk, type FinishedAnswer } from "@/lib/use-ask";
@@ -63,6 +64,7 @@ export function ChatApp() {
   const [sheetOpen, setSheetOpen] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [panelWidth, setPanelWidth] = usePanelWidth();
+  const [collapsed, toggleCollapsed] = useSidebarCollapsed();
   const viewportWidth = useViewportWidth();
   const wide = useMediaQuery("(min-width: 1280px)");
   const sidebarVisible = useMediaQuery("(min-width: 1024px)");
@@ -140,6 +142,16 @@ export function ChatApp() {
     if (id === chatId) newChat();
   };
 
+  // Stop the running request; a conversation that has no answer yet is dropped again.
+  const stop = () => {
+    cancel();
+    if (chat && chat.turns.length === 0) {
+      chats.remove(chat.id);
+      liveChat.current = null;
+      router.replace("/");
+    }
+  };
+
   const select = (turn: number, label: number) => {
     setActive({ turn, label });
     if (!wide) setSheetOpen(true);
@@ -162,6 +174,7 @@ export function ChatApp() {
       onSubmit={() => submit(draft, mode)}
       mode={mode}
       onModeChange={setMode}
+      onStop={stop}
       busy={busy}
     />
   );
@@ -173,6 +186,10 @@ export function ChatApp() {
       onNew={newChat}
       onSelect={(id) => go(`/?c=${id}`)}
       onDelete={removeChat}
+      onRename={chats.rename}
+      onTogglePin={chats.togglePin}
+      collapsed={sidebarVisible && collapsed}
+      onToggleCollapse={sidebarVisible ? toggleCollapsed : undefined}
     />
   );
 
@@ -181,7 +198,9 @@ export function ChatApp() {
       <aside
         aria-label="Menu percakapan"
         data-testid="chat-sidebar"
-        className="hidden w-[290px] shrink-0 border-r border-line bg-surface lg:block"
+        className={`hidden shrink-0 border-r border-line bg-surface transition-[width] duration-200 lg:block ${
+          collapsed ? "w-16" : "w-[290px]"
+        }`}
       >
         {sidebarVisible ? sidebar : null}
       </aside>
@@ -241,6 +260,7 @@ export function ChatApp() {
                 menunjuk pasal dan halaman yang bisa Anda cek langsung di PDF.
               </p>
               {composer}
+              <CorpusLine />
               <ExampleQuestions
                 onPick={(q) => {
                   setDraft(q); // fill and focus so it can be edited before sending

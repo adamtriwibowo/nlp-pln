@@ -10,6 +10,7 @@ export interface Chat {
   id: string;
   title: string;
   updatedAt: number;
+  pinned?: boolean;
   turns: FinishedAnswer[];
 }
 
@@ -35,7 +36,10 @@ function read(): Chat[] {
 function write(next: Chat[]) {
   try {
     const sorted = [...next]
-      .sort((a, b) => b.updatedAt - a.updatedAt)
+      .sort(
+        (a, b) =>
+          Number(!!b.pinned) - Number(!!a.pinned) || b.updatedAt - a.updatedAt,
+      )
       .slice(0, MAX_CHATS);
     localStorage.setItem(KEY, JSON.stringify(sorted));
     listeners.forEach((l) => l());
@@ -95,5 +99,15 @@ export function useChats() {
     write(read().filter((c) => c.id !== id));
   }, []);
 
-  return { items, create, append, remove };
+  const rename = useCallback((id: string, title: string) => {
+    const t = titleOf(title);
+    if (!t) return;
+    write(read().map((c) => (c.id === id ? { ...c, title: t } : c)));
+  }, []);
+
+  const togglePin = useCallback((id: string) => {
+    write(read().map((c) => (c.id === id ? { ...c, pinned: !c.pinned } : c)));
+  }, []);
+
+  return { items, create, append, remove, rename, togglePin };
 }
