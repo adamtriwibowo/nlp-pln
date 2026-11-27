@@ -1,0 +1,648 @@
+{
+  "metadata": {
+    "judul": "Paket Soal Uji RAG - K3 Ketenagalistrikan (revisi, dicocokkan dengan teks D1-D3)",
+    "tanggal_revisi": "2026-11-27",
+    "korpus_terindeks": [
+      {
+        "id": "D1",
+        "dokumen": "Permenaker No. 12 Tahun 2015 - K3 Listrik di Tempat Kerja",
+        "isi": "Pasal 1-16, 7 halaman, OCR noisy"
+      },
+      {
+        "id": "D2",
+        "dokumen": "Permen ESDM No. 10 Tahun 2021 - Keselamatan Ketenagalistrikan",
+        "isi": "Pasal 1-52 + Lampiran I-V (lampiran dikecualikan saat retrieval utama)"
+      },
+      {
+        "id": "D3",
+        "dokumen": "Pedoman Pelaporan SMK2 - Ditjen Gatrik ESDM",
+        "isi": "Bab I-III, 30 halaman"
+      }
+    ],
+    "bukan_korpus": [
+      {
+        "id": "D4",
+        "dokumen": "FAQ Permen ESDM 10/2021",
+        "catatan": "Belum diunggah; soal belum dapat dikaitkan ke halaman FAQ. Isi field sumber_penyusunan setelah dicek."
+      }
+    ],
+    "catatan_perubahan": [
+      "Permen ESDM 12/2021 dikoreksi menjadi 10/2021; UU 1/1970 dihapus dari korpus acuan.",
+      "Audit SMK2 benar di Pasal 37 ayat (1), bukan Pasal 39 ayat (1) (B4, M9 lama).",
+      "A3 diperbaiki sesuai redaksi Pasal 3 D1; M3 lama menambah klaim yang tidak ada di teks.",
+      "C2, C3, M10 lama (Pasal 71, 74) dibuang karena D2 hanya Pasal 1-52 dan kata 'konsultan pengawasan' tidak ada; diganti C2, C3 baru.",
+      "OOC3 lama (interval pemeriksaan berkala) ternyata diatur D1 Pasal 11, dipindah ke B5 dan B6.",
+      "Sanksi D2 sebenarnya teguran tertulis dan penghentian sementara; 'pembekuan/pencabutan' pada soal lama salah (D4, OOC1 lama).",
+      "D3 lama menyebut Permenaker 26/2014 yang tidak ada di korpus; diganti.",
+      "Soal manual M1-M10 duplikat dihapus.",
+      "Kategori F (D3) ditambahkan, 8 soal.",
+      "Risiko retrieval: halaman 5 D1 terbaca tidak berurutan (Pasal 9 sebelum Pasal 6) dan penanda 'Pasa15' bernoise; D3 Gambar 2 menulis '> 200 kVA' vs teks 'paling kecil 200 kVA'."
+    ],
+    "format_penilaian": {
+      "in_corpus": "Benar bila sesuai expected_answer dan mengutip dokumen/pasal yang tepat.",
+      "out_of_corpus": "Benar hanya bila sistem menyatakan tidak ditemukan/tidak diatur (abstain). Pasal atau angka karangan = halusinasi."
+    }
+  },
+  "kategori_A_retrieval_faktual": [
+    {
+      "id": "A1",
+      "tipe": "in_corpus",
+      "dokumen_id": [
+        "D1"
+      ],
+      "pertanyaan": "Berapa batas tegangan yang menjadi ruang lingkup persyaratan K3 listrik di tempat kerja menurut Permenaker 12/2015?",
+      "expected_answer": "Tegangan lebih dari 50 volt arus bolak balik (AC) atau 120 volt arus searah (DC).",
+      "sumber_regulasi": "Permenaker No. 12 Tahun 2015",
+      "sumber_pasal": "Pasal 4 ayat (2)",
+      "catatan_evaluasi": "Exact-match angka. D1 berderau OCR: pastikan chunk Pasal 4 terbaca benar. Distraktor: tertukar AC/DC, 220 V.",
+      "status_verifikasi": "dicocokkan_dengan_teks_pdf"
+    },
+    {
+      "id": "A2",
+      "tipe": "in_corpus",
+      "dokumen_id": [
+        "D1"
+      ],
+      "pertanyaan": "Siapa yang melaksanakan pengawasan pelaksanaan K3 listrik di tempat kerja?",
+      "expected_answer": "Pengawas Ketenagakerjaan.",
+      "sumber_regulasi": "Permenaker No. 12 Tahun 2015",
+      "sumber_pasal": "Pasal 13",
+      "catatan_evaluasi": "Distraktor: Inspektur Ketenagalistrikan (ranah D2).",
+      "status_verifikasi": "dicocokkan_dengan_teks_pdf"
+    },
+    {
+      "id": "A3",
+      "tipe": "in_corpus",
+      "dokumen_id": [
+        "D1"
+      ],
+      "pertanyaan": "Apa tujuan pelaksanaan K3 listrik menurut Permenaker 12/2015?",
+      "expected_answer": "(a) melindungi keselamatan dan kesehatan tenaga kerja dan orang lain di lingkungan tempat kerja dari potensi bahaya listrik; (b) menciptakan instalasi listrik yang aman, handal, dan memberikan keselamatan bangunan beserta isinya; (c) menciptakan tempat kerja yang selamat dan sehat untuk mendorong produktivitas.",
+      "sumber_regulasi": "Permenaker No. 12 Tahun 2015",
+      "sumber_pasal": "Pasal 3",
+      "catatan_evaluasi": "Kelengkapan 3 poin. Koreksi: redaksi lama tidak sesuai teks (poin a dan b).",
+      "status_verifikasi": "dicocokkan_dengan_teks_pdf"
+    },
+    {
+      "id": "A4",
+      "tipe": "in_corpus",
+      "dokumen_id": [
+        "D2"
+      ],
+      "pertanyaan": "Apa definisi Penanggung Jawab Keselamatan Ketenagalistrikan (PJK2)?",
+      "expected_answer": "Penanggung jawab teknik yang menduduki jabatan tertentu dan diberi kewenangan dalam pengambilan keputusan atas terwujudnya Keselamatan Ketenagalistrikan.",
+      "sumber_regulasi": "Permen ESDM No. 10 Tahun 2021",
+      "sumber_pasal": "Pasal 1 angka 13",
+      "catatan_evaluasi": "Distraktor: PJBU (Pasal 1 angka 12, jabatan tertinggi).",
+      "status_verifikasi": "dicocokkan_dengan_teks_pdf"
+    },
+    {
+      "id": "A5",
+      "tipe": "in_corpus",
+      "dokumen_id": [
+        "D1"
+      ],
+      "pertanyaan": "Perusahaan dengan pembangkitan listrik berapa kapasitas yang wajib mempunyai Ahli K3 bidang Listrik?",
+      "expected_answer": "Lebih dari 200 kilo Volt-Ampere.",
+      "sumber_regulasi": "Permenaker No. 12 Tahun 2015",
+      "sumber_pasal": "Pasal 7",
+      "catatan_evaluasi": "Angka 200 kVA juga muncul di D2 (SMK2, paling kecil 200 kVA); uji ketepatan dokumen.",
+      "status_verifikasi": "dicocokkan_dengan_teks_pdf"
+    },
+    {
+      "id": "A6",
+      "tipe": "in_corpus",
+      "dokumen_id": [
+        "D2"
+      ],
+      "pertanyaan": "Apa tiga kewajiban dalam pemenuhan Keselamatan Ketenagalistrikan yang diatur Permen ESDM 10/2021 terkait sertifikat?",
+      "expected_answer": "(a) setiap Instalasi Tenaga Listrik yang beroperasi wajib memiliki sertifikat laik operasi; (b) Badan Usaha jasa penunjang tenaga listrik wajib memiliki sertifikat Badan Usaha; (c) tenaga teknik wajib memiliki sertifikat kompetensi.",
+      "sumber_regulasi": "Permen ESDM No. 10 Tahun 2021",
+      "sumber_pasal": "Pasal 5 ayat (3)",
+      "catatan_evaluasi": "Multi-poin; D3 hal. 3 memuat ringkasan serupa (SLO, SKTTK, SBU).",
+      "status_verifikasi": "dicocokkan_dengan_teks_pdf"
+    },
+    {
+      "id": "A7",
+      "tipe": "in_corpus",
+      "dokumen_id": [
+        "D1"
+      ],
+      "pertanyaan": "Siapa yang wajib melaksanakan K3 listrik di tempat kerja?",
+      "expected_answer": "Pengusaha dan/atau Pengurus.",
+      "sumber_regulasi": "Permenaker No. 12 Tahun 2015",
+      "sumber_pasal": "Pasal 2",
+      "catatan_evaluasi": "Pengganti M3; redaksi lama menambah klaim 'tenaga kerja wajib mematuhi' yang tidak ada di teks.",
+      "status_verifikasi": "dicocokkan_dengan_teks_pdf"
+    }
+  ],
+  "kategori_B_ambang_numerik": [
+    {
+      "id": "B1",
+      "tipe": "in_corpus",
+      "dokumen_id": [
+        "D2",
+        "D3"
+      ],
+      "pertanyaan": "Berapa kapasitas daya minimum Instalasi Pemanfaatan Tenaga Listrik yang wajib menerapkan SMK2?",
+      "expected_answer": "Paling kecil 200 (dua ratus) kilovolt-ampere.",
+      "sumber_regulasi": "Permen ESDM No. 10 Tahun 2021",
+      "sumber_pasal": "Pasal 28 ayat (2) huruf b",
+      "catatan_evaluasi": "Catatan inkonsistensi: D3 hal. 5 menulis 'paling kecil 200 kVA' tetapi Gambar 2 (hal. 4) menulis '> 200 kVA'. Jawaban acuan mengikuti teks Pasal.",
+      "status_verifikasi": "dicocokkan_dengan_teks_pdf"
+    },
+    {
+      "id": "B2",
+      "tipe": "in_corpus",
+      "dokumen_id": [
+        "D2",
+        "D3"
+      ],
+      "pertanyaan": "Berapa kapasitas minimum instalasi pembangkitan tenaga listrik yang wajib menerapkan SMK2?",
+      "expected_answer": "Paling kecil 5 (lima) megawatt.",
+      "sumber_regulasi": "Permen ESDM No. 10 Tahun 2021",
+      "sumber_pasal": "Pasal 28 ayat (2) huruf a angka 1",
+      "catatan_evaluasi": "Pembangkitan: 5 MW; transmisi dan distribusi tanpa batas kapasitas.",
+      "status_verifikasi": "dicocokkan_dengan_teks_pdf"
+    },
+    {
+      "id": "B3",
+      "tipe": "in_corpus",
+      "dokumen_id": [
+        "D2"
+      ],
+      "pertanyaan": "Instalasi Pemanfaatan Tenaga Listrik tegangan rendah dengan kapasitas berapa yang dikecualikan dari ketentuan struktur organisasi pengoperasian?",
+      "expected_answer": "Kurang dari 100 (seratus) kilovolt-ampere (dikecualikan juga dari prosedur standar pengoperasian dan pola operasi).",
+      "sumber_regulasi": "Permen ESDM No. 10 Tahun 2021",
+      "sumber_pasal": "Pasal 21",
+      "catatan_evaluasi": "Pasal 21 juga mengecualikan SOP dan pola operasi.",
+      "status_verifikasi": "dicocokkan_dengan_teks_pdf"
+    },
+    {
+      "id": "B4",
+      "tipe": "in_corpus",
+      "dokumen_id": [
+        "D2",
+        "D3"
+      ],
+      "pertanyaan": "Seberapa sering pemilik instalasi berbentuk Badan Usaha wajib melakukan audit penerapan SMK2?",
+      "expected_answer": "Paling sedikit 1 (satu) kali dalam setahun.",
+      "sumber_regulasi": "Permen ESDM No. 10 Tahun 2021",
+      "sumber_pasal": "Pasal 37 ayat (1)",
+      "catatan_evaluasi": "KOREKSI: soal lama menulis Pasal 39 ayat (1); yang benar Pasal 37 ayat (1). D3 Bab III juga menyebut Pasal 37.",
+      "status_verifikasi": "dicocokkan_dengan_teks_pdf"
+    },
+    {
+      "id": "B5",
+      "tipe": "in_corpus",
+      "dokumen_id": [
+        "D1"
+      ],
+      "pertanyaan": "Seberapa sering pemeriksaan secara berkala instalasi listrik wajib dilakukan menurut Permenaker 12/2015?",
+      "expected_answer": "Paling sedikit 1 (satu) tahun sekali.",
+      "sumber_regulasi": "Permenaker No. 12 Tahun 2015",
+      "sumber_pasal": "Pasal 11 ayat (1)",
+      "catatan_evaluasi": "Pengganti OOC3 (soal lama dianggap tidak diatur, padahal diatur).",
+      "status_verifikasi": "dicocokkan_dengan_teks_pdf"
+    },
+    {
+      "id": "B6",
+      "tipe": "in_corpus",
+      "dokumen_id": [
+        "D1"
+      ],
+      "pertanyaan": "Seberapa sering pengujian secara berkala wajib dilakukan menurut Permenaker 12/2015?",
+      "expected_answer": "Paling sedikit 5 (lima) tahun sekali.",
+      "sumber_regulasi": "Permenaker No. 12 Tahun 2015",
+      "sumber_pasal": "Pasal 11 ayat (2)",
+      "catatan_evaluasi": "Distraktor: tertukar dengan pemeriksaan berkala (1 tahun).",
+      "status_verifikasi": "dicocokkan_dengan_teks_pdf"
+    },
+    {
+      "id": "B7",
+      "tipe": "in_corpus",
+      "dokumen_id": [
+        "D2"
+      ],
+      "pertanyaan": "Berapa batas waktu penyampaian laporan singkat dan laporan lengkap kejadian kecelakaan atau gangguan berdampak pada masyarakat oleh PJK2?",
+      "expected_answer": "Laporan singkat paling lambat 4 (empat) jam dengan pemutakhiran paling lambat 24 jam; laporan lengkap paling lambat 14 (empat belas) hari kalender sejak kejadian.",
+      "sumber_regulasi": "Permen ESDM No. 10 Tahun 2021",
+      "sumber_pasal": "Pasal 36 ayat (3)",
+      "catatan_evaluasi": "Multi-angka.",
+      "status_verifikasi": "dicocokkan_dengan_teks_pdf"
+    },
+    {
+      "id": "B8",
+      "tipe": "in_corpus",
+      "dokumen_id": [
+        "D2",
+        "D3"
+      ],
+      "pertanyaan": "Kapan batas akhir penyampaian laporan tahunan pelaksanaan audit penerapan SMK2?",
+      "expected_answer": "Paling lambat 31 Januari pada tahun berikutnya.",
+      "sumber_regulasi": "Permen ESDM No. 10 Tahun 2021",
+      "sumber_pasal": "Pasal 39 ayat (1)",
+      "catatan_evaluasi": "D3 Bab III menyebut hal yang sama (dikutip dari D2).",
+      "status_verifikasi": "dicocokkan_dengan_teks_pdf"
+    },
+    {
+      "id": "B9",
+      "tipe": "in_corpus",
+      "dokumen_id": [
+        "D2",
+        "D3"
+      ],
+      "pertanyaan": "Dalam berapa hari Badan Usaha dapat menyampaikan sanggahan dan klarifikasi setelah penetapan status sementara ketaatan SMK2?",
+      "expected_answer": "Paling lambat 14 (empat belas) hari kalender sejak penetapan status sementara.",
+      "sumber_regulasi": "Permen ESDM No. 10 Tahun 2021",
+      "sumber_pasal": "Pasal 40 ayat (4)",
+      "catatan_evaluasi": "D3 Gambar 8 hanya memuat angka 14 hari dalam gambar (kemungkinan tidak masuk chunk teks).",
+      "status_verifikasi": "dicocokkan_dengan_teks_pdf"
+    },
+    {
+      "id": "B10",
+      "tipe": "in_corpus",
+      "dokumen_id": [
+        "D2"
+      ],
+      "pertanyaan": "Dalam berapa lama sejak Permen ESDM 10/2021 diundangkan pemilik instalasi wajib melaksanakan penerapan SMK2?",
+      "expected_answer": "Paling lambat 2 (dua) tahun terhitung sejak Peraturan Menteri diundangkan.",
+      "sumber_regulasi": "Permen ESDM No. 10 Tahun 2021",
+      "sumber_pasal": "Pasal 50",
+      "catatan_evaluasi": "Ketentuan peralihan.",
+      "status_verifikasi": "dicocokkan_dengan_teks_pdf"
+    }
+  ],
+  "kategori_C_multihop": [
+    {
+      "id": "C1",
+      "tipe": "in_corpus",
+      "dokumen_id": [
+        "D2"
+      ],
+      "pertanyaan": "Sebuah pabrik dengan instalasi pemanfaatan tegangan rendah 150 kVA melakukan pemeliharaan. Apakah boleh dilakukan karyawan sendiri (in-house)? Sebutkan syaratnya.",
+      "expected_answer": "Ya. Pemeliharaan dapat dilakukan tenaga teknik secara mandiri (in-house) dengan syarat memiliki sertifikat kompetensi tenaga teknik sesuai klasifikasi dan kualifikasi. Karena 150 kVA tidak kurang dari 100 kVA, instalasi tidak termasuk pengecualian Pasal 24 ayat (1).",
+      "sumber_regulasi": "Permen ESDM No. 10 Tahun 2021",
+      "sumber_pasal": "Pasal 22 ayat (3) huruf b; Pasal 24 ayat (1)",
+      "catatan_evaluasi": "Penalaran 2 pasal. Alternatif: Badan Usaha jasa pemeliharaan (Pasal 22 ayat (3) huruf a).",
+      "status_verifikasi": "dicocokkan_dengan_teks_pdf"
+    },
+    {
+      "id": "C2",
+      "tipe": "in_corpus",
+      "dokumen_id": [
+        "D2"
+      ],
+      "pertanyaan": "Badan Usaha pemilik instalasi mendapat predikat ketaatan merah. Sanksi administratif apa yang dikenakan dan bagaimana tahapannya?",
+      "expected_answer": "Sanksi berupa teguran tertulis (disertai rekomendasi perbaikan dan jangka waktu); bila tidak ditindaklanjuti, teguran tertulis kembali paling banyak 2 kali dalam jangka paling lama 30 hari kalender; bila setelah teguran ketiga belum diperbaiki, penghentian sementara sebagian atau seluruh kegiatan usaha penyediaan tenaga listrik sampai perbaikan dilakukan.",
+      "sumber_regulasi": "Permen ESDM No. 10 Tahun 2021",
+      "sumber_pasal": "Pasal 47; Pasal 48; Pasal 41 ayat (4)",
+      "catatan_evaluasi": "Pengganti C2 lama (Pasal 71 tidak ada di D2).",
+      "status_verifikasi": "dicocokkan_dengan_teks_pdf"
+    },
+    {
+      "id": "C3",
+      "tipe": "in_corpus",
+      "dokumen_id": [
+        "D2"
+      ],
+      "pertanyaan": "Sebuah PT memiliki instalasi pemanfaatan tenaga listrik 150 kVA. Apakah PT tersebut wajib menerapkan SMK2?",
+      "expected_answer": "Tidak. Badan Usaha wajib memiliki SMK2 (Pasal 26 ayat (1)), tetapi penerapan pada instalasi pemanfaatan hanya untuk kapasitas paling kecil 200 kVA (Pasal 28 ayat (2) huruf b); 150 kVA di bawah ambang.",
+      "sumber_regulasi": "Permen ESDM No. 10 Tahun 2021",
+      "sumber_pasal": "Pasal 26 ayat (1); Pasal 28 ayat (2) huruf b",
+      "catatan_evaluasi": "Penalaran ambang. Pengganti C3 lama (Pasal 74 tidak ada di D2).",
+      "status_verifikasi": "dicocokkan_dengan_teks_pdf"
+    },
+    {
+      "id": "C4",
+      "tipe": "in_corpus",
+      "dokumen_id": [
+        "D2",
+        "D3"
+      ],
+      "pertanyaan": "Melalui sistem apa dan paling lambat kapan PJK2 menyampaikan laporan tahunan hasil audit SMK2?",
+      "expected_answer": "Melalui SIMATRIK (Sistem Informasi Manajemen Keselamatan Ketenagalistrikan), paling lambat 31 Januari tahun berikutnya, kepada Menteri melalui Direktur Jenderal atau gubernur sesuai kewenangannya.",
+      "sumber_regulasi": "Permen ESDM No. 10 Tahun 2021 dan Pedoman Pelaporan SMK2 (Ditjen Gatrik)",
+      "sumber_pasal": "D2 Pasal 39 ayat (1); D3 Bab III",
+      "catatan_evaluasi": "Multi-dokumen: SIMATRIK hanya ada di D3, tenggat di D2/D3.",
+      "status_verifikasi": "dicocokkan_dengan_teks_pdf"
+    }
+  ],
+  "kategori_D_antihalusinasi_premis_salah": [
+    {
+      "id": "D1",
+      "tipe": "in_corpus",
+      "dokumen_id": [
+        "D2"
+      ],
+      "pertanyaan": "Benarkah setiap instalasi pemanfaatan tenaga listrik wajib menerapkan SMK2 menurut Permen ESDM 10/2021?",
+      "expected_answer": "Tidak benar. SMK2 wajib bagi pemilik instalasi berbentuk Badan Usaha (Pasal 26 ayat (1)), dan penerapan pada instalasi pemanfaatan hanya untuk kapasitas paling kecil 200 kVA (Pasal 28 ayat (2) huruf b).",
+      "sumber_regulasi": "Permen ESDM No. 10 Tahun 2021",
+      "sumber_pasal": "Pasal 26 ayat (1); Pasal 28 ayat (2)",
+      "catatan_evaluasi": "Premis salah. Catatan: Pasal 24 mengecualikan <100 kVA dari Pasal 22 ayat (2) dan (3) (pedoman dan pelaksana pemeliharaan), bukan dari SMK2 secara umum.",
+      "status_verifikasi": "dicocokkan_dengan_teks_pdf"
+    },
+    {
+      "id": "D2",
+      "tipe": "in_corpus",
+      "dokumen_id": [
+        "D1"
+      ],
+      "pertanyaan": "Benarkah Permenaker 12/2015 mengatur sanksi pidana bagi pengusaha yang tidak memenuhi ketentuannya?",
+      "expected_answer": "Tidak. Pasal 14 hanya menyatakan Pengusaha dan/atau Pengurus dikenakan sanksi sesuai UU No. 1 Tahun 1970 dan UU No. 13 Tahun 2003; Permenaker 12/2015 tidak merinci sanksi pidana sendiri.",
+      "sumber_regulasi": "Permenaker No. 12 Tahun 2015",
+      "sumber_pasal": "Pasal 14",
+      "catatan_evaluasi": "Premis salah. Pasal 14 = Sanksi (Pasal 15 = pencabutan Kepmen).",
+      "status_verifikasi": "dicocokkan_dengan_teks_pdf"
+    },
+    {
+      "id": "D3",
+      "tipe": "in_corpus",
+      "dokumen_id": [
+        "D1",
+        "D2"
+      ],
+      "pertanyaan": "Apakah PUIL 2000 dicabut oleh Permen ESDM 10/2021?",
+      "expected_answer": "Tidak. Permen ESDM 10/2021 (Pasal 51) mencabut Permen ESDM 0045/2005 jo. 046/2006 tentang Instalasi Ketenagalistrikan. Yang mencabut Kepmen KEP.75/MEN/2002 (pemberlakuan PUIL 2000 di tempat kerja) adalah Permenaker 12/2015 (Pasal 15).",
+      "sumber_regulasi": "Permenaker No. 12 Tahun 2015 dan Permen ESDM No. 10 Tahun 2021",
+      "sumber_pasal": "D1 Pasal 15; D2 Pasal 51",
+      "catatan_evaluasi": "Premis salah. Soal lama menyebut Permenaker 26/2014, yang tidak ada di korpus.",
+      "status_verifikasi": "dicocokkan_dengan_teks_pdf"
+    },
+    {
+      "id": "D4",
+      "tipe": "in_corpus",
+      "dokumen_id": [
+        "D2"
+      ],
+      "pertanyaan": "Apakah predikat ketaatan hitam dikenai sanksi pencabutan izin usaha menurut Permen ESDM 10/2021?",
+      "expected_answer": "Tidak. Sanksi untuk predikat hitam berupa penghentian sementara sebagian atau seluruh kegiatan usaha penyediaan tenaga listrik, disertai rekomendasi perbaikan, sampai perbaikan dilakukan; tidak ada pencabutan izin dalam pasal sanksi.",
+      "sumber_regulasi": "Permen ESDM No. 10 Tahun 2021",
+      "sumber_pasal": "Pasal 49",
+      "catatan_evaluasi": "Premis salah (bahan dari D4 FAQ: sumber_penyusunan belum bisa dicatat karena D4 belum diunggah).",
+      "status_verifikasi": "dicocokkan_dengan_teks_pdf"
+    }
+  ],
+  "kategori_E_sinonim": [
+    {
+      "id": "E1",
+      "tipe": "in_corpus",
+      "dokumen_id": [
+        "D2"
+      ],
+      "pertanyaan": "Apa itu sertifikat laik fungsi?",
+      "expected_answer": "Istilah dalam regulasi adalah sertifikat laik operasi (bukan laik fungsi). Setiap Instalasi Tenaga Listrik yang beroperasi wajib memilikinya; diberikan setelah memenuhi pemeriksaan dan pengujian (Pasal 17 ayat (6)).",
+      "sumber_regulasi": "Permen ESDM No. 10 Tahun 2021",
+      "sumber_pasal": "Pasal 5 ayat (3) huruf a; Pasal 17 ayat (6)",
+      "catatan_evaluasi": "Uji sinonim/istilah salah.",
+      "status_verifikasi": "dicocokkan_dengan_teks_pdf"
+    },
+    {
+      "id": "E2",
+      "tipe": "in_corpus",
+      "dokumen_id": [
+        "D2",
+        "D3"
+      ],
+      "pertanyaan": "Perusahaan harus punya SLO sebelum beroperasi, benarkah?",
+      "expected_answer": "Ya. SLO adalah Sertifikat Laik Operasi; setiap Instalasi Tenaga Listrik yang beroperasi wajib memilikinya, dan pengoperasian dilakukan setelah memiliki SLO.",
+      "sumber_regulasi": "Permen ESDM No. 10 Tahun 2021",
+      "sumber_pasal": "Pasal 5 ayat (3) huruf a; Pasal 18 ayat (1)",
+      "catatan_evaluasi": "Singkatan SLO ada di D3 hal. 3 dan D2 tanpa singkatan di batang tubuh.",
+      "status_verifikasi": "dicocokkan_dengan_teks_pdf"
+    },
+    {
+      "id": "E3",
+      "tipe": "in_corpus",
+      "dokumen_id": [
+        "D3"
+      ],
+      "pertanyaan": "Apa kepanjangan SKTTK?",
+      "expected_answer": "Sertifikat Kompetensi Tenaga Teknik (SKTTK) Ketenagalistrikan.",
+      "sumber_regulasi": "Pedoman Pelaporan SMK2 (Ditjen Gatrik)",
+      "sumber_pasal": "Bab I hal. 3",
+      "catatan_evaluasi": "Singkatan hanya muncul di D3.",
+      "status_verifikasi": "dicocokkan_dengan_teks_pdf"
+    }
+  ],
+  "kategori_F_pedoman_smk2_D3": [
+    {
+      "id": "F1",
+      "tipe": "in_corpus",
+      "dokumen_id": [
+        "D3",
+        "D2"
+      ],
+      "pertanyaan": "Apa saja lima elemen penerapan SMK2?",
+      "expected_answer": "(a) penetapan kebijakan Badan Usaha; (b) penetapan organisasi SMK2; (c) perencanaan pemenuhan kebijakan; (d) pelaksanaan kebijakan; (e) evaluasi dan tindak lanjut penerapan Keselamatan Ketenagalistrikan.",
+      "sumber_regulasi": "Pedoman Pelaporan SMK2 (Ditjen Gatrik)",
+      "sumber_pasal": "Bab II hal. 6 (selaras D2 Pasal 29)",
+      "catatan_evaluasi": "Kelengkapan 5 poin.",
+      "status_verifikasi": "dicocokkan_dengan_teks_pdf"
+    },
+    {
+      "id": "F2",
+      "tipe": "in_corpus",
+      "dokumen_id": [
+        "D3"
+      ],
+      "pertanyaan": "Pada kegiatan apa SMK2 diterapkan?",
+      "expected_answer": "Pada kegiatan pengoperasian dan pemeliharaan Instalasi Tenaga Listrik.",
+      "sumber_regulasi": "Pedoman Pelaporan SMK2 (Ditjen Gatrik)",
+      "sumber_pasal": "Bab II hal. 5 (selaras D2 Pasal 28 ayat (1))",
+      "catatan_evaluasi": "Distraktor: perencanaan dan pembangunan.",
+      "status_verifikasi": "dicocokkan_dengan_teks_pdf"
+    },
+    {
+      "id": "F3",
+      "tipe": "in_corpus",
+      "dokumen_id": [
+        "D3"
+      ],
+      "pertanyaan": "Dengan sistem apa pelaporan SMK2 dapat disampaikan?",
+      "expected_answer": "Melalui SIMATRIK (Sistem Informasi Manajemen Keselamatan Ketenagalistrikan), https://gatrik.esdm.go.id/simatrik.",
+      "sumber_regulasi": "Pedoman Pelaporan SMK2 (Ditjen Gatrik)",
+      "sumber_pasal": "Bab III hal. 28",
+      "catatan_evaluasi": "Hanya D3 yang memuatnya.",
+      "status_verifikasi": "dicocokkan_dengan_teks_pdf"
+    },
+    {
+      "id": "F4",
+      "tipe": "in_corpus",
+      "dokumen_id": [
+        "D3"
+      ],
+      "pertanyaan": "Apa ketentuan format dan penamaan dokumen yang diunggah ke SIMATRIK untuk penilaian audit self declared?",
+      "expected_answer": "Dokumen harus berformat pdf dan nama dokumen tidak boleh mengandung tanda titik (.).",
+      "sumber_regulasi": "Pedoman Pelaporan SMK2 (Ditjen Gatrik)",
+      "sumber_pasal": "Bab III hal. 29",
+      "catatan_evaluasi": "Detail teknis kecil, uji ketelitian retrieval.",
+      "status_verifikasi": "dicocokkan_dengan_teks_pdf"
+    },
+    {
+      "id": "F5",
+      "tipe": "in_corpus",
+      "dokumen_id": [
+        "D3"
+      ],
+      "pertanyaan": "Apa fungsi akun PJBU di SIMATRIK?",
+      "expected_answer": "Menunjuk PJK2 beserta penugasan tiap unit, dan memverifikasi permohonan penambahan profil unit oleh PJK2 untuk pelaporan Audit SMK2.",
+      "sumber_regulasi": "Pedoman Pelaporan SMK2 (Ditjen Gatrik)",
+      "sumber_pasal": "Bab III hal. 28",
+      "catatan_evaluasi": "Distraktor: fungsi akun PJK2 (mengumpulkan data kejadian dan melaporkan kejadian).",
+      "status_verifikasi": "dicocokkan_dengan_teks_pdf"
+    },
+    {
+      "id": "F6",
+      "tipe": "in_corpus",
+      "dokumen_id": [
+        "D3"
+      ],
+      "pertanyaan": "Berapa frekuensi minimal audit internal dan audit eksternal SMK2 menurut pedoman?",
+      "expected_answer": "Audit internal (self assessment) minimal 1 tahun sekali; audit eksternal minimum 1 tahun sekali dan melibatkan pihak eksternal.",
+      "sumber_regulasi": "Pedoman Pelaporan SMK2 (Ditjen Gatrik)",
+      "sumber_pasal": "Elemen E, hal. 27",
+      "catatan_evaluasi": "D3 menulis 'minimin 1 tahun sekali' (typo).",
+      "status_verifikasi": "dicocokkan_dengan_teks_pdf"
+    },
+    {
+      "id": "F7",
+      "tipe": "in_corpus",
+      "dokumen_id": [
+        "D3",
+        "D2"
+      ],
+      "pertanyaan": "Apa susunan paling sedikit struktur organisasi SMK2?",
+      "expected_answer": "PJBU, PJK2, teknisi Keselamatan Ketenagalistrikan atau analis Keselamatan Ketenagalistrikan, dan tim tanggap darurat.",
+      "sumber_regulasi": "Pedoman Pelaporan SMK2 (Ditjen Gatrik)",
+      "sumber_pasal": "Elemen B, hal. 10 (selaras D2 Pasal 31)",
+      "catatan_evaluasi": "4 poin.",
+      "status_verifikasi": "dicocokkan_dengan_teks_pdf"
+    },
+    {
+      "id": "F8",
+      "tipe": "in_corpus",
+      "dokumen_id": [
+        "D3"
+      ],
+      "pertanyaan": "Komponen apa saja dalam laporan tahunan pelaksanaan audit penerapan SMK2 menurut pedoman?",
+      "expected_answer": "Profil Instalasi Tenaga Listrik (diinput pada SIMATRIK) dan penilaian atas hasil audit secara self declared (unggah dokumen).",
+      "sumber_regulasi": "Pedoman Pelaporan SMK2 (Ditjen Gatrik)",
+      "sumber_pasal": "Bab III hal. 29",
+      "catatan_evaluasi": "D2 Pasal 39 ayat (2) menambahkan huruf c (hasil investigasi kejadian); jawaban boleh menyebutnya.",
+      "status_verifikasi": "dicocokkan_dengan_teks_pdf"
+    }
+  ],
+  "kategori_OOC_di_luar_korpus": [
+    {
+      "id": "OOC1",
+      "tipe": "out_of_corpus",
+      "dokumen_id": null,
+      "pertanyaan": "Berapa besaran denda administratif (rupiah) untuk pemilik instalasi yang beroperasi tanpa sertifikat laik operasi?",
+      "expected_answer": "Tidak diatur dalam korpus (D1, D2, D3); sistem harus abstain. Sanksi administratif D2 hanya teguran tertulis dan penghentian sementara (Pasal 48-49), tanpa denda uang.",
+      "sumber_regulasi": null,
+      "sumber_pasal": null,
+      "catatan_evaluasi": "Kata 'denda' tidak ada di D2.",
+      "status_verifikasi": "pencarian_kata_kunci_di_D1_D2_D3_(termasuk_lampiran_D2)_tidak_menemukan"
+    },
+    {
+      "id": "OOC2",
+      "tipe": "out_of_corpus",
+      "dokumen_id": null,
+      "pertanyaan": "Berapa masa kerja minimum calon Teknisi K3 Listrik sebelum boleh mengikuti pelatihan?",
+      "expected_answer": "Tidak diatur dalam korpus (D1, D2, D3); sistem harus abstain. Tidak ada ketentuan masa kerja.",
+      "sumber_regulasi": null,
+      "sumber_pasal": null,
+      "catatan_evaluasi": "Pelatihan/lisensi hanya disinggung di D1 Pasal 1 angka 17 dan Pasal 8.",
+      "status_verifikasi": "pencarian_kata_kunci_di_D1_D2_D3_(termasuk_lampiran_D2)_tidak_menemukan"
+    },
+    {
+      "id": "OOC3",
+      "tipe": "out_of_corpus",
+      "dokumen_id": null,
+      "pertanyaan": "Apakah penggunaan sarung tangan isolasi wajib bagi teknisi yang bekerja pada tegangan 220 V di rumah tangga?",
+      "expected_answer": "Tidak diatur dalam korpus (D1, D2, D3); sistem harus abstain. Tidak ada ketentuan APD spesifik.",
+      "sumber_regulasi": null,
+      "sumber_pasal": null,
+      "catatan_evaluasi": "Lampiran D2 hanya menyebut 'alat pelindung diri' secara umum.",
+      "status_verifikasi": "pencarian_kata_kunci_di_D1_D2_D3_(termasuk_lampiran_D2)_tidak_menemukan"
+    },
+    {
+      "id": "OOC4",
+      "tipe": "out_of_corpus",
+      "dokumen_id": null,
+      "pertanyaan": "Berapa tarif pengujian laik operasi yang berlaku tahun 2026?",
+      "expected_answer": "Tidak diatur dalam korpus (D1, D2, D3); sistem harus abstain. Tarif tidak diatur.",
+      "sumber_regulasi": null,
+      "sumber_pasal": null,
+      "catatan_evaluasi": "Kata 'tarif' tidak ada.",
+      "status_verifikasi": "pencarian_kata_kunci_di_D1_D2_D3_(termasuk_lampiran_D2)_tidak_menemukan"
+    },
+    {
+      "id": "OOC5",
+      "tipe": "out_of_corpus",
+      "dokumen_id": null,
+      "pertanyaan": "Berapa lama masa berlaku sertifikat kompetensi tenaga teknik ketenagalistrikan?",
+      "expected_answer": "Tidak diatur dalam korpus (D1, D2, D3); sistem harus abstain. Masa berlaku tidak disebut.",
+      "sumber_regulasi": null,
+      "sumber_pasal": null,
+      "catatan_evaluasi": "'masa berlaku' tidak ada di D1/D2; di D3 hanya terkait penomoran dokumen.",
+      "status_verifikasi": "pencarian_kata_kunci_di_D1_D2_D3_(termasuk_lampiran_D2)_tidak_menemukan"
+    },
+    {
+      "id": "OOC6",
+      "tipe": "out_of_corpus",
+      "dokumen_id": null,
+      "pertanyaan": "Apakah tenaga kerja asing wajib mengikuti uji kompetensi K3 listrik yang sama dengan tenaga kerja lokal?",
+      "expected_answer": "Tidak diatur dalam korpus (D1, D2, D3); sistem harus abstain. Tidak diatur.",
+      "sumber_regulasi": null,
+      "sumber_pasal": null,
+      "catatan_evaluasi": "Kata 'tenaga kerja asing' tidak ada.",
+      "status_verifikasi": "pencarian_kata_kunci_di_D1_D2_D3_(termasuk_lampiran_D2)_tidak_menemukan"
+    },
+    {
+      "id": "OOC7",
+      "tipe": "out_of_corpus",
+      "dokumen_id": null,
+      "pertanyaan": "Berapa jumlah maksimal jam kerja per minggu bagi teknisi listrik yang bekerja di ketinggian?",
+      "expected_answer": "Tidak diatur dalam korpus (D1, D2, D3); sistem harus abstain. Jam kerja tidak diatur.",
+      "sumber_regulasi": null,
+      "sumber_pasal": null,
+      "catatan_evaluasi": "Kata 'jam kerja' tidak ada.",
+      "status_verifikasi": "pencarian_kata_kunci_di_D1_D2_D3_(termasuk_lampiran_D2)_tidak_menemukan"
+    },
+    {
+      "id": "OOC8",
+      "tipe": "out_of_corpus",
+      "dokumen_id": null,
+      "pertanyaan": "Berapa batas tegangan sistem 400 V AC untuk dikategorikan tegangan rendah menurut korpus ini?",
+      "expected_answer": "Tidak diatur dalam korpus (D1, D2, D3); sistem harus abstain. Batas tegangan rendah/menengah/tinggi tidak didefinisikan angka.",
+      "sumber_regulasi": null,
+      "sumber_pasal": null,
+      "catatan_evaluasi": "D2 Pasal 4 ayat (3) hanya menyebut kategori, tanpa nilai volt.",
+      "status_verifikasi": "pencarian_kata_kunci_di_D1_D2_D3_(termasuk_lampiran_D2)_tidak_menemukan"
+    },
+    {
+      "id": "OOC9",
+      "tipe": "out_of_corpus",
+      "dokumen_id": null,
+      "pertanyaan": "Bahan apa yang digunakan untuk pembuatan sarung tangan isolasi listrik?",
+      "expected_answer": "Tidak diatur dalam korpus (D1, D2, D3); sistem harus abstain. Spesifikasi material APD tidak diatur.",
+      "sumber_regulasi": null,
+      "sumber_pasal": null,
+      "catatan_evaluasi": "Kata 'sarung tangan' tidak ada.",
+      "status_verifikasi": "pencarian_kata_kunci_di_D1_D2_D3_(termasuk_lampiran_D2)_tidak_menemukan"
+    },
+    {
+      "id": "OOC10",
+      "tipe": "out_of_corpus",
+      "dokumen_id": null,
+      "pertanyaan": "Sebutkan pasal Permen ESDM 10/2021 yang mengatur pembekuan izin usaha bagi instalasi tanpa SLO.",
+      "expected_answer": "Tidak diatur dalam korpus (D1, D2, D3); sistem harus abstain. Tidak ada pasal pembekuan; sanksi hanya teguran tertulis dan penghentian sementara.",
+      "sumber_regulasi": null,
+      "sumber_pasal": null,
+      "catatan_evaluasi": "Kata 'pembekuan' dan 'pencabutan' tidak ada di D2.",
+      "status_verifikasi": "pencarian_kata_kunci_di_D1_D2_D3_(termasuk_lampiran_D2)_tidak_menemukan"
+    }
+  ]
+}
