@@ -1,0 +1,295 @@
+{
+  "retrieval": {
+    "B1": {
+      "run": "20261127-134409_B1_dev",
+      "metrics": {
+        "all": {
+          "n": 26.0,
+          "recall@1": 0.5128205128205129,
+          "hit@1": 0.5769230769230769,
+          "recall@3": 0.7948717948717949,
+          "hit@3": 0.8076923076923077,
+          "recall@5": 0.9230769230769231,
+          "hit@5": 0.9230769230769231,
+          "recall@10": 0.9230769230769231,
+          "hit@10": 0.9230769230769231,
+          "mrr": 0.7128205128205128,
+          "ndcg@5": 0.7611960602295115
+        },
+        "factual": {
+          "n": 20.0,
+          "recall@1": 0.6,
+          "hit@1": 0.6,
+          "recall@3": 0.85,
+          "hit@3": 0.85,
+          "recall@5": 1.0,
+          "hit@5": 1.0,
+          "recall@10": 1.0,
+          "hit@10": 1.0,
+          "mrr": 0.7516666666666667,
+          "ndcg@5": 0.813596246883358
+        },
+        "multihop": {
+          "n": 6.0,
+          "recall@1": 0.2222222222222222,
+          "hit@1": 0.5,
+          "recall@3": 0.611111111111111,
+          "hit@3": 0.6666666666666666,
+          "recall@5": 0.6666666666666666,
+          "hit@5": 0.6666666666666666,
+          "recall@10": 0.6666666666666666,
+          "hit@10": 0.6666666666666666,
+          "mrr": 0.5833333333333334,
+          "ndcg@5": 0.5865287713833568
+        }
+      }
+    },
+    "B2": {
+      "run": "20261127-134411_B2_dev",
+      "metrics": {
+        "all": {
+          "n": 26.0,
+          "recall@1": 0.7051282051282051,
+          "hit@1": 0.8076923076923077,
+          "recall@3": 0.9294871794871795,
+          "hit@3": 1.0,
+          "recall@5": 0.9807692307692307,
+          "hit@5": 1.0,
+          "recall@10": 1.0,
+          "hit@10": 1.0,
+          "mrr": 0.9038461538461539,
+          "ndcg@5": 0.9048200313473281
+        },
+        "factual": {
+          "n": 20.0,
+          "recall@1": 0.8,
+          "hit@1": 0.8,
+          "recall@3": 1.0,
+          "hit@3": 1.0,
+          "recall@5": 1.0,
+          "hit@5": 1.0,
+          "recall@10": 1.0,
+          "hit@10": 1.0,
+          "mrr": 0.9,
+          "ndcg@5": 0.9261859507142916
+        },
+        "multihop": {
+          "n": 6.0,
+          "recall@1": 0.3888888888888889,
+          "hit@1": 0.8333333333333334,
+          "recall@3": 0.6944444444444445,
+          "hit@3": 1.0,
+          "recall@5": 0.9166666666666666,
+          "hit@5": 1.0,
+          "recall@10": 1.0,
+          "hit@10": 1.0,
+          "mrr": 0.9166666666666666,
+          "ndcg@5": 0.8336003001241171
+        }
+      }
+    },
+    "M1": {
+      "run": "20261127-134414_M1_dev",
+      "metrics": {
+        "all": {
+          "n": 26.0,
+          "recall@1": 0.6474358974358974,
+          "hit@1": 0.7307692307692307,
+          "recall@3": 0.9102564102564104,
+          "hit@3": 0.9230769230769231,
+          "recall@5": 0.9615384615384616,
+          "hit@5": 1.0,
+          "recall@10": 1.0,
+          "hit@10": 1.0,
+          "mrr": 0.8423076923076922,
+          "ndcg@5": 0.8629212982762086
+        },
+        "factual": {
+          "n": 20.0,
+          "recall@1": 0.75,
+          "hit@1": 0.75,
+          "recall@3": 1.0,
+          "hit@3": 1.0,
+          "recall@5": 1.0,
+          "hit@5": 1.0,
+          "recall@10": 1.0,
+          "hit@10": 1.0,
+          "mrr": 0.875,
+          "ndcg@5": 0.9077324383928644
+        },
+        "multihop": {
+          "n": 6.0,
+          "recall@1": 0.3055555555555555,
+          "hit@1": 0.6666666666666666,
+          "recall@3": 0.611111111111111,
+          "hit@3": 0.6666666666666666,
+          "recall@5": 0.8333333333333334,
+          "hit@5": 1.0,
+          "recall@10": 1.0,
+          "hit@10": 1.0,
+          "mrr": 0.7333333333333334,
+          "ndcg@5": 0.7135508312206894
+        }
+      }
+    }
+  },
+  "generation": {
+    "B0": {
+      "run": "20261127-134741_B0_dev_gen",
+      "all": {
+        "n": 33.0,
+        "faithfulness": 0.3,
+        "citation_correctness": 0.15151515151515152,
+        "answer_correctness": 0.296969696969697,
+        "abstain_accuracy": 0.5454545454545454,
+        "latency_p50_ms": 2784.0,
+        "latency_p95_ms": 5942.799999999999,
+        "tokens_per_q": 548.0,
+        "cost_per_q_usd": 8.77509090909091e-05,
+        "judge_cost_usd": 0.019855399999999992,
+        "failed_cases": 0.0
+      },
+      "citation_on_answered": 0.0,
+      "confusion": {
+        "answerable_answered": 12,
+        "answerable_refused": 14,
+        "unanswerable_answered": 1,
+        "unanswerable_refused": 6
+      },
+      "refused_answerable_ids": [
+        "B1",
+        "B2",
+        "B7",
+        "B8",
+        "B10",
+        "C2",
+        "C4",
+        "D4",
+        "F1",
+        "F2",
+        "F4",
+        "F5",
+        "F7",
+        "F8"
+      ],
+      "answered_unanswerable_ids": [
+        "OOC5"
+      ],
+      "generator_cost_usd": 0.00289578
+    },
+    "B1": {
+      "run": "20261127-131555_B1_dev_gen",
+      "all": {
+        "n": 33.0,
+        "faithfulness": 0.9878787878787879,
+        "citation_correctness": 0.7272727272727273,
+        "answer_correctness": 0.9696969696969697,
+        "abstain_accuracy": 0.9696969696969697,
+        "latency_p50_ms": 4444.0,
+        "latency_p95_ms": 14801.199999999995,
+        "tokens_per_q": 3472.2727272727275,
+        "cost_per_q_usd": 0.00040474151515151516,
+        "judge_cost_usd": 0.022812799999999998,
+        "failed_cases": 0.0
+      },
+      "citation_on_answered": 0.96,
+      "confusion": {
+        "answerable_answered": 25,
+        "answerable_refused": 1,
+        "unanswerable_answered": 0,
+        "unanswerable_refused": 7
+      },
+      "refused_answerable_ids": [
+        "E1"
+      ],
+      "answered_unanswerable_ids": [],
+      "generator_cost_usd": 0.01335647
+    },
+    "B2": {
+      "run": "20261127-132221_B2_dev_gen",
+      "all": {
+        "n": 33.0,
+        "faithfulness": 0.9848484848484849,
+        "citation_correctness": 0.7475757575757577,
+        "answer_correctness": 0.9696969696969697,
+        "abstain_accuracy": 0.9696969696969697,
+        "latency_p50_ms": 4141.0,
+        "latency_p95_ms": 17254.399999999994,
+        "tokens_per_q": 3611.090909090909,
+        "cost_per_q_usd": 0.00042657454545454545,
+        "judge_cost_usd": 0.020948799999999997,
+        "failed_cases": 0.0
+      },
+      "citation_on_answered": 0.9868000000000001,
+      "confusion": {
+        "answerable_answered": 25,
+        "answerable_refused": 1,
+        "unanswerable_answered": 0,
+        "unanswerable_refused": 7
+      },
+      "refused_answerable_ids": [
+        "E1"
+      ],
+      "answered_unanswerable_ids": [],
+      "generator_cost_usd": 0.01407696
+    },
+    "M1": {
+      "run": "20261127-132827_M1_dev_gen",
+      "all": {
+        "n": 33.0,
+        "faithfulness": 1.0,
+        "citation_correctness": 0.7575757575757576,
+        "answer_correctness": 0.9545454545454546,
+        "abstain_accuracy": 0.9696969696969697,
+        "latency_p50_ms": 4442.0,
+        "latency_p95_ms": 12071.399999999994,
+        "tokens_per_q": 3564.757575757576,
+        "cost_per_q_usd": 0.00040746151515151516,
+        "judge_cost_usd": 0.0220667,
+        "failed_cases": 0.0
+      },
+      "citation_on_answered": 1.0,
+      "confusion": {
+        "answerable_answered": 25,
+        "answerable_refused": 1,
+        "unanswerable_answered": 0,
+        "unanswerable_refused": 7
+      },
+      "refused_answerable_ids": [
+        "E1"
+      ],
+      "answered_unanswerable_ids": [],
+      "generator_cost_usd": 0.01344623
+    },
+    "M3": {
+      "run": "20261127-134052_M3_dev_gen",
+      "all": {
+        "n": 33.0,
+        "faithfulness": 0.9848484848484849,
+        "citation_correctness": 0.696969696969697,
+        "answer_correctness": 0.8939393939393939,
+        "abstain_accuracy": 0.9090909090909091,
+        "latency_p50_ms": 15408.0,
+        "latency_p95_ms": 25810.999999999996,
+        "tokens_per_q": 7902.030303030303,
+        "cost_per_q_usd": 0.0008144318181818182,
+        "judge_cost_usd": 0.023935299999999996,
+        "failed_cases": 0.0
+      },
+      "citation_on_answered": 0.9565217391304348,
+      "confusion": {
+        "answerable_answered": 23,
+        "answerable_refused": 3,
+        "unanswerable_answered": 0,
+        "unanswerable_refused": 7
+      },
+      "refused_answerable_ids": [
+        "D2",
+        "D4",
+        "E1"
+      ],
+      "answered_unanswerable_ids": [],
+      "generator_cost_usd": 0.02687625
+    }
+  }
+}

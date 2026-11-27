@@ -7,7 +7,7 @@ Dibuat oleh `data/eval/build_qa.py`. Tim memeriksa bahwa potongan gold memuat ja
 | A1 | dev | factual | Pasal 4 ayat (2) | D1-P4 | |
 | A2 | dev | factual | Pasal 13 | D1-P13 | |
 | A3 | test | factual | Pasal 3 | D1-P3 | |
-| A4 | dev | factual | Pasal 1 angka 13 | D2-P1-S1 | |
+| A4 | dev | factual | Pasal 1 angka 13 | D2-P1-S2 | |
 | A5 | dev | factual | Pasal 7 | D1-P7 | |
 | A6 | test | factual | Pasal 5 ayat (3) | D2-P5 | |
 | A7 | dev | factual | Pasal 2 | D1-P2 | |

@@ -35,7 +35,7 @@ PAGE_CITATIONS = {
 # "D3 Bab III" in a multi-source citation.
 EXTRA = {"C4": ["D3-BABIII-S1"]}
 # An article that is split into several chunks: the part that holds the cited item.
-SPLIT_ARTICLE = {("A4", "D2", "1"): ["D2-P1-S1"]}
+SPLIT_ARTICLE = {("A4", "D2", "1"): ["D2-P1-S2"]}
 
 
 def load_chunks() -> dict[str, dict]:

@@ -45,3 +45,14 @@ Jenis chunk: 70 pasal/ayat, 39 lampiran (D2, teks tabel mentah), 17 bagian pedom
 - Korpus hanya berbahasa Indonesia (ADR 008); dokumen Inggris (DOE-HDBK-1092, OSHA 1910.269) dikeluarkan dari lingkup.
 - Jumlah token adalah perkiraan sederhana (kata + tanda baca), bukan token model.
 - Status berlaku dan versi terkini setiap regulasi belum diverifikasi.
+
+## Set uji (`data/eval/qa.jsonl`)
+
+46 pertanyaan dari paket soal tim (`data/eval/sumber_soal_uji.json`, revisi 27 November 2026), dikonversi oleh `data/eval/build_qa.py`.
+
+| Split | Faktual | Multihop | Di luar korpus | Jumlah |
+|---|---|---|---|---|
+| dev | 20 | 6 | 7 | 33 |
+| test | 8 | 2 | 3 | 13 |
+
+Pertanyaan dan jawaban acuan disalin apa adanya. Gold chunk diturunkan dari pasal atau halaman yang dirujuk tim dan perlu diperiksa ulang (`data/eval/lembar_periksa_gold.md`). Setiap soal ketiga per kategori masuk split test. Hasil evaluasi awal: [evaluasi/hasil_evaluasi_minggu3.md](evaluasi/hasil_evaluasi_minggu3.md).
